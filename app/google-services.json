@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "1063538754385",
+    "firebase_url": "https://pic-a-pup.firebaseio.com",
+    "project_id": "pic-a-pup",
+    "storage_bucket": "pic-a-pup.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063538754385:android:2efac41965e6d5ed",
+        "android_client_info": {
+          "package_name": "com.pic_a_pup.dev.pic_a_pup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1063538754385-9ordttlpmkfev9a6h6dbv4ju3eorv2o4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pic_a_pup.dev.pic_a_pup",
+            "certificate_hash": "5e60e5c1a4b618e91e5bc9124ca716c5c4c317e8"
+          }
+        },
+        {
+          "client_id": "1063538754385-r6dokekbtjmqh7ujo9rabhp3rrfs3utl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBg4o3gouvIbfSm0gWg0dRTvU3Qou8fK8Q"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1063538754385-uleej7bdj074hhi9kdg2endrt9mtk8k2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.pic-a-pup.Pic-a-Pup"
+              }
+            },
+            {
+              "client_id": "1063538754385-r6dokekbtjmqh7ujo9rabhp3rrfs3utl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
