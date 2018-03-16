@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_pap"
+    tools:context="com.pic_a_pup.dev.pic_a_pup.Controller.SignUpActivity">
+
+    <LinearLayout
+        android:id="@+id/sign_up_form_layout"
+        android:layout_width="299dp"
+        android:layout_height="372dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/email_sign_up"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/white"
+            android:ems="10"
+            android:fontFamily="serif"
+
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:textColor="@android:color/white" />
+
+        <EditText
+            android:id="@+id/user_name_signup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:backgroundTint="@android:color/white"
+            android:ems="10"
+            android:fontFamily="serif"
+            android:hint="@string/user_name"
+            android:inputType="textPersonName"
+            android:paddingTop="28dp"
+            android:textColor="@android:color/white" />
+
+        <EditText
+            android:id="@+id/pw_two_signup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/white"
+            android:ems="10"
+
+            android:fontFamily="serif"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:paddingTop="28dp"
+            android:textColor="@android:color/white" />
+
+        <EditText
+            android:id="@+id/pw_one_signup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/white"
+            android:ems="10"
+
+            android:fontFamily="serif"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:paddingTop="28dp"
+            android:textColor="@android:color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="36dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/submit_button"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_corner_btn"
+                android:fontFamily="serif"
+                android:text="@string/submit"
+                android:textSize="24sp" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
