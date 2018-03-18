@@ -55,7 +55,7 @@ class SignUpActivity : AppCompatActivity() {
         val userPassword = pwTextOne.text.toString().trim()
 
         if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(userEmail) && !TextUtils.isEmpty(userPassword)){
-            if(mUtility.isValidEmail(userEmail)){
+            if(mUtility.isValidEmail(userEmail) && mUtility.isValidPassword(userPassword)){
                 mFirebaseAuth.createUserWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener(this,
                         OnCompleteListener {
                             if(it.isSuccessful){
@@ -78,8 +78,10 @@ class SignUpActivity : AppCompatActivity() {
                         }
 
                 )
-            }else{
+            }else if(!mUtility.isValidEmail(userEmail)){
                 mUtility.showToast("Enter a valid email address, please.")
+            }else{
+                mUtility.showToast("Enter a valid password.")
             }
         }
 

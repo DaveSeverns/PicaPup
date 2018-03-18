@@ -18,8 +18,8 @@ class HomeFeedActivity : AppCompatActivity() {
                 message.setText(R.string.title_home)
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_dashboard -> {
-                message.setText(R.string.title_dashboard)
+            R.id.navigation_camera -> {
+                message.setText(R.string.camera)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
