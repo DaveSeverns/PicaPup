@@ -20,7 +20,7 @@ object Model {
                        var parkAddress: String)
 
     data class DogSearchResult(var userWhoSearched: String,
-                               var Dog : Model.Dog,
+                               var dog : Model.Dog,
                                var dogImageSent: URL,
                                var userVoteCount: Int,
                                var shelterList: List<DogShelter>?)

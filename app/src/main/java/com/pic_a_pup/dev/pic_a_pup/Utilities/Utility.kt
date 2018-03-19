@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectWriter
 /**
  * Created by davidseverns on 3/15/18.
  */
-class Utility(private var mContext: Context) {
+open class Utility(private var mContext: Context) {
 
 
     fun isValidEmail(email: CharSequence): Boolean{
