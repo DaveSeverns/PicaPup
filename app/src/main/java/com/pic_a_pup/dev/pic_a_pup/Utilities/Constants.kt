@@ -20,5 +20,17 @@ val AUTH_TAG = "Autherization was: "
 
 
 
+val REQUEST_IMG_CAPTURE = 369 as Int
+
+
+
+/**Intent Tags**/
+val IMAGE_INTENT_TAG = "image"
+val LAT_INTENT_TAG = "lat"
+val LON_INTENT_TAG = "lon"
+/**********/
+
+
+
 
 
