@@ -5,11 +5,14 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.pic_a_pup.dev.pic_a_pup.R
+import com.pic_a_pup.dev.pic_a_pup.Utilities.AUTH_TAG
 import com.pic_a_pup.dev.pic_a_pup.Utilities.EMAIL
+import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
 import com.pic_a_pup.dev.pic_a_pup.Utilities.PASSWORD
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -19,6 +22,7 @@ class LoginActivity : AppCompatActivity() {
     private  var  passwordFromIntent: String = ""
     private lateinit var mAuth: FirebaseAuth
     private var mContext: Context = this
+    private lateinit var mFirebaseManager: FirebaseManager
     private lateinit var mListener: FirebaseAuth.AuthStateListener
 
 
@@ -26,11 +30,15 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         mAuth = FirebaseAuth.getInstance()
+
+        mFirebaseManager = FirebaseManager(this)
         sign_up_btn.setOnClickListener(this::signUpNewUser)
         if((userEmailFromIntent!!.isNotEmpty())&& (passwordFromIntent!!.isNotEmpty())){
             email_edit_text.setText(userEmailFromIntent)
             pass_edit_text.setText(passwordFromIntent)
         }
+
+        login_btn.setOnClickListener(this::logInUser)
 
         mListener = FirebaseAuth.AuthStateListener {
             var user = it.currentUser
@@ -51,7 +59,9 @@ class LoginActivity : AppCompatActivity() {
         var currentPw = pass_edit_text.text.toString().trim()
 
         if(!TextUtils.isEmpty(currentEmail) && !TextUtils.isEmpty(currentPw)){
-            mAuth.signInWithEmailAndPassword(currentEmail,currentPw)
+            mFirebaseManager.logUserIntoFirebase(currentEmail, currentPw)
+            Log.d(AUTH_TAG," logInUser Called")
+
         }
     }
 

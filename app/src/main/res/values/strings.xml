@@ -11,4 +11,5 @@
     <string name="submit">Submit</string>
     <string name="camera">Camera</string>
     <string name="file_provider_authority" translatable="false">com.pic_a_pup.dev.fileprovider</string>
+    <string name="log_out">Log Out</string>
 </resources>

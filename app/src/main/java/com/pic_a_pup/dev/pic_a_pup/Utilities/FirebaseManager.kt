@@ -16,7 +16,10 @@ import java.net.URL
 /**
  * Created by davidseverns on 3/16/18.
  */
-class FirebaseManager(var mContext: Context, var mAuth: FirebaseAuth, var mDB : FirebaseDatabase, var mUserDBRef: DatabaseReference) : Utility(mContext){
+class FirebaseManager(var mContext: Context) : Utility(mContext){
+    private var mAuth: FirebaseAuth
+    private var mDB : FirebaseDatabase
+    private var mUserDBRef: DatabaseReference
     init{
         mAuth = FirebaseAuth.getInstance()
         mDB = FirebaseDatabase.getInstance()
@@ -38,6 +41,10 @@ class FirebaseManager(var mContext: Context, var mAuth: FirebaseAuth, var mDB : 
             }
         }
         return dogSearches
+    }
+
+    fun logUserIntoFirebase(email: String, password: String){
+        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener { _ -> showToast("Login Successful!") }
     }
 
 }

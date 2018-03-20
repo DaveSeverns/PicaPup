@@ -26,6 +26,8 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import android.support.v4.content.FileProvider.getUriForFile
+import android.view.Menu
+import android.view.MenuItem
 import java.security.AccessController.getContext
 
 
@@ -36,6 +38,7 @@ class HomeFeedActivity : AppCompatActivity() {
     private var mLocation: Location? = null
     private var mImagePath: String? = null
     private lateinit var mUtility: Utility
+
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -136,6 +139,25 @@ class HomeFeedActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val id = item!!.itemId
+        if(id == R.id.log_out_button){
+            mAuth!!.signOut()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+
+    }
+
+
 
 
 }
