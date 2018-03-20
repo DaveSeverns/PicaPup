@@ -103,7 +103,6 @@ class HomeFeedActivity : AppCompatActivity() {
         val fileUri = FileProvider.getUriForFile(this,getString(R.string.file_provider_authority),file)
 
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        mImagePath = fileUri.toString()
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
         cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or
                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
