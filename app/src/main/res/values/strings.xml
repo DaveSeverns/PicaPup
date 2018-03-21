@@ -12,4 +12,7 @@
     <string name="camera">Camera</string>
     <string name="file_provider_authority" translatable="false">com.pic_a_pup.dev.fileprovider</string>
     <string name="log_out">Log Out</string>
+    <string name="petfinder_cb_label">I want to know where I can adopt this doggo!</string>
+    <string name="wiki_cb_label">I want more information about this pupper!</string>
+    <string name="my_location">My Location:</string>
 </resources>

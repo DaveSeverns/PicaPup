@@ -18,6 +18,9 @@ val PASSWORD = "Password"
 val AUTH_TAG = "Autherization was: "
 /**************/
 
+val LON_DEFAULT = -75.1541054 as Double
+val LAT_DEFAULT = 39.9813235 as Double
+
 
 
 val REQUEST_IMG_CAPTURE = 369 as Int

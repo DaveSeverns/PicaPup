@@ -27,7 +27,8 @@ object Model {
 
     data class ModelSearchRequest(var imgUrl: String,
                                   var usePetfinder : Boolean,
-                                  var useWiki: Boolean)
+                                  var useWiki: Boolean,
+                                  var location: String)
 
 
 

@@ -1,6 +1,8 @@
 package com.pic_a_pup.dev.pic_a_pup.Utilities
 
 import android.content.Context
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.widget.Toast
 import org.json.JSONObject
@@ -57,5 +59,13 @@ open class Utility(private var mContext: Context) {
     fun convertToJSON(any: Any): JSONObject{
         var ow = ObjectMapper().writer().withDefaultPrettyPrinter()
         return JSONObject(ow.writeValueAsString(any))
+    }
+
+    fun getZipFromLatLon(lat: String, lon: String): String{
+        // geocoder object gets addresses from specified locale
+        val geoCoder = Geocoder(mContext, Locale.US)
+        var addresses : List<Address> = geoCoder.getFromLocation(lat.toDouble(),lon.toDouble(),1)
+        return addresses.get(0).postalCode
+
     }
 }
