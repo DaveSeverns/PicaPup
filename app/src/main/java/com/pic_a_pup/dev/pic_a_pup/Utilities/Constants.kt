@@ -34,6 +34,9 @@ val LON_INTENT_TAG = "lon"
 /**********/
 
 
+const val IMAGE_STORAGE = "PupImages"
+
+
 
 
 

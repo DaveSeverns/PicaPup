@@ -5,10 +5,14 @@ import android.graphics.BitmapFactory
 import android.media.ExifInterface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.*
+import kotlinx.android.synthetic.main.activity_classification.*
 import java.io.File
 import java.io.IOException
 
@@ -21,6 +25,8 @@ class ClassificationActivity : AppCompatActivity() {
     private var longtiude: Double? = null
     private var mUtility = Utility(this)
     private var postalCode: String? = null
+    private var searchRequest: Model.ModelSearchRequest? = null
+    private var mFirebaseManager = FirebaseManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +39,8 @@ class ClassificationActivity : AppCompatActivity() {
         longtiude = intent.getDoubleExtra(LON_INTENT_TAG, LON_DEFAULT)
 
         postalCode = mUtility.getZipFromLatLon(latitude.toString(),longtiude.toString())
+
+
 
         locationEditText.setText(postalCode)
 
@@ -48,8 +56,22 @@ class ClassificationActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
 
+
             searchImg.setImageBitmap(imageBitmap)
         }
 
+        submit_btn.setOnClickListener(this::onSubmit)
+
+
+    }
+
+    fun onSubmit(view: View){
+        var url: String
+        if(imageFile!!.exists()){
+            url = mFirebaseManager.postImageToFireBaseForUrl(imageFileName!!, imageFile!!)
+
+            searchRequest = Model.ModelSearchRequest(url,petfinder_checkbox.isChecked, wiki_check_box.isChecked,postalCode!!)
+            Log.e("Search Request", searchRequest.toString())
+        }
     }
 }
