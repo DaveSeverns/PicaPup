@@ -57,8 +57,8 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { _ -> showToast("Login Successful!") }
     }
 
-    fun postImageToFireBaseForUrl(imagePath:String, mImageFile: File): String {
-        val filePath = mStorageReference.child(IMAGE_STORAGE).child(imagePath)
+    fun postImageToFireBaseForUrl(imageBitmap: Bitmap, mImageFile: File): String {
+        val filePath = mStorageReference.child(IMAGE_STORAGE).child(imageBitmap.toString())
         val fileUri = Uri.fromFile(mImageFile)
         var imgUrl: Uri? = null
 
