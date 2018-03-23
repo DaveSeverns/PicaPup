@@ -27,7 +27,7 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
     private var mAuth: FirebaseAuth
     private var mDB: FirebaseDatabase
     private var mUserDBRef: DatabaseReference
-    private var mStorageReference: StorageReference
+    var mStorageReference: StorageReference
 
     init {
         mAuth = FirebaseAuth.getInstance()
@@ -65,13 +65,14 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
         filePath.putFile(fileUri).addOnSuccessListener {
             object : OnSuccessListener<UploadTask.TaskSnapshot> {
                 override fun onSuccess(taskSnapshot: UploadTask.TaskSnapshot) {
-                    imgUrl = taskSnapshot!!.downloadUrl
+                    imgUrl = taskSnapshot.downloadUrl
                     showToast(imgUrl.toString())
                     Log.e("Fb Mngr", "Success")
                 }
             }
 
         }
+        while(imgUrl == null){}
         return imgUrl.toString()
     }
 }

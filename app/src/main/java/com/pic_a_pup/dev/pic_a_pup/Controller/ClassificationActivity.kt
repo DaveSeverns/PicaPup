@@ -3,12 +3,15 @@ package com.pic_a_pup.dev.pic_a_pup.Controller
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ExifInterface
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.storage.UploadTask
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.*
@@ -18,8 +21,8 @@ import java.io.IOException
 
 class ClassificationActivity : AppCompatActivity() {
 
-    private var imageFileName : String? = null
-    private var imageFile : File? = null
+    private var imageFileName: String? = null
+    private var imageFile: File? = null
     private var imageBitmap: Bitmap? = null
     private var latitude: Double? = null
     private var longtiude: Double? = null
@@ -27,6 +30,7 @@ class ClassificationActivity : AppCompatActivity() {
     private var postalCode: String? = null
     private var searchRequest: Model.ModelSearchRequest? = null
     private var mFirebaseManager = FirebaseManager(this)
+    private var imgUrl: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,11 +38,11 @@ class ClassificationActivity : AppCompatActivity() {
         val searchImg = findViewById<ImageView>(R.id.searchImage)
         val locationEditText = findViewById<EditText>(R.id.postalCode_edittext)
 
-        imageFileName  = intent.getStringExtra(IMAGE_INTENT_TAG)
+        imageFileName = intent.getStringExtra(IMAGE_INTENT_TAG)
         latitude = intent.getDoubleExtra(LAT_INTENT_TAG, LAT_DEFAULT)
         longtiude = intent.getDoubleExtra(LON_INTENT_TAG, LON_DEFAULT)
 
-        postalCode = mUtility.getZipFromLatLon(latitude.toString(),longtiude.toString())
+        postalCode = mUtility.getZipFromLatLon(latitude.toString(), longtiude.toString())
 
 
 
@@ -65,13 +69,27 @@ class ClassificationActivity : AppCompatActivity() {
 
     }
 
-    fun onSubmit(view: View){
-        var url: String
-        if(imageFile!!.exists()){
-            url = mFirebaseManager.postImageToFireBaseForUrl(imageBitmap!!, imageFile!!)
+    fun onSubmit(view: View) {
+        val fbFile = mFirebaseManager.mStorageReference.child(IMAGE_STORAGE).child(imageBitmap.toString())
+        val fileUri = Uri.fromFile(imageFile)
 
-            searchRequest = Model.ModelSearchRequest(url,petfinder_checkbox.isChecked, wiki_check_box.isChecked,postalCode!!)
-            Log.e("Search Request", searchRequest.toString())
+
+        fbFile.putFile(fileUri).addOnSuccessListener {
+            object : OnSuccessListener<UploadTask.TaskSnapshot> {
+                override fun onSuccess(taskSnapshot: UploadTask.TaskSnapshot){
+                    imgUrl = taskSnapshot.downloadUrl!!.toString()
+                    mFirebaseManager.showToast(imgUrl.toString())
+                    Log.e("Fb Mngr", "Success")
+                }
+            }
         }
-    }
+            if(imageFile!!.exists()){
+                searchRequest = Model.ModelSearchRequest(imgUrl.toString(),petfinder_checkbox.isChecked, wiki_check_box.isChecked,postalCode!!)
+                Log.e("Search Request", searchRequest.toString())
+                Log.e("Url", imgUrl.toString())
+                mFirebaseManager.showToast("Submission Sent")
+            }
+        }
+
 }
+
