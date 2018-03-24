@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ExifInterface
 import android.net.Uri
+import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +19,9 @@ import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.*
 import kotlinx.android.synthetic.main.activity_classification.*
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Response
 import java.io.File
 import java.io.IOException
 
@@ -72,26 +76,7 @@ class ClassificationActivity : AppCompatActivity() {
     }
 
     fun onSubmit(view: View) {
-        val fbFile = mFirebaseManager.mStorageReference.child(IMAGE_STORAGE).child(imageBitmap.toString())
-        val fileUri = Uri.fromFile(imageFile)
-        mFirebaseManager.showToast("You hit me!!!!!!!!")
-
-
-        fbFile.putFile(fileUri).addOnSuccessListener {
-            OnSuccessListener<UploadTask.TaskSnapshot> { taskSnapshot ->
-                imgUrl = taskSnapshot.downloadUrl!!.toString()
-                mFirebaseManager.showToast(imgUrl.toString())
-                Log.e("Fb Mngr", "Success")
-                searchRequest = Model.ModelSearchRequest(imgUrl.toString(),petfinder_checkbox.isChecked, wiki_check_box.isChecked,postalCode!!)
-                Log.e("Search Request", searchRequest.toString())
-                Log.e("Url", imgUrl.toString())
-                mFirebaseManager.showToast("Submission Sent")
-                val intent = Intent(this,ClassificationActivity:: class.java)
-                intent.putExtra("Url", imgUrl)
-                startActivityForResult(intent, CLASSIFICATION_RESULT)
-            }
-        }
-
+        postImageToFirebase()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -100,6 +85,44 @@ class ClassificationActivity : AppCompatActivity() {
 
         }
     }
+
+    fun postImageToFirebase(){
+        val restClient = NetworkManager.PaPRestClient.create()
+        val fbFile = mFirebaseManager.mStorageReference.child(IMAGE_STORAGE).child(imageBitmap.toString())
+        val fileUri = Uri.fromFile(imageFile)
+        Log.e("I actually run", "postImageToFb")
+        //mFirebaseManager.showToast("You hit me!!!!!!!!")
+
+
+        fbFile.putFile(fileUri).addOnSuccessListener {
+            OnSuccessListener<UploadTask.TaskSnapshot> { taskSnapshot ->
+                imgUrl = taskSnapshot.downloadUrl.toString()
+                //mFirebaseManager.showToast(imgUrl.toString())
+                Log.e("Fb Mngr", "Success")
+                searchRequest = Model.ModelSearchRequest(imgUrl.toString(),petfinder_checkbox.isChecked, wiki_check_box.isChecked,postalCode!!)
+                Log.e("Search Request", searchRequest.toString())
+                Log.e("Url", imgUrl.toString())
+                //mFirebaseManager.showToast("Submission Sent")
+                restClient.postSearchRequestToServer(imgUrl.toString(),postalCode).enqueue(
+                        object: retrofit2.Callback<JSONObject> {
+                            override fun onFailure(call: Call<JSONObject>?, t: Throwable?) {
+                                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                            }
+
+                            override fun onResponse(call: Call<JSONObject>?, response: Response<JSONObject>?) {
+                                Log.e("Response", response!!.body().toString())
+                            }
+
+                        })
+
+                val intent = Intent(this,ClassificationActivity:: class.java)
+                intent.putExtra("Url", imgUrl)
+                startActivityForResult(intent, CLASSIFICATION_RESULT)
+            }
+        }
+    }
+
+
 
 }
 

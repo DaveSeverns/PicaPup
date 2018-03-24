@@ -5,38 +5,43 @@ package com.pic_a_pup.dev.pic_a_pup.Utilities
  */
 
 /**Table Names**/
-val USER_TABLE = "Users"
+const val USER_TABLE = "Users"
 /**************/
 
 
 /**Attributes**/
-val EMAIL = "Email"
-val PASSWORD = "Password"
+const val EMAIL = "Email"
+const val PASSWORD = "Password"
 /**************/
 
 /**Log Tags**/
-val AUTH_TAG = "Autherization was: "
+const val AUTH_TAG = "Autherization was: "
 /**************/
 
-val LON_DEFAULT = -75.1541054 as Double
-val LAT_DEFAULT = 39.9813235 as Double
+const val LON_DEFAULT = -75.1541054 as Double
+const val LAT_DEFAULT = 39.9813235 as Double
 
-
-
-val REQUEST_IMG_CAPTURE = 369 as Int
+const val REQUEST_IMG_CAPTURE = 369 as Int
 
 
 
 /**Intent Tags**/
-val IMAGE_INTENT_TAG = "image"
-val LAT_INTENT_TAG = "lat"
-val LON_INTENT_TAG = "lon"
+const val IMAGE_INTENT_TAG = "image"
+const val LAT_INTENT_TAG = "lat"
+const val LON_INTENT_TAG = "lon"
 /**********/
 
 
 const val IMAGE_STORAGE = "PupImages"
 
 const val CLASSIFICATION_RESULT = 420
+
+
+
+const val TEST_URL = "http://httpbin.org/"
+const val TEST_ENDPOINT = "post"
+
+const val AWS_ENDPOINT = ""
 
 
 
