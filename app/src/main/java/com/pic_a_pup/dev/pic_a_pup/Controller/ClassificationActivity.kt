@@ -1,5 +1,7 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ExifInterface
@@ -72,24 +74,32 @@ class ClassificationActivity : AppCompatActivity() {
     fun onSubmit(view: View) {
         val fbFile = mFirebaseManager.mStorageReference.child(IMAGE_STORAGE).child(imageBitmap.toString())
         val fileUri = Uri.fromFile(imageFile)
+        mFirebaseManager.showToast("You hit me!!!!!!!!")
 
 
         fbFile.putFile(fileUri).addOnSuccessListener {
-            object : OnSuccessListener<UploadTask.TaskSnapshot> {
-                override fun onSuccess(taskSnapshot: UploadTask.TaskSnapshot){
-                    imgUrl = taskSnapshot.downloadUrl!!.toString()
-                    mFirebaseManager.showToast(imgUrl.toString())
-                    Log.e("Fb Mngr", "Success")
-                }
-            }
-        }
-            if(imageFile!!.exists()){
+            OnSuccessListener<UploadTask.TaskSnapshot> { taskSnapshot ->
+                imgUrl = taskSnapshot.downloadUrl!!.toString()
+                mFirebaseManager.showToast(imgUrl.toString())
+                Log.e("Fb Mngr", "Success")
                 searchRequest = Model.ModelSearchRequest(imgUrl.toString(),petfinder_checkbox.isChecked, wiki_check_box.isChecked,postalCode!!)
                 Log.e("Search Request", searchRequest.toString())
                 Log.e("Url", imgUrl.toString())
                 mFirebaseManager.showToast("Submission Sent")
+                val intent = Intent(this,ClassificationActivity:: class.java)
+                intent.putExtra("Url", imgUrl)
+                startActivityForResult(intent, CLASSIFICATION_RESULT)
             }
         }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == CLASSIFICATION_RESULT && resultCode == Activity.RESULT_OK){
+            mFirebaseManager.showToast(intent.getStringExtra("Url"))
+
+        }
+    }
 
 }
 
