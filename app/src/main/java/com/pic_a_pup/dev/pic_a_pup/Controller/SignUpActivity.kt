@@ -54,6 +54,7 @@ class SignUpActivity : AppCompatActivity() {
         val userEmail = emailText.text.toString().trim()
         val userPassword = pwTextOne.text.toString().trim()
 
+
         if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(userEmail) && !TextUtils.isEmpty(userPassword)){
             if(mUtility.isValidEmail(userEmail) && mUtility.isValidPassword(userPassword)){
                 mFirebaseAuth.createUserWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener(this,

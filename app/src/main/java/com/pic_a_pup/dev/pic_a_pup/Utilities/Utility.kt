@@ -10,10 +10,44 @@ import java.util.*
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectWriter
 
+const val EMAIL_PASS_SUCCESS = 1
+const val EMAIL_ONLY_SUCCESS = 2
+const val PASS_ONLY_SUCCESS = 3
+const val BOTH_FAIL = 0
+
 /**
  * Created by davidseverns on 3/15/18.
  */
 open class Utility(private var mContext: Context) {
+
+
+
+    fun signUpVerification(email: CharSequence, password: String?){
+        var x: Int
+        val emailVerify = isValidEmail(email)
+        val passVerify = isValidPassword(password)
+        if(emailVerify && passVerify){
+            x = EMAIL_PASS_SUCCESS
+        }else if(emailVerify && !passVerify){
+            x = EMAIL_ONLY_SUCCESS
+        }
+        else if (!emailVerify && passVerify){
+            x = PASS_ONLY_SUCCESS
+        }
+        else{
+            x = BOTH_FAIL
+        }
+
+        when(x){
+            EMAIL_PASS_SUCCESS -> showToast("Login Successful")
+
+            EMAIL_ONLY_SUCCESS -> showToast( "Invalid Password")
+
+            PASS_ONLY_SUCCESS -> showToast("Invalid Email")
+
+            BOTH_FAIL -> showToast("Please enter a valid Email and Password")
+        }
+    }
 
 
     fun isValidEmail(email: CharSequence): Boolean{
