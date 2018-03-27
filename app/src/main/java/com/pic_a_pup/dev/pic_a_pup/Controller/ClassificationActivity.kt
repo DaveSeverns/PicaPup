@@ -105,12 +105,12 @@ class ClassificationActivity : AppCompatActivity() {
                 Log.e("Url", imgUrl.toString())
                 //mFirebaseManager.showToast("Submission Sent")
                 restClient.postSearchRequestToServer(postalCode,imgUrl.toString()).enqueue(
-                        object: retrofit2.Callback<ResponseBody> {
-                            override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
+                        object: retrofit2.Callback<Model.DogSearchResult> {
+                            override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
                                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                             }
 
-                            override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
+                            override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
                                 Log.e("Response", response!!.body().toString())
                             }
 

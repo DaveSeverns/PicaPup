@@ -21,7 +21,7 @@ class NetworkManager {
         @POST("./")
         @FormUrlEncoded
         fun postSearchRequestToServer(@Field("location") urlAsString: String?,
-                                      @Field("url") postalLocation: String?): Call<ResponseBody>
+                                      @Field("url") postalLocation: String?): Call<Model.DogSearchResult>
         companion object Factory{
             fun create(): PaPRestClient{
                 val retrofit = Retrofit.Builder().baseUrl(AWS_IP)

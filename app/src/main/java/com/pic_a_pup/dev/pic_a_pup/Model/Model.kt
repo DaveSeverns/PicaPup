@@ -1,6 +1,7 @@
 package com.pic_a_pup.dev.pic_a_pup.Model
 
 import android.location.Location
+import org.json.JSONObject
 import java.net.URL
 
 /**
@@ -19,11 +20,15 @@ object Model {
                        var parkLocation: Location,
                        var parkAddress: String)
 
-    data class DogSearchResult(var userWhoSearched: String,
+    data class DogSearchResult(var breed: String,
+                               var breed_info: String,
                                var dog : Model.Dog,
                                var dogImageSent: URL,
                                var userVoteCount: Int,
-                               var shelterList: List<DogShelter>?)
+
+                               var shelterList: List<DogShelter>?): JSONObject(){
+
+    }
 
     data class ModelSearchRequest(var imgUrl: String,
                                   var usePetfinder : Boolean,

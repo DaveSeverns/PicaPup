@@ -45,10 +45,10 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
         for (search in dataSnapshot.children) {
             if (search.exists()) {
 
-                result = Model.DogSearchResult(search.child("userWhoSearched").value.toString(), search.child("dog").value as Model.Dog,
-                        search.child("dogImageSent").value as URL, search.child("userVoteCount").value as Int,
-                        search.child("shelterList").value as List<Model.DogShelter>)
-                dogSearches.add(result)
+                //result = Model.DogSearchResult(search.child("userWhoSearched").value.toString(), search.child("dog").value as Model.Dog,
+                       // search.child("dogImageSent").value as URL, search.child("userVoteCount").value as Int,
+                        //search.child("shelterList").value as List<Model.DogShelter>)
+               // dogSearches.add(result)
 
             }
         }

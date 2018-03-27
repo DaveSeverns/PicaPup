@@ -14,6 +14,7 @@ import com.pic_a_pup.dev.pic_a_pup.Utilities.Utility
 import junit.framework.Assert.*
 import okhttp3.ResponseBody
 import org.json.JSONObject
+import org.json.JSONTokener
 import org.junit.Test
 import org.junit.runner.RunWith
 import retrofit2.Call
@@ -33,22 +34,23 @@ class NetworkTest{
 
         val client = NetworkManager.PaPRestClient.create()
         client.postSearchRequestToServer("19044", "https://firebasestorage.googleapis.com/v0/b/pic-a-pup.appspot.com/o/PupImages%2F1521417989.67944.jpg?alt=media&token=9e427ac8-178b-4606-bbfb-2b14fcf26c55").enqueue(
-                object: retrofit2.Callback<ResponseBody> {
-                    override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
-                        Log.e("response", response!!.body()!!.string())
+                object: retrofit2.Callback<Model.DogSearchResult> {
+                    override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
+                        Log.e("response", response!!.body()!!.breed)
+
+                        var stringResponseBody : String = response.body()!!.toString()
 
 
+                        //var jsonObject = JSONObject()
+                        //var stringJson = jsonObject.optJSONArray(stringResponseBody)
+                        //println(jsonObject.get("breed"))
 
-
-
-                        //Log.e("json object", jsonObject.asJsonObject.get("breed").toString())
-
-                        aResponse = response.body()!!.string()
+                        aResponse = response.body()!!.toString()
                         assertNotNull(aResponse)
 
                     }
 
-                    override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
+                    override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
                         Log.e("Oh", " No")
 
                     }
