@@ -2,6 +2,7 @@ package com.pic_a_pup.dev.pic_a_pup.Controller
 
 import android.Manifest
 import android.app.Activity
+import android.content.AbstractThreadedSyncAdapter
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -28,6 +29,10 @@ import java.util.*
 import android.support.v4.content.FileProvider.getUriForFile
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
+//import com.firebase.ui.database.FirebaseRecyclerAdapter
+//import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import java.security.AccessController.getContext
 
 
@@ -38,21 +43,18 @@ class HomeFeedActivity : AppCompatActivity() {
     private var mLocation: Location? = null
     private var mImagePath: String? = null
     private lateinit var mUtility: Utility
-
+    //private lateinit var adapter: FirebaseRecyclerAdapter<Model.DogSearchResult,ResultViewHolder>
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                message.setText(R.string.title_home)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_camera -> {
-                message.setText(R.string.camera)
                 onLaunchCamera()
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_notifications -> {
-                message.setText(R.string.title_notifications)
+            R.id.navigation_profile -> {
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -73,6 +75,7 @@ class HomeFeedActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
         mUtility = Utility(this)
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
@@ -81,6 +84,11 @@ class HomeFeedActivity : AppCompatActivity() {
         super.onStart()
         var currentUser = mAuth.currentUser
         Log.e("CURRENT_USER",currentUser.toString())
+        //adapter =
+
+
+
+
     }
 
 
@@ -149,6 +157,8 @@ class HomeFeedActivity : AppCompatActivity() {
         val id = item!!.itemId
         if(id == R.id.log_out_button){
             mAuth!!.signOut()
+            val logOutIntent = Intent(this, LoginActivity::class.java)
+            startActivity(logOutIntent)
         }
         return super.onOptionsItemSelected(item)
     }

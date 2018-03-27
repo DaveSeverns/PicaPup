@@ -1,6 +1,7 @@
 package com.pic_a_pup.dev.pic_a_pup.Utilities
 
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
+import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -17,13 +18,13 @@ import kotlin.collections.ArrayList
  */
 class NetworkManager {
     interface PaPRestClient{
-        @POST(TEST_ENDPOINT)
+        @POST("./")
         @FormUrlEncoded
-        fun postSearchRequestToServer(@Field("url") urlAsString: String?,
-                                      @Field("location") postalLocation: String?): Call<JSONObject>
+        fun postSearchRequestToServer(@Field("location") urlAsString: String?,
+                                      @Field("url") postalLocation: String?): Call<ResponseBody>
         companion object Factory{
             fun create(): PaPRestClient{
-                val retrofit = Retrofit.Builder().baseUrl(TEST_URL)
+                val retrofit = Retrofit.Builder().baseUrl(AWS_IP)
                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()

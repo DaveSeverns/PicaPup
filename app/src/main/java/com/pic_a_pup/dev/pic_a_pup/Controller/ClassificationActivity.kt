@@ -19,6 +19,7 @@ import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.*
 import kotlinx.android.synthetic.main.activity_classification.*
+import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
@@ -103,13 +104,13 @@ class ClassificationActivity : AppCompatActivity() {
                 Log.e("Search Request", searchRequest.toString())
                 Log.e("Url", imgUrl.toString())
                 //mFirebaseManager.showToast("Submission Sent")
-                restClient.postSearchRequestToServer(imgUrl.toString(),postalCode).enqueue(
-                        object: retrofit2.Callback<JSONObject> {
-                            override fun onFailure(call: Call<JSONObject>?, t: Throwable?) {
+                restClient.postSearchRequestToServer(postalCode,imgUrl.toString()).enqueue(
+                        object: retrofit2.Callback<ResponseBody> {
+                            override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
                                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                             }
 
-                            override fun onResponse(call: Call<JSONObject>?, response: Response<JSONObject>?) {
+                            override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
                                 Log.e("Response", response!!.body().toString())
                             }
 

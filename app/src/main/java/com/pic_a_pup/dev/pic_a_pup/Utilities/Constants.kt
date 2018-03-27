@@ -5,7 +5,9 @@ package com.pic_a_pup.dev.pic_a_pup.Utilities
  */
 
 /**Table Names**/
-const val USER_TABLE = "Users"
+const val USER_TABLE = "users"
+const val RESULTS_TABLE = "DogSearchResult"
+
 /**************/
 
 
@@ -41,7 +43,7 @@ const val CLASSIFICATION_RESULT = 420
 const val TEST_URL = "http://httpbin.org/"
 const val TEST_ENDPOINT = "post"
 
-const val AWS_ENDPOINT = ""
+const val AWS_IP = "http://18.219.234.144"
 
 
 

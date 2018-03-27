@@ -91,7 +91,7 @@ open class Utility(private var mContext: Context) {
     }
 
     fun convertToJSON(any: Any): JSONObject{
-        var ow = ObjectMapper().writer().withDefaultPrettyPrinter()
+        val ow = ObjectMapper().writer().withDefaultPrettyPrinter()
         return JSONObject(ow.writeValueAsString(any))
     }
 

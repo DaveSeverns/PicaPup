@@ -26,10 +26,12 @@ import java.net.URL
 class FirebaseManager(var mContext: Context) : Utility(mContext) {
     private var mAuth: FirebaseAuth
     private var mDB: FirebaseDatabase
-    private var mUserDBRef: DatabaseReference
+    var mUserDBRef: DatabaseReference
     var mStorageReference: StorageReference
+    var mResultDBRef: DatabaseReference
 
     init {
+        mResultDBRef = FirebaseDatabase.getInstance().reference.child(RESULTS_TABLE)
         mAuth = FirebaseAuth.getInstance()
         mDB = FirebaseDatabase.getInstance()
         mUserDBRef = FirebaseDatabase.getInstance().reference.child(USER_TABLE)
