@@ -134,11 +134,19 @@ class ClassificationActivity : AppCompatActivity() {
                         enqueue(object: retrofit2.Callback<Model.DogSearchResult> {
                            override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
                                Log.e("Network Call", "Failure ${t.toString()}")
+                               updateUiOnResponse("Error","Server Not Responding")
                            }
 
                            override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
-                               Log.e("Response", response!!.body()!!.breed)
+                               var breedString = response!!.body()!!.breed
+                               if(breedString != null){
+                                   Log.e("Response",breedString )
+                               }else{
+                                   Log.e("Connection: ", "made but not getting DSR")
+                               }
+
                                val breedInfoString = response.body()!!.breed_info
+                               updateUiOnResponse(breedString,breedInfoString)
                               //val intent = Intent(applicationContext,ClassificationActivity:: class.java)
                               //intent.putExtra("breed_info", breedInfoString)
                               //startActivityForResult(intent, CLASSIFICATION_RESULT)
@@ -151,6 +159,16 @@ class ClassificationActivity : AppCompatActivity() {
         }).addOnCompleteListener{ task ->
             Toast.makeText(this,task.toString(), Toast.LENGTH_SHORT).show()
         }
+    }
+
+
+    fun updateUiOnResponse(breed: String?, breedInfo: String?){
+        breed_text.text = breed
+        if (breedInfo != null){
+            breed_info_text.text = breedInfo
+        }
+        pre_response_frame.visibility = View.INVISIBLE
+        post_response_frame.visibility = View.VISIBLE
     }
 }
 

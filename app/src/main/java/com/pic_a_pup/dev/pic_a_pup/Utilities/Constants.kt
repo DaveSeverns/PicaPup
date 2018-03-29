@@ -43,7 +43,8 @@ const val CLASSIFICATION_RESULT = 420
 const val TEST_URL = "http://httpbin.org/"
 const val TEST_ENDPOINT = "post"
 
-const val AWS_IP = "http://18.219.234.144"
+const val AWS_IP = "http://18.188.145.20:5000"
+const val EMPTY_ROUTE = "./"
 
 
 

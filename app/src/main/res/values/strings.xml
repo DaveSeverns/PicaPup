@@ -15,5 +15,7 @@
     <string name="petfinder_cb_label">I want to know where I can adopt this doggo!</string>
     <string name="wiki_cb_label">I want more information about this pupper!</string>
     <string name="my_location">My Location:</string>
+    <string name="info">Info:</string>
+    <string name="breed">Breed:</string>
 
 </resources>
