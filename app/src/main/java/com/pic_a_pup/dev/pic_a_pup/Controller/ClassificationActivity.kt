@@ -13,17 +13,26 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.storage.UploadTask
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.*
+import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_classification.*
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
+import retrofit2.http.Url
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 
 class ClassificationActivity : AppCompatActivity() {
@@ -38,6 +47,7 @@ class ClassificationActivity : AppCompatActivity() {
     private var searchRequest: Model.ModelSearchRequest? = null
     private var mFirebaseManager = FirebaseManager(this)
     private var imgUrl: String? = null
+    private var mDisposable: Disposable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +84,7 @@ class ClassificationActivity : AppCompatActivity() {
         submit_btn.setOnClickListener(this::onSubmit)
 
 
+
     }
 
     fun onSubmit(view: View) {
@@ -82,48 +93,68 @@ class ClassificationActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == CLASSIFICATION_RESULT && resultCode == Activity.RESULT_OK){
-            mFirebaseManager.showToast(intent.getStringExtra("Url"))
+            val stringBreedInfo = intent.getStringExtra("breed_info")
+            mFirebaseManager.showToast(stringBreedInfo)
+            wiki_check_box.text = stringBreedInfo
 
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.e("Stopped", "OnStop Ran")
     }
 
     fun postImageToFirebase(){
         val restClient = NetworkManager.PaPRestClient.create()
         val fbFile = mFirebaseManager.mStorageReference.child(IMAGE_STORAGE).child(imageBitmap.toString())
-        val fileUri = Uri.fromFile(imageFile)
+        val byteArrayOutputStream = ByteArrayOutputStream()
+
+        imageBitmap!!.compress((Bitmap.CompressFormat.JPEG),35,byteArrayOutputStream)
+        val data = byteArrayOutputStream.toByteArray()
         Log.e("I actually run", "postImageToFb")
         //mFirebaseManager.showToast("You hit me!!!!!!!!")
 
-
-        fbFile.putFile(fileUri).addOnSuccessListener {
-            OnSuccessListener<UploadTask.TaskSnapshot> { taskSnapshot ->
+        fbFile.putBytes(data).addOnSuccessListener(this, { taskSnapshot ->
                 imgUrl = taskSnapshot.downloadUrl.toString()
                 //mFirebaseManager.showToast(imgUrl.toString())
+                Toast.makeText(this,"fuck threading", Toast.LENGTH_SHORT).show()
                 Log.e("Fb Mngr", "Success")
-                searchRequest = Model.ModelSearchRequest(imgUrl.toString(),petfinder_checkbox.isChecked, wiki_check_box.isChecked,postalCode!!)
-                Log.e("Search Request", searchRequest.toString())
+                //searchRequest = Model.ModelSearchRequest(imgUrl.toString(),petfinder_checkbox.isChecked, wiki_check_box.isChecked,postalCode!!)
+                //Log.e("Search Request", searchRequest.toString())
                 Log.e("Url", imgUrl.toString())
+
+
+                //Observable.just("").subscribeOn(Schedulers.io()).flatMap { restClient.postSearchRequestToServer(postalCode, imgUrl) }
+                //        .map { dsr ->
+                //            Model.DogSearchResult(dsr.breed, dsr.breed_info,null, null, null, null) }
+                //        .observeOn(AndroidSchedulers.mainThread()).subscribe{res -> print(res.toString())}
                 //mFirebaseManager.showToast("Submission Sent")
-                restClient.postSearchRequestToServer(postalCode,imgUrl.toString()).enqueue(
-                        object: retrofit2.Callback<Model.DogSearchResult> {
-                            override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
-                                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                            }
+                restClient.postSearchRequestToServer(postalCode,imgUrl.toString()).
+                        enqueue(object: retrofit2.Callback<Model.DogSearchResult> {
+                           override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
+                               Log.e("Network Call", "Failure ${t.toString()}")
+                           }
 
-                            override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
-                                Log.e("Response", response!!.body().toString())
-                            }
+                           override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
+                               Log.e("Response", response!!.body()!!.breed)
+                               val breedInfoString = response.body()!!.breed_info
+                              //val intent = Intent(applicationContext,ClassificationActivity:: class.java)
+                              //intent.putExtra("breed_info", breedInfoString)
+                              //startActivityForResult(intent, CLASSIFICATION_RESULT)
+                           }
 
-                        })
+                      })
 
-                val intent = Intent(this,ClassificationActivity:: class.java)
-                intent.putExtra("Url", imgUrl)
-                startActivityForResult(intent, CLASSIFICATION_RESULT)
-            }
+
+
+        }).addOnCompleteListener{ task ->
+            Toast.makeText(this,task.toString(), Toast.LENGTH_SHORT).show()
         }
     }
-
-
-
 }
+
+
+
+
 

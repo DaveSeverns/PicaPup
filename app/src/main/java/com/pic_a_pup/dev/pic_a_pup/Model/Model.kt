@@ -22,9 +22,9 @@ object Model {
 
     data class DogSearchResult(var breed: String,
                                var breed_info: String,
-                               var dog : Model.Dog,
-                               var dogImageSent: URL,
-                               var userVoteCount: Int,
+                               var dog : Model.Dog?,
+                               var dogImageSent: URL?,
+                               var userVoteCount: Int?,
 
                                var shelterList: List<DogShelter>?): JSONObject(){
 

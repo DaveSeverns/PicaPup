@@ -1,6 +1,7 @@
 package com.pic_a_pup.dev.pic_a_pup.Utilities
 
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
+import io.reactivex.Observable
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Call
