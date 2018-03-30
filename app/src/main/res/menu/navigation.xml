@@ -14,8 +14,14 @@
         android:title="@string/camera" />
 
     <item
+        android:id="@+id/navigation_collar"
+        android:checkable="false"
+        android:enabled="true"
+        android:icon="@drawable/collar_icon"
+        android:title="@string/collar" />
+    <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/dog_paw_icon"
-        android:title="Profile" />
+        android:title="@string/profile" />
 
 </menu>

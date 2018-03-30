@@ -18,5 +18,7 @@
     <string name="info">Info:</string>
     <string name="breed">Breed:</string>
     <string name="placeholder">PlaceHolder</string>
+    <string name="collar">Collar</string>
+    <string name="profile">Profile</string>
 
 </resources>

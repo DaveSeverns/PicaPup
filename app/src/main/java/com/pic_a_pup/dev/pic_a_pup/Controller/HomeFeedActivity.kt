@@ -54,6 +54,10 @@ class HomeFeedActivity : AppCompatActivity() {
                 onLaunchCamera()
                 return@OnNavigationItemSelectedListener true
             }
+            R.id.navigation_collar ->{
+                collarActivityStart()
+                return@OnNavigationItemSelectedListener true
+            }
             R.id.navigation_profile -> {
                 return@OnNavigationItemSelectedListener true
             }
@@ -165,6 +169,11 @@ class HomeFeedActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
 
+    }
+
+    fun collarActivityStart(){
+        val collarStartIntent = Intent(this, CollarActivity::class.java)
+        startActivity(collarStartIntent)
     }
 
 

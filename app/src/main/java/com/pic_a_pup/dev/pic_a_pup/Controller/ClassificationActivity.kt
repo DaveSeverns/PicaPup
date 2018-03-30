@@ -140,14 +140,15 @@ class ClassificationActivity : AppCompatActivity() {
                            override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
                                var breedString = response!!.body()!!.breed
                                if(breedString != null){
+                                   val breedInfoString = response.body()!!.breed_info
+                                   updateUiOnResponse(breedString,breedInfoString)
                                    Log.e("Response",breedString )
                                }else{
                                    Log.e("Connection: ", "made but not getting DSR")
                                    breedString = "no data from server"
                                }
 
-                               val breedInfoString = response.body()!!.breed_info
-                               updateUiOnResponse(breedString,breedInfoString)
+
                               //val intent = Intent(applicationContext,ClassificationActivity:: class.java)
                               //intent.putExtra("breed_info", breedInfoString)
                               //startActivityForResult(intent, CLASSIFICATION_RESULT)

@@ -19,13 +19,13 @@ import kotlin.collections.ArrayList
  */
 class NetworkManager {
     interface PaPRestClient{
-        @POST(TEST_ENDPOINT)
+        @POST(EMPTY_ROUTE)
         @FormUrlEncoded
         fun postSearchRequestToServer(@Field("location") urlAsString: String?,
                                       @Field("url") postalLocation: String?): Call<Model.DogSearchResult>
         companion object Factory{
             fun create(): PaPRestClient{
-                val retrofit = Retrofit.Builder().baseUrl(TEST_URL)
+                val retrofit = Retrofit.Builder().baseUrl(AWS_IP)
                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
