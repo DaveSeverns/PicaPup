@@ -143,6 +143,7 @@ class ClassificationActivity : AppCompatActivity() {
                                    Log.e("Response",breedString )
                                }else{
                                    Log.e("Connection: ", "made but not getting DSR")
+                                   breedString = "no data from server"
                                }
 
                                val breedInfoString = response.body()!!.breed_info
