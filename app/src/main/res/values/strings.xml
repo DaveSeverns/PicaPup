@@ -17,5 +17,6 @@
     <string name="my_location">My Location:</string>
     <string name="info">Info:</string>
     <string name="breed">Breed:</string>
+    <string name="placeholder">PlaceHolder</string>
 
 </resources>

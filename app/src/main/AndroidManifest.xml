@@ -11,10 +11,12 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature android:name="android.hardware.camera.any"
-        android:required="true"/>
-    <uses-feature android:name="android.hardware.camera.autofocus"
-        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -23,6 +25,13 @@
         android:roundIcon="@mipmap/pap_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode" />
+
         <activity android:name=".Controller.HomeFeedActivity" />
         <activity android:name=".Controller.LoginActivity">
             android:label="@string/app_name">
@@ -33,7 +42,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Controller.SignUpActivity" />
-        <activity android:name=".Controller.ClassificationActivity"></activity>
+        <activity android:name=".Controller.ClassificationActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -44,6 +53,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_provider_paths" />
         </provider>
+
+        <activity android:name=".Controller.CollarScanActivity" />
+        <activity android:name=".Controller.CollarActivity"></activity>
     </application>
 
 </manifest>
