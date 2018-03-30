@@ -30,7 +30,8 @@ class CollarScanActivity : AppCompatActivity() {
     }
 
     private fun createCameraSource() {
-        val decoder = BarcodeDetector.Builder(this).build()
+        val decoder = BarcodeDetector.Builder(this).setBarcodeFormats(Barcode.QR_CODE).build()
+
         var cameraSource = CameraSource.Builder(this,decoder).setAutoFocusEnabled(true)
                 .setRequestedPreviewSize(1600, 1024).build()
 
