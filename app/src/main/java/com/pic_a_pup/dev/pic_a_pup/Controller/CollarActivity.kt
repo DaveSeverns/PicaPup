@@ -12,13 +12,8 @@ class CollarActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_collar)
-        scan_button.setOnClickListener(this::scanBarcode)
     }
 
-    fun scanBarcode(view: View){
-        val scanBarCodeActivity = Intent(this, CollarScanActivity::class.java)
-        startActivityForResult(scanBarCodeActivity,0)
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode==0){

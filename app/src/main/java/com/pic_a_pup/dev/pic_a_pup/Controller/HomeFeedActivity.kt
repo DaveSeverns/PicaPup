@@ -172,7 +172,7 @@ class HomeFeedActivity : AppCompatActivity() {
     }
 
     fun collarActivityStart(){
-        val collarStartIntent = Intent(this, CollarActivity::class.java)
+        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
         startActivity(collarStartIntent)
     }
 
