@@ -2,13 +2,10 @@ package com.pic_a_pup.dev.pic_a_pup.Controller
 
 import android.Manifest
 import android.app.Activity
-import android.content.AbstractThreadedSyncAdapter
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -26,15 +23,10 @@ import kotlinx.android.synthetic.main.activity_home_feed.*
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import android.support.v4.content.FileProvider.getUriForFile
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewGroup
 //import com.firebase.ui.database.FirebaseRecyclerAdapter
 //import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.pic_a_pup.dev.pic_a_pup.Model.Model
-import java.security.AccessController.getContext
-
 
 class HomeFeedActivity : AppCompatActivity() {
 
@@ -59,6 +51,8 @@ class HomeFeedActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_profile -> {
+                val intent = ProfileActivity.newIntent(this)
+                startActivity(intent)
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -81,7 +75,14 @@ class HomeFeedActivity : AppCompatActivity() {
         mUtility = Utility(this)
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    }
+
+    companion object {
+        fun newIntent(context: Context): Intent {
+            return Intent(context, HomeFeedActivity::class.java)
+        }
     }
 
     override fun onStart() {

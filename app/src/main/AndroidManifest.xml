@@ -56,6 +56,7 @@
 
         <activity android:name=".Controller.CollarScanActivity" />
         <activity android:name=".Controller.CollarActivity"></activity>
+        <activity android:name=".Controller.ProfileActivity"></activity>
     </application>
 
 </manifest>

@@ -1,9 +1,11 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.util.SparseArray
 import android.view.Surface

@@ -28,4 +28,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="222dp" />
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation_collar_page"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/navigation" />
+
 </android.support.constraint.ConstraintLayout>

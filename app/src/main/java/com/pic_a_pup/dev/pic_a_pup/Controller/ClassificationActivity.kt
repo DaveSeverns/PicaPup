@@ -1,6 +1,7 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -9,6 +10,7 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -48,6 +50,33 @@ class ClassificationActivity : AppCompatActivity() {
     private var mFirebaseManager = FirebaseManager(this)
     private var imgUrl: String? = null
     private var mDisposable: Disposable? = null
+    private var homeFeedActivity = HomeFeedActivity()
+
+    private val mOnNavigationItemSelectedListener =
+        BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    val intent = HomeFeedActivity.newIntent(this)
+                    startActivity(intent)
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.navigation_camera -> {
+//                    homeFeedActivity.onLaunchCamera()
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.navigation_collar -> {
+                    val intent = ProfileActivity.newIntent(this)
+                    startActivity(intent)
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.navigation_profile -> {
+                    val intent = ProfileActivity.newIntent(this)
+                    startActivity(intent)
+                    return@OnNavigationItemSelectedListener true
+                }
+            }
+            false
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +90,7 @@ class ClassificationActivity : AppCompatActivity() {
 
         postalCode = mUtility.getZipFromLatLon(latitude.toString(), longtiude.toString())
 
-
+        navigation_classification_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         locationEditText.setText(postalCode)
 
@@ -73,7 +102,7 @@ class ClassificationActivity : AppCompatActivity() {
             var exif: ExifInterface? = null
             try {
                 exif = ExifInterface(imageFile!!.absolutePath)
-            } catch (e: IOException) {
+            } catch (e:IOException) {
                 e.printStackTrace()
             }
 
@@ -82,9 +111,12 @@ class ClassificationActivity : AppCompatActivity() {
         }
 
         submit_btn.setOnClickListener(this::onSubmit)
+    }
 
-
-
+    companion object {
+        fun newIntent(context: Context): Intent {
+            return Intent(context, ClassificationActivity::class.java)
+        }
     }
 
     fun onSubmit(view: View) {

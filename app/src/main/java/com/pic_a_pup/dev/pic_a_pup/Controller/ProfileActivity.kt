@@ -5,11 +5,13 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
-import android.view.View
+import android.widget.TextView
 import com.pic_a_pup.dev.pic_a_pup.R
-import kotlinx.android.synthetic.main.activity_collar.*
+import kotlinx.android.synthetic.main.activity_profile.*
 
-class CollarActivity : AppCompatActivity() {
+class ProfileActivity : AppCompatActivity() {
+
+    private var homeFeedActivity = HomeFeedActivity()
 
     private val mOnNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -24,11 +26,11 @@ class CollarActivity : AppCompatActivity() {
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.navigation_collar ->{
+                    val intent = CollarActivity.newIntent(this)
+                    startActivity(intent)
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.navigation_profile -> {
-                    val intent = ProfileActivity.newIntent(this)
-                    startActivity(intent)
                     return@OnNavigationItemSelectedListener true
                 }
             }
@@ -37,31 +39,16 @@ class CollarActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_collar)
-        scan_button.setOnClickListener(this::scanBarcode)
+        setContentView(R.layout.activity_profile)
+
+        val textView = findViewById<TextView>(R.id.testText)
+
+        navigation_profile_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 
     companion object {
         fun newIntent(context: Context): Intent {
-            return Intent(context, CollarActivity::class.java)
+            return Intent(context, ProfileActivity::class.java)
         }
     }
-
-    fun scanBarcode(view: View){
-        val scanBarCodeActivity = Intent(this, CollarScanActivity::class.java)
-        startActivityForResult(scanBarCodeActivity,0)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode==0){
-            if (data != null){
-                val barcode = data.getParcelableArrayExtra("barcode")
-                bar_code_result.text = "Barcode Result: ${barcode}"
-            }
-        }else{
-
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
 }
