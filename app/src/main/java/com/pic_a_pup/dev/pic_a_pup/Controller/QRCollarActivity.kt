@@ -120,7 +120,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         builder.setPositiveButton("OK", DialogInterface.OnClickListener({ dialogInterface: DialogInterface, i: Int ->
             @Override
             fun onClick(dialog: AlertDialog, which: Int) {
-                scannerView.resumeCameraPreview(this);
+                scannerView.resumeCameraPreview(this)
             }
         }))
         builder.setNeutralButton("Visit", DialogInterface.OnClickListener( { dialogInterface: DialogInterface, i: Int ->
