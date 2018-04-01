@@ -43,6 +43,8 @@
         </activity>
         <activity android:name=".Controller.SignUpActivity" />
         <activity android:name=".Controller.ClassificationActivity" />
+        <activity android:name=".Controller.ProfileActivity" />
+        <activity android:name=".Controller.CollarActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -55,8 +57,8 @@
         </provider>
 
         <activity android:name=".Controller.CollarScanActivity" />
-        <activity android:name=".Controller.CollarActivity"></activity>
-        <activity android:name=".Controller.ProfileActivity"></activity>
+        <activity android:name=".Controller.CollarActivity" />
+        <activity android:name=".Controller.QRCollarActivity"></activity>
     </application>
 
 </manifest>

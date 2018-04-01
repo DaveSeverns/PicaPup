@@ -18,6 +18,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.storage.UploadTask
+import com.pic_a_pup.dev.pic_a_pup.BottomNavigationViewHelper
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.*
@@ -52,32 +53,6 @@ class ClassificationActivity : AppCompatActivity() {
     private var mDisposable: Disposable? = null
     private var homeFeedActivity = HomeFeedActivity()
 
-    private val mOnNavigationItemSelectedListener =
-        BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.navigation_home -> {
-                    val intent = HomeFeedActivity.newIntent(this)
-                    startActivity(intent)
-                    return@OnNavigationItemSelectedListener true
-                }
-                R.id.navigation_camera -> {
-//                    homeFeedActivity.onLaunchCamera()
-                    return@OnNavigationItemSelectedListener true
-                }
-                R.id.navigation_collar -> {
-                    val intent = ProfileActivity.newIntent(this)
-                    startActivity(intent)
-                    return@OnNavigationItemSelectedListener true
-                }
-                R.id.navigation_profile -> {
-                    val intent = ProfileActivity.newIntent(this)
-                    startActivity(intent)
-                    return@OnNavigationItemSelectedListener true
-                }
-            }
-            false
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_classification)
@@ -89,6 +64,38 @@ class ClassificationActivity : AppCompatActivity() {
         longtiude = intent.getDoubleExtra(LON_INTENT_TAG, LON_DEFAULT)
 
         postalCode = mUtility.getZipFromLatLon(latitude.toString(), longtiude.toString())
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_classification_page)
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
+        val menu = bottomNavigationView.menu
+        val menuItem = menu.getItem(1)
+        menuItem.isChecked = true
+
+        val mOnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.navigation_home -> {
+                        val intentHome = HomeFeedActivity.newIntent(this)
+                        startActivity(intentHome)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_camera -> {
+//                        onLaunchCamera()
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_collar ->{
+                        val intentCollar = CollarActivity.newIntent(this)
+                        startActivity(intentCollar)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_profile -> {
+                        val intentProfile = ProfileActivity.newIntent(this)
+                        startActivity(intentProfile)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                }
+                false
+            }
 
         navigation_classification_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 

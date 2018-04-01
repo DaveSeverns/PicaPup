@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.view.Menu
 import android.view.MenuItem
+import com.pic_a_pup.dev.pic_a_pup.BottomNavigationViewHelper
+
 //import com.firebase.ui.database.FirebaseRecyclerAdapter
 //import com.firebase.ui.database.FirebaseRecyclerOptions
 
@@ -36,28 +38,6 @@ class HomeFeedActivity : AppCompatActivity() {
     private var mImagePath: String? = null
     private lateinit var mUtility: Utility
     //private lateinit var adapter: FirebaseRecyclerAdapter<Model.DogSearchResult,ResultViewHolder>
-
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.navigation_home -> {
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_camera -> {
-                onLaunchCamera()
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_collar ->{
-                collarActivityStart()
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_profile -> {
-                val intent = ProfileActivity.newIntent(this)
-                startActivity(intent)
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        false
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +56,38 @@ class HomeFeedActivity : AppCompatActivity() {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_home_page)
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
+        val menu = bottomNavigationView.menu
+        val menuItem = menu.getItem(0)
+        menuItem.isChecked = true
+
+
+        val mOnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.navigation_home -> {
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_camera -> {
+                        onLaunchCamera()
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_collar ->{
+                        val intentCollar = CollarActivity.newIntent(this)
+                        startActivity(intentCollar)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_profile -> {
+                        val intentProfile = ProfileActivity.newIntent(this)
+                        startActivity(intentProfile)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                }
+                false
+            }
+
+        navigation_home_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 
     companion object {
@@ -90,10 +101,6 @@ class HomeFeedActivity : AppCompatActivity() {
         var currentUser = mAuth.currentUser
         Log.e("CURRENT_USER",currentUser.toString())
         //adapter =
-
-
-
-
     }
 
 
@@ -173,7 +180,7 @@ class HomeFeedActivity : AppCompatActivity() {
     }
 
     fun collarActivityStart(){
-        val collarStartIntent = Intent(this, CollarActivity::class.java)
+        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
         startActivity(collarStartIntent)
     }
 

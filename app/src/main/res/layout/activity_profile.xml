@@ -10,7 +10,8 @@
         android:id="@+id/testText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="HELLO"/>
+        android:text="Profile"
+        android:textSize="34sp"/>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation_profile_page"
