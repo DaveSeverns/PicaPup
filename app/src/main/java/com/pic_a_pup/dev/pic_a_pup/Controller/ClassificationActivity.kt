@@ -34,6 +34,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.Serializable
 
 class ClassificationActivity : AppCompatActivity() {
 
@@ -110,7 +111,7 @@ class ClassificationActivity : AppCompatActivity() {
         val fbFile = mFirebaseManager.mStorageReference.child(IMAGE_STORAGE).child(imageBitmap.toString())
         val byteArrayOutputStream = ByteArrayOutputStream()
 
-        imageBitmap!!.compress((Bitmap.CompressFormat.JPEG),35,byteArrayOutputStream)
+        imageBitmap!!.compress((Bitmap.CompressFormat.JPEG),50,byteArrayOutputStream)
         val data = byteArrayOutputStream.toByteArray()
         Log.e("I actually run", "postImageToFb")
         //mFirebaseManager.showToast("You hit me!!!!!!!!")
@@ -118,7 +119,6 @@ class ClassificationActivity : AppCompatActivity() {
         fbFile.putBytes(data).addOnSuccessListener(this, { taskSnapshot ->
                 imgUrl = taskSnapshot.downloadUrl.toString()
                 //mFirebaseManager.showToast(imgUrl.toString())
-                Toast.makeText(this,"fuck threading", Toast.LENGTH_SHORT).show()
                 Log.e("Fb Mngr", "Success")
                 //searchRequest = Model.ModelSearchRequest(imgUrl.toString(),petfinder_checkbox.isChecked, wiki_check_box.isChecked,postalCode!!)
                 //Log.e("Search Request", searchRequest.toString())
@@ -138,15 +138,24 @@ class ClassificationActivity : AppCompatActivity() {
                            }
 
                            override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
-                               var breedString = response!!.body()!!.breed
-                               if(breedString != null){
-                                   val breedInfoString = response.body()!!.breed_info
-                                   updateUiOnResponse(breedString,breedInfoString)
-                                   Log.e("Response",breedString )
+                               if(response!!.isSuccessful){
+                                   var breedString = response.body()?.breed
+                                   if(breedString != null){
+                                       val breedInfoString = response.body()!!.breed_info
+                                       updateUiOnResponse(breedString,breedInfoString)
+                                       Log.e("Response",breedString )
+                                   }else{
+                                       Log.e("Connection: ", "made but not getting DSR")
+                                       breedString = "no data from server"
+                                   }
                                }else{
-                                   Log.e("Connection: ", "made but not getting DSR")
-                                   breedString = "no data from server"
+                                   when (response.code()){
+                                       500 -> mFirebaseManager.showToast("Server Error")
+                                       502 -> mFirebaseManager.showToast("Bad Gateway")
+                                       else -> mFirebaseManager.showToast("Unknown Error")
+                                   }
                                }
+
 
 
                               //val intent = Intent(applicationContext,ClassificationActivity:: class.java)
@@ -159,7 +168,7 @@ class ClassificationActivity : AppCompatActivity() {
 
 
         }).addOnCompleteListener{ task ->
-            Toast.makeText(this,task.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"Upload complete, breed info incoming...", Toast.LENGTH_SHORT).show()
         }
     }
 
