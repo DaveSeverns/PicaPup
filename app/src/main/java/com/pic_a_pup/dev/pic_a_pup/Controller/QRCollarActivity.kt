@@ -42,8 +42,6 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                 requestPermission()
             }
         }
-
-
     }
 
     private fun checkPermission(): Boolean {

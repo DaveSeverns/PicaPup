@@ -91,7 +91,6 @@ class ClassificationActivity : AppCompatActivity() {
 
         imageFile = File(imageFileName)
 
-
         if (imageFile!!.exists()) {
             imageBitmap = BitmapFactory.decodeFile(imageFile!!.absolutePath)
             var exif: ExifInterface? = null
@@ -190,9 +189,7 @@ class ClassificationActivity : AppCompatActivity() {
                            }
 
                       })
-
-
-
+            
         }).addOnCompleteListener{ task ->
             Toast.makeText(this,"Upload complete, breed info incoming...", Toast.LENGTH_SHORT).show()
         }
