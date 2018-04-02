@@ -120,17 +120,15 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         var builder = AlertDialog.Builder(this);
         builder.setTitle("Scan Result");
         builder.setPositiveButton("OK", DialogInterface.OnClickListener({ dialogInterface: DialogInterface, i: Int ->
-            @Override
-            fun onClick(dialog: AlertDialog, which: Int) {
-                scannerView.resumeCameraPreview(this)
-            }
+
+            scannerView.resumeCameraPreview(this)
+
         }))
         builder.setNeutralButton("Visit", DialogInterface.OnClickListener( { dialogInterface: DialogInterface, i: Int ->
-            @Override
-            fun onClick(dialog: AlertDialog, which:Int) {
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(myResult))
-                startActivity(browserIntent);
-            }
+
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(myResult))
+            startActivity(browserIntent);
+
         }))
 
         builder.setMessage(result?.getText())
