@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.view.Menu
 import android.view.MenuItem
-import com.pic_a_pup.dev.pic_a_pup.BottomNavigationViewHelper
+import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 
 //import com.firebase.ui.database.FirebaseRecyclerAdapter
 //import com.firebase.ui.database.FirebaseRecyclerOptions
@@ -62,7 +62,6 @@ class HomeFeedActivity : AppCompatActivity() {
         val menuItem = menu.getItem(0)
         menuItem.isChecked = true
 
-
         val mOnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener { item ->
                 when (item.itemId) {
@@ -73,9 +72,9 @@ class HomeFeedActivity : AppCompatActivity() {
                         onLaunchCamera()
                         return@OnNavigationItemSelectedListener true
                     }
-                    R.id.navigation_collar ->{
-                        val intentCollar = CollarActivity.newIntent(this)
-                        startActivity(intentCollar)
+                    R.id.navigation_collar -> {
+                        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
+                        startActivity(collarStartIntent)
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.navigation_profile -> {

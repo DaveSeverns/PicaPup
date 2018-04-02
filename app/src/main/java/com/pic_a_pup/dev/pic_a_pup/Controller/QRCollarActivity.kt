@@ -1,9 +1,9 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
 import android.Manifest.permission.CAMERA
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Camera
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -15,17 +15,18 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView
 import android.os.Build
 import android.widget.Toast
 import android.content.pm.PackageManager
+import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-
-
+import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
+import kotlinx.android.synthetic.main.activity_collar.*
+import kotlinx.android.synthetic.main.activity_qrcollar.*
 
 class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     private lateinit var scannerView: ZXingScannerView
     private val camId = android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK
     private val REQUEST_CAMERA = 1
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +42,8 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                 requestPermission()
             }
         }
+
+
     }
 
     private fun checkPermission(): Boolean {
@@ -108,7 +111,6 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                 .create()
                 .show()
     }
-
 
     override fun handleResult(result: Result?) {
         val myResult = result?.getText();

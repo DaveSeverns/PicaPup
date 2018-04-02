@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.widget.TextView
-import com.pic_a_pup.dev.pic_a_pup.BottomNavigationViewHelper
+import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 import com.pic_a_pup.dev.pic_a_pup.R
 import kotlinx.android.synthetic.main.activity_profile.*
 
@@ -17,7 +17,6 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile)
 
         val textView = findViewById<TextView>(R.id.testText)
-        val homeFeedActivity = HomeFeedActivity()
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_profile_page)
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
@@ -34,12 +33,11 @@ class ProfileActivity : AppCompatActivity() {
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.navigation_camera -> {
-//                        homeFeedActivity.onLaunchCamera()
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.navigation_collar ->{
-                        val intentCollar = CollarActivity.newIntent(this)
-                        startActivity(intentCollar)
+                        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
+                        startActivity(collarStartIntent)
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.navigation_profile -> {
