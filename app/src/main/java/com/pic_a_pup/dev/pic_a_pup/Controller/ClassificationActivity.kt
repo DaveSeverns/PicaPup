@@ -130,45 +130,47 @@ class ClassificationActivity : AppCompatActivity() {
                 //            Model.DogSearchResult(dsr.breed, dsr.breed_info,null, null, null, null) }
                 //        .observeOn(AndroidSchedulers.mainThread()).subscribe{res -> print(res.toString())}
                 //mFirebaseManager.showToast("Submission Sent")
-                restClient.postSearchRequestToServer(postalCode,imgUrl.toString()).
-                        enqueue(object: retrofit2.Callback<Model.DogSearchResult> {
-                           override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
-                               Log.e("Network Call", "Failure ${t.toString()}")
-                               updateUiOnResponse("Error","Server Not Responding")
-                           }
 
-                           override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
-                               if(response!!.isSuccessful){
-                                   var breedString = response.body()?.breed
-                                   if(breedString != null){
-                                       val breedInfoString = response.body()!!.breed_info
-                                       updateUiOnResponse(breedString,breedInfoString)
-                                       Log.e("Response",breedString )
-                                   }else{
-                                       Log.e("Connection: ", "made but not getting DSR")
-                                       breedString = "no data from server"
-                                   }
-                               }else{
-                                   when (response.code()){
-                                       500 -> mFirebaseManager.showToast("Server Error")
-                                       502 -> mFirebaseManager.showToast("Bad Gateway")
-                                       else -> mFirebaseManager.showToast("Unknown Error")
-                                   }
-                               }
-
-
-
-                              //val intent = Intent(applicationContext,ClassificationActivity:: class.java)
-                              //intent.putExtra("breed_info", breedInfoString)
-                              //startActivityForResult(intent, CLASSIFICATION_RESULT)
-                           }
-
-                      })
 
 
 
         }).addOnCompleteListener{ task ->
             Toast.makeText(this,"Upload complete, breed info incoming...", Toast.LENGTH_SHORT).show()
+            restClient.postSearchRequestToServer(postalCode,imgUrl.toString()).
+                    enqueue(object: retrofit2.Callback<Model.DogSearchResult> {
+                        override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
+                            Log.e("Network Call", "Failure ${t.toString()}")
+                            updateUiOnResponse("Error","Server Not Responding")
+                        }
+
+                        override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
+                            if(response!!.isSuccessful){
+                                var breedString = response.body()?.breed
+                                if(breedString != null){
+                                    val breedInfoString = response.body()!!.breed_info
+                                    updateUiOnResponse(breedString,breedInfoString)
+                                    Log.e("Response",breedString )
+                                }else{
+                                    Log.e("Connection: ", "made but not getting DSR")
+                                    breedString = "no data from server"
+                                }
+                            }else{
+                                when (response.code()){
+                                    500 -> {mFirebaseManager.showToast("Server Error")}
+                                    502 -> {mFirebaseManager.showToast("Bad Gateway")
+                                    Log.e("Error Bod",response.body().toString())}
+                                    else -> {mFirebaseManager.showToast("Unknown Error")}
+                                }
+                            }
+
+
+
+                            //val intent = Intent(applicationContext,ClassificationActivity:: class.java)
+                            //intent.putExtra("breed_info", breedInfoString)
+                            //startActivityForResult(intent, CLASSIFICATION_RESULT)
+                        }
+
+                    })
         }
     }
 

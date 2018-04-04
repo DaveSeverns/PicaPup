@@ -29,6 +29,7 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
     var mUserDBRef: DatabaseReference
     var mStorageReference: StorageReference
     var mResultDBRef: DatabaseReference
+    var mLostDogDBRef: DatabaseReference
 
     init {
         mResultDBRef = FirebaseDatabase.getInstance().reference.child(RESULTS_TABLE)
@@ -36,6 +37,8 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
         mDB = FirebaseDatabase.getInstance()
         mUserDBRef = FirebaseDatabase.getInstance().reference.child(USER_TABLE)
         mStorageReference = FirebaseStorage.getInstance().reference
+        //TODO This is holding a reference to the test table
+        mLostDogDBRef = FirebaseDatabase.getInstance().reference.child(LOST_DOG_TEST_TABLE)
     }
 
     fun getFeedList(dataSnapshot: DataSnapshot): ArrayList<Model.DogSearchResult> {

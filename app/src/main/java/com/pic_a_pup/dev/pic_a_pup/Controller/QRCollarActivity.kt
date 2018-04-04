@@ -17,7 +17,7 @@ import android.widget.Toast
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-
+import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
 
 
 class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
@@ -25,6 +25,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private lateinit var scannerView: ZXingScannerView
     private val camId = android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK
     private val REQUEST_CAMERA = 1
+    private val mFirebaseManager = FirebaseManager(this)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -134,4 +135,8 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         alert1.show();
 
     }
+
+   //fun getListOfLostDogs(): ArrayList<Any>{
+   //    val dogs = mFirebaseManager.mLostDogDBRef
+   //}
 }
