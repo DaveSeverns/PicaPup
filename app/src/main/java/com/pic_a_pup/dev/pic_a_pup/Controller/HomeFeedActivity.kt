@@ -2,13 +2,10 @@ package com.pic_a_pup.dev.pic_a_pup.Controller
 
 import android.Manifest
 import android.app.Activity
-import android.content.AbstractThreadedSyncAdapter
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -26,15 +23,12 @@ import kotlinx.android.synthetic.main.activity_home_feed.*
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import android.support.v4.content.FileProvider.getUriForFile
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewGroup
+import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
+
 //import com.firebase.ui.database.FirebaseRecyclerAdapter
 //import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.pic_a_pup.dev.pic_a_pup.Model.Model
-import java.security.AccessController.getContext
-
 
 class HomeFeedActivity : AppCompatActivity() {
 
@@ -44,26 +38,6 @@ class HomeFeedActivity : AppCompatActivity() {
     private var mImagePath: String? = null
     private lateinit var mUtility: Utility
     //private lateinit var adapter: FirebaseRecyclerAdapter<Model.DogSearchResult,ResultViewHolder>
-
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.navigation_home -> {
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_camera -> {
-                onLaunchCamera()
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_collar ->{
-                collarActivityStart()
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_profile -> {
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        false
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +55,44 @@ class HomeFeedActivity : AppCompatActivity() {
         mUtility = Utility(this)
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_home_page)
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
+        val menu = bottomNavigationView.menu
+        val menuItem = menu.getItem(0)
+        menuItem.isChecked = true
+
+        val mOnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.navigation_home -> {
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_camera -> {
+                        onLaunchCamera()
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_collar -> {
+                        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
+                        startActivity(collarStartIntent)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_profile -> {
+                        val intentProfile = ProfileActivity.newIntent(this)
+                        startActivity(intentProfile)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                }
+                false
+            }
+
+        navigation_home_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    }
+
+    companion object {
+        fun newIntent(context: Context): Intent {
+            return Intent(context, HomeFeedActivity::class.java)
+        }
     }
 
     override fun onStart() {
@@ -89,10 +100,6 @@ class HomeFeedActivity : AppCompatActivity() {
         var currentUser = mAuth.currentUser
         Log.e("CURRENT_USER",currentUser.toString())
         //adapter =
-
-
-
-
     }
 
 

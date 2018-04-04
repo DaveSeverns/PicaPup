@@ -1,6 +1,7 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -9,30 +10,22 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.storage.UploadTask
+import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.*
-import io.reactivex.Observable
-import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_classification.*
-import okhttp3.ResponseBody
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.http.Url
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.Serializable
 
@@ -49,6 +42,7 @@ class ClassificationActivity : AppCompatActivity() {
     private var mFirebaseManager = FirebaseManager(this)
     private var imgUrl: String? = null
     private var mDisposable: Disposable? = null
+    private var homeFeedActivity = HomeFeedActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,19 +56,49 @@ class ClassificationActivity : AppCompatActivity() {
 
         postalCode = mUtility.getZipFromLatLon(latitude.toString(), longtiude.toString())
 
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_classification_page)
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
+        val menu = bottomNavigationView.menu
+        val menuItem = menu.getItem(1)
+        menuItem.isChecked = true
 
+        val mOnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.navigation_home -> {
+                        val intentHome = HomeFeedActivity.newIntent(this)
+                        startActivity(intentHome)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_camera -> {
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_collar ->{
+                        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
+                        startActivity(collarStartIntent)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_profile -> {
+                        val intentProfile = ProfileActivity.newIntent(this)
+                        startActivity(intentProfile)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                }
+                false
+            }
+
+        navigation_classification_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         locationEditText.setText(postalCode)
 
         imageFile = File(imageFileName)
-
 
         if (imageFile!!.exists()) {
             imageBitmap = BitmapFactory.decodeFile(imageFile!!.absolutePath)
             var exif: ExifInterface? = null
             try {
                 exif = ExifInterface(imageFile!!.absolutePath)
-            } catch (e: IOException) {
+            } catch (e:IOException) {
                 e.printStackTrace()
             }
 
@@ -83,9 +107,12 @@ class ClassificationActivity : AppCompatActivity() {
         }
 
         submit_btn.setOnClickListener(this::onSubmit)
+    }
 
-
-
+    companion object {
+        fun newIntent(context: Context): Intent {
+            return Intent(context, ClassificationActivity::class.java)
+        }
     }
 
     fun onSubmit(view: View) {
@@ -165,10 +192,10 @@ class ClassificationActivity : AppCompatActivity() {
 
 
 
-                            //val intent = Intent(applicationContext,ClassificationActivity:: class.java)
-                            //intent.putExtra("breed_info", breedInfoString)
-                            //startActivityForResult(intent, CLASSIFICATION_RESULT)
-                        }
+                              //val intent = Intent(applicationContext,ClassificationActivity:: class.java)
+                              //intent.putExtra("breed_info", breedInfoString)
+                              //startActivityForResult(intent, CLASSIFICATION_RESULT)
+                           }
 
                     })
         }

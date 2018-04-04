@@ -5,22 +5,23 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
-import android.view.View
-import com.pic_a_pup.dev.pic_a_pup.R
+import android.widget.TextView
 import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
-import kotlinx.android.synthetic.main.activity_collar.*
-import kotlinx.android.synthetic.main.activity_qrcollar.*
+import com.pic_a_pup.dev.pic_a_pup.R
+import kotlinx.android.synthetic.main.activity_profile.*
 
-class CollarActivity : AppCompatActivity() {
+class ProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_collar)
+        setContentView(R.layout.activity_profile)
 
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_collar_page)
+        val textView = findViewById<TextView>(R.id.testText)
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_profile_page)
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
         val menu = bottomNavigationView.menu
-        val menuItem = menu.getItem(2)
+        val menuItem = menu.getItem(3)
         menuItem.isChecked = true
 
         val mOnNavigationItemSelectedListener =
@@ -35,8 +36,8 @@ class CollarActivity : AppCompatActivity() {
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.navigation_collar ->{
-                        val intentCollar = CollarActivity.newIntent(this)
-                        startActivity(intentCollar)
+                        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
+                        startActivity(collarStartIntent)
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.navigation_profile -> {
@@ -48,26 +49,12 @@ class CollarActivity : AppCompatActivity() {
                 false
             }
 
-        navigation_collar_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        navigation_profile_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 
     companion object {
         fun newIntent(context: Context): Intent {
-            return Intent(context, CollarActivity::class.java)
+            return Intent(context, ProfileActivity::class.java)
         }
     }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode==0){
-            if (data != null){
-                val barcode = data.getParcelableArrayExtra("barcode")
-                bar_code_result.text = "Barcode Result: ${barcode}"
-            }
-        }else{
-
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
 }

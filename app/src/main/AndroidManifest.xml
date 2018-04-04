@@ -43,6 +43,8 @@
         </activity>
         <activity android:name=".Controller.SignUpActivity" />
         <activity android:name=".Controller.ClassificationActivity" />
+        <activity android:name=".Controller.ProfileActivity" />
+        <activity android:name=".Controller.CollarActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
