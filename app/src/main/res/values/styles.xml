@@ -8,4 +8,11 @@
         <item name="colorAccent">#55577A</item>
     </style>
 
+    <style name="noSlideAnimationTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="colorPrimary">#551053</item>
+        <item name="colorPrimaryDark">#1E8196</item>
+        <item name="colorAccent">#55577A</item>
+    </style>
+
 </resources>

@@ -42,10 +42,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".Controller.SignUpActivity" />
-        <activity android:name=".Controller.ClassificationActivity" />
-        <activity android:name=".Controller.ProfileActivity" />
-        <activity android:name=".Controller.CollarActivity" />
-
+        <activity android:name=".Controller.ClassificationActivity" android:theme="@style/noSlideAnimationTheme" />
+        <activity android:name=".Controller.ProfileActivity" android:theme="@style/noSlideAnimationTheme"/>
+        <activity android:name=".Controller.CollarActivity" android:theme="@style/noSlideAnimationTheme"/>
+        <activity android:name=".Controller.QRCollarActivity" android:theme="@style/noSlideAnimationTheme"/>
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.pic_a_pup.dev.fileprovider"
@@ -56,9 +56,6 @@
                 android:resource="@xml/file_provider_paths" />
         </provider>
 
-        <activity android:name=".Controller.CollarScanActivity" />
-        <activity android:name=".Controller.CollarActivity" />
-        <activity android:name=".Controller.QRCollarActivity"></activity>
     </application>
 
 </manifest>
