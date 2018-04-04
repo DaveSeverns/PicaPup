@@ -19,7 +19,7 @@ import android.content.pm.PackageManager
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-
+import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
 
 
 class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
