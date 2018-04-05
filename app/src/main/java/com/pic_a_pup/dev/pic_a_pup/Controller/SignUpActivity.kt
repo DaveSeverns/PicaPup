@@ -12,8 +12,10 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.pic_a_pup.dev.pic_a_pup.Model.DogLover
 import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
@@ -28,6 +30,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var userNameText: EditText
     private lateinit var pwTextOne: EditText
     private lateinit var confirmPWText: EditText
+    private lateinit var phoneNumText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +40,7 @@ class SignUpActivity : AppCompatActivity() {
         userNameText = findViewById<EditText>(R.id.user_name_signup)
         pwTextOne = findViewById<EditText>(R.id.pw_one_signup)
         confirmPWText = findViewById<EditText>(R.id.pw_two_signup)
+        phoneNumText = findViewById<EditText>(R.id.phone_number_signup)
         mUtility = Utility(mContext)
         mDatabase = FirebaseDatabase.getInstance().reference.child(USER_TABLE)
         mFirebaseAuth = FirebaseAuth.getInstance()
@@ -53,6 +57,7 @@ class SignUpActivity : AppCompatActivity() {
         val userName = userNameText.text.toString().trim()
         val userEmail = emailText.text.toString().trim()
         val userPassword = pwTextOne.text.toString().trim()
+        val phoneNumber = phoneNumText.text.toString().trim()
 
 
         if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(userEmail) && !TextUtils.isEmpty(userPassword)){
@@ -61,12 +66,26 @@ class SignUpActivity : AppCompatActivity() {
                         OnCompleteListener {
                             if(it.isSuccessful){
                                 Log.d(AUTH_TAG,"Successully added user through Firebase Authentication")
-                                val userId = mFirebaseAuth.currentUser?.uid
-                                val currentUserDB = mDatabase.child(userId) as DatabaseReference
+                                val user = mFirebaseAuth.currentUser
+                                val userId = user?.uid
+                                if(user != null){
+                                    val profileUpdates = UserProfileChangeRequest.Builder()
+                                            .setDisplayName(userName).build()
+                                    user.updateProfile(profileUpdates)
+                                            .addOnCompleteListener{
+                                                if(it.isSuccessful){
+                                                    Log.i("Profile Status: ", "Updated")
+                                                }
+                                            }
+                                }
+                                val currentUserDb = mDatabase.child(userId)
+                                currentUserDb.child("username").setValue(userName)
+                                currentUserDb.child("uid").setValue(userId)
+                                currentUserDb.child("phoneNumber").setValue(phoneNumber)
 
-                                currentUserDB.child("Name").setValue(userName)
 
-                                var authBackToLoginActivity = Intent(this,LoginActivity::class.java)
+
+                                val authBackToLoginActivity = Intent(this,LoginActivity::class.java)
                                 authBackToLoginActivity.putExtra(EMAIL, userEmail)
                                 authBackToLoginActivity.putExtra(PASSWORD, userPassword)
                                 startActivity(authBackToLoginActivity)

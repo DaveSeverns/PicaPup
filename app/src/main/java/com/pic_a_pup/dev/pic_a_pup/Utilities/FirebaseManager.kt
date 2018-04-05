@@ -24,7 +24,7 @@ import java.net.URL
  * Created by davidseverns on 3/16/18.
  */
 class FirebaseManager(var mContext: Context) : Utility(mContext) {
-    private var mAuth: FirebaseAuth
+    var mAuth: FirebaseAuth
     private var mDB: FirebaseDatabase
     var mUserDBRef: DatabaseReference
     var mStorageReference: StorageReference

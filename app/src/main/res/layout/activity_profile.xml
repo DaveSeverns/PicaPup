@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Profile"
-        android:textSize="34sp"/>
+        android:textSize="34sp" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation_profile_page"
@@ -22,5 +22,16 @@
         android:background="?android:attr/windowBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/navigation" />
+
+    <Button
+        android:id="@+id/lost_dog_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:text="post lost dog"
+        app:layout_constraintEnd_toStartOf="@+id/testText"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toEndOf="@+id/testText"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

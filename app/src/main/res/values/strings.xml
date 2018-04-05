@@ -20,5 +20,6 @@
     <string name="placeholder">PlaceHolder</string>
     <string name="collar">Collar</string>
     <string name="profile">Profile</string>
+    <string name="phone_number">Phone Number(##########)</string>
 
 </resources>

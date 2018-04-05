@@ -19,6 +19,9 @@ import android.content.pm.PackageManager
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
 
 
@@ -123,6 +126,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         builder.setPositiveButton("OK", DialogInterface.OnClickListener({ dialogInterface: DialogInterface, i: Int ->
 
             scannerView.resumeCameraPreview(this)
+            getListOfLostDogs()
 
         }))
         builder.setNeutralButton("Visit", DialogInterface.OnClickListener( { dialogInterface: DialogInterface, i: Int ->
@@ -138,7 +142,31 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     }
 
-   //fun getListOfLostDogs(): ArrayList<Any>{
-   //    val dogs = mFirebaseManager.mLostDogDBRef
-   //}
+   fun getListOfLostDogs(): ArrayList<Any>{
+       var anyList = ArrayList<Any>()
+       mFirebaseManager.mLostDogDBRef.orderByChild("phoneNumber").addChildEventListener(object :ChildEventListener{
+           override fun onChildRemoved(p0: DataSnapshot?) {
+
+           }
+
+           override fun onChildMoved(p0: DataSnapshot?, p1: String?) {
+
+           }
+
+           override fun onChildAdded(dataSnapshot: DataSnapshot?, prevChildKey: String?) {
+               anyList.add(dataSnapshot.toString())
+               Log.e("Data from fb", dataSnapshot.toString())
+               println(anyList.toString())
+           }
+
+           override fun onCancelled(p0: DatabaseError?) {
+
+           }
+
+           override fun onChildChanged(p0: DataSnapshot?, p1: String?) {
+
+           }
+       })
+       return anyList
+   }
 }
