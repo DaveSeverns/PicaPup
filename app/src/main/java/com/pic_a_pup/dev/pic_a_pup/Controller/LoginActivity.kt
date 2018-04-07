@@ -82,4 +82,8 @@ class LoginActivity : AppCompatActivity() {
         super.onResume()
         mAuth.addAuthStateListener(mListener)
     }
+
+    override fun onBackPressed() {
+
+    }
 }

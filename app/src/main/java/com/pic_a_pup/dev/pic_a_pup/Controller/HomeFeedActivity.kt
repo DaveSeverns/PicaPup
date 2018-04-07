@@ -167,7 +167,7 @@ class HomeFeedActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val id = item!!.itemId
         if(id == R.id.log_out_button){
-            mAuth!!.signOut()
+            mAuth.signOut()
             val logOutIntent = Intent(this, LoginActivity::class.java)
             startActivity(logOutIntent)
         }

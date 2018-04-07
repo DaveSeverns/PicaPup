@@ -1,5 +1,6 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
+import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -82,7 +83,12 @@ class SignUpActivity : AppCompatActivity() {
                                 currentUserDb.child("username").setValue(userName)
                                 currentUserDb.child("uid").setValue(userId)
                                 currentUserDb.child("phoneNumber").setValue(phoneNumber)
-
+                                val dogLover = DogLover(userId!!,userName,null,phoneNumber,null)
+                                val pref = getSharedPreferences(USER_PREF_FILE,Context.MODE_PRIVATE)
+                                val editor = pref.edit()
+                                editor.putString(PREF_USER_NAME_KEY, userName)
+                                editor.putString(PREF_USER_PHONE_KEY,phoneNumber)
+                                editor.apply()
 
 
                                 val authBackToLoginActivity = Intent(this,LoginActivity::class.java)

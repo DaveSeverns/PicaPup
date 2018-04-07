@@ -8,4 +8,8 @@
         <item name="colorAccent">#55577A</item>
     </style>
 
+    <style name="SwitchTheme">
+        <item name="colorControlActivated">@android:color/holo_green_light</item>
+    </style>
+
 </resources>

@@ -21,5 +21,8 @@
     <string name="collar">Collar</string>
     <string name="profile">Profile</string>
     <string name="phone_number">Phone Number(##########)</string>
+    <string name="doggos">Doggos:</string>
+    <string name="dog_lover">Dog Lover:</string>
+    <string name="lost">Lost</string>
 
 </resources>
