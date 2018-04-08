@@ -8,8 +8,10 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.View
+import android.widget.CompoundButton
 import android.widget.ListAdapter
 import android.widget.TextView
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -22,7 +24,8 @@ import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.*
 import kotlinx.android.synthetic.main.activity_profile.*
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchListener {
+
 
     private var mockDog = Model.Dog("Spot", "Golden Retriever", "42069")
     private var mockDogTwo = Model.Dog("Rex", "Golden Doodle", "Vap3N4ych")
@@ -35,9 +38,10 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
-        val dogsTest = listOf<Model.Dog>(mockDog,mockDogTwo)
+        val dogsTest = arrayListOf<Model.Dog>(mockDog,mockDogTwo)
 
-        dogListAdapter = DogRecyclerAdapter(this, dogsTest)
+
+        dogListAdapter = DogRecyclerAdapter(this, dogsTest,this)
         dog_recycler.adapter = dogListAdapter
         val layoutManager = LinearLayoutManager(this)
         dog_recycler.layoutManager = layoutManager
@@ -87,18 +91,26 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    fun postLostDog(view: View){
+    fun postLostDog(){
         val prefs = getSharedPreferences(USER_PREF_FILE,Context.MODE_PRIVATE)
 
         val mUserName = prefs.getString(PREF_USER_NAME_KEY,"default_user")
         val mUserPhoneNumber = prefs.getString(PREF_USER_PHONE_KEY,"1111111111")
         var lostDog = Model.LostDog(mockDog.pupCode,mockDog.dogName,mUserName,mUserPhoneNumber)
-        mFirebaseManager.mLostDogDBRef.push().setValue(lostDog)
+        mFirebaseManager.mLostDogDBRef.child(mockDog.pupCode).setValue(lostDog)
 
 
     }
 
     override fun onStart() {
         super.onStart()
+    }
+
+    override fun switchChanged(dog: Model.Dog) {
+    }
+
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+        mFirebaseManager.showToast("Switch Changed")
+        postLostDog()
     }
 }

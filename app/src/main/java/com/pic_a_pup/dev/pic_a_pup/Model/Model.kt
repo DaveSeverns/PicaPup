@@ -25,7 +25,9 @@ object Model {
                                var dog : Model.Dog?,
                                var dogImageSent: URL?,
                                var userVoteCount: Int?,
-
+                               var model_error: String?,
+                               var wikipedia_error: String?,
+                               var petfinder_error: String?,
                                var shelterList: List<DogShelter>?): JSONObject(){
 
     }
