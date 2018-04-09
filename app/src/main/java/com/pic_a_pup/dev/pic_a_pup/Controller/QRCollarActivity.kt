@@ -172,7 +172,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                 Log.e("Text finna be sent"," fam")
                 sendSMS(phoneNumberOfOwner,"Dog Found")
                 SmsManager.getDefault().sendTextMessage(phoneNumberOfOwner,null,
-                        "Found your dog bitch",
+                        "Found your dog, $dogNameD!",
                         null,
                         null)
             }catch (e: Exception){
