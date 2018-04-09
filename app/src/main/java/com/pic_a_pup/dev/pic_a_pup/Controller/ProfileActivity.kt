@@ -6,25 +6,16 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
-import android.view.View
 import android.widget.CompoundButton
-import android.widget.ListAdapter
-import android.widget.TextView
-import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.pic_a_pup.dev.pic_a_pup.DogRecyclerAdapter
+import com.pic_a_pup.dev.pic_a_pup.Adapters.DogRecyclerAdapter
 import com.pic_a_pup.dev.pic_a_pup.Model.DogLover
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.*
 import kotlinx.android.synthetic.main.activity_profile.*
 
-class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchListener {
+class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchListener {
 
 
     private var mockDog = Model.Dog("Shulmanator", "German Shepherd", "69x420x69V4p3")
@@ -48,7 +39,7 @@ class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchList
         doglover_name.text = userName
         doglover_phone.text = phoneNumber
 
-        dogListAdapter = DogRecyclerAdapter(this, dogsTest,this)
+        dogListAdapter = DogRecyclerAdapter(this, dogsTest, this)
         dog_recycler.adapter = dogListAdapter
         val layoutManager = LinearLayoutManager(this)
         dog_recycler.layoutManager = layoutManager
