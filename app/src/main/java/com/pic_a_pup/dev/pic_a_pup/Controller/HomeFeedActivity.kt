@@ -68,6 +68,9 @@ class HomeFeedActivity : AppCompatActivity() {
                     R.id.navigation_home -> {
                         return@OnNavigationItemSelectedListener true
                     }
+                    R.id.navigation_map -> {
+                        return@OnNavigationItemSelectedListener true
+                    }
                     R.id.navigation_camera -> {
                         onLaunchCamera()
                         return@OnNavigationItemSelectedListener true

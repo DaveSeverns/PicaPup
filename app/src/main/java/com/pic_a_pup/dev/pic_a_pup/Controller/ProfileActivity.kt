@@ -53,14 +53,10 @@ class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchList
         val layoutManager = LinearLayoutManager(this)
         dog_recycler.layoutManager = layoutManager
 
-
-
-
-
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_profile_page)
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
         val menu = bottomNavigationView.menu
-        val menuItem = menu.getItem(3)
+        val menuItem = menu.getItem(0)
         menuItem.isChecked = true
 
         val mOnNavigationItemSelectedListener =
@@ -69,6 +65,9 @@ class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchList
                     R.id.navigation_home -> {
                         val intentHome = HomeFeedActivity.newIntent(this)
                         startActivity(intentHome)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_map -> {
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.navigation_camera -> {

@@ -31,6 +31,9 @@ class CollarActivity : AppCompatActivity() {
                         startActivity(intentHome)
                         return@OnNavigationItemSelectedListener true
                     }
+                    R.id.navigation_map -> {
+                        return@OnNavigationItemSelectedListener true
+                    }
                     R.id.navigation_camera -> {
                         return@OnNavigationItemSelectedListener true
                     }

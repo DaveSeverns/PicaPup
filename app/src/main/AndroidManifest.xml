@@ -60,8 +60,6 @@
                 android:resource="@xml/file_provider_paths" />
         </provider>
 
-        <activity android:name=".Controller.QRCollarActivity" />
-
         <service android:name=".FirebaseServices.PaPFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
