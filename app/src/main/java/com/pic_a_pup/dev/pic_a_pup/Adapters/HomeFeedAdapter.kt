@@ -17,7 +17,7 @@ class HomeFeedAdapter(val context: Context, val recentDogs: ArrayList<Model.DogS
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeFeedAdapter.ViewHolder{
         val imageView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.homefeed_dog_item, false) as ImageView
+            .inflate(R.layout.homefeed_dog_item, parent, false) as ImageView
 
         return ViewHolder(imageView)
     }
