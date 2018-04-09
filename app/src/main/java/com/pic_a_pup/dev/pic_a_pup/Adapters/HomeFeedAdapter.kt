@@ -23,7 +23,7 @@ class HomeFeedAdapter(val context: Context, val recentDogs: ArrayList<Model.DogS
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.()
+        holder.recentDogImage
     }
 
     override fun getItemCount() = recentDogs.size
