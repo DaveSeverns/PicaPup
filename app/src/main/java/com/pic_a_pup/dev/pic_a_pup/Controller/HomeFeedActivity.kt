@@ -28,6 +28,8 @@ import java.util.*
 import android.view.Menu
 import android.view.MenuItem
 import com.pic_a_pup.dev.pic_a_pup.Adapters.HomeFeedAdapter
+import com.pic_a_pup.dev.pic_a_pup.Model.Model
+import com.pic_a_pup.dev.pic_a_pup.Model.Model.DogSearchResult
 import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 
 //import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -43,6 +45,7 @@ class HomeFeedActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
+    val dogsSearched = arrayListOf<Model.DogSearchResult>()
     //private lateinit var adapter: FirebaseRecyclerAdapter<Model.DogSearchResult,ResultViewHolder>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +67,7 @@ class HomeFeedActivity : AppCompatActivity() {
 
         //Feed of recent dog searches by other users pulled from FB
         viewManager = LinearLayoutManager(this)
-        viewAdapter = HomeFeedAdapter(dogDataset)
+        viewAdapter = HomeFeedAdapter(this, dogsSearched)
         recyclerView = findViewById<RecyclerView>(R.id.recyclerview_homefeed).apply {
             setHasFixedSize(true)
             layoutManager = viewManager
