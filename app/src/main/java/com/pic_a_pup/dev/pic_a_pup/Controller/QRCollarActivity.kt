@@ -143,6 +143,8 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
             }
 
             override fun onCancelled(p0: DatabaseError?) {
+                Log.e("Error: ", "DatabaseError Dog not found")
+                noDogFoundDialog(myResult)
             }
 
         })
@@ -182,6 +184,17 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         var alert1 = builder.create();
         alert1.show();
 
+    }
+
+
+    fun noDogFoundDialog(codeFound: String?){
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle("No Dog reported Lost")
+        builder.setPositiveButton("OK", DialogInterface.OnClickListener({dialog: DialogInterface?, which: Int ->
+            scannerView.resumeCameraPreview(this)
+        }))
+        builder.setMessage("With Pup Code: $codeFound")
+        builder.show()
     }
 
 

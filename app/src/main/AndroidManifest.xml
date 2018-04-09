@@ -60,6 +60,7 @@
                 android:resource="@xml/file_provider_paths" />
         </provider>
 
+
         <service android:name=".FirebaseServices.PaPFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -68,7 +69,9 @@
         <service
             android:name=".FirebaseServices.PaPFirebaseMessagingService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
+
+        </service>
     </application>
 
 </manifest>
