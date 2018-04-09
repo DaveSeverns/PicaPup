@@ -37,10 +37,8 @@ object Model {
                                   var useWiki: Boolean,
                                   var location: String)
 
-    data class LostDog(var pupCode: String?,
-                       var dogName: String?,
-                       var userName: String?,
-                       var userPhoneNumber: String?)
+    data class LostDog(var dogName: String?,
+                       var dogLover: DogLover?)
 
 
 

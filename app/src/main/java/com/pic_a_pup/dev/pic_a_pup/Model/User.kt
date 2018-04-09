@@ -7,7 +7,7 @@ import java.net.URL
 /**
  * Created by davidseverns on 3/14/18.
  */
-open class User(var userId: String, var name: String, var image: URL?) :  Lovable {
+open class User(var fcm_id: String?, var userId: String?, var name: String?, var image: URL?) :  Lovable {
     override fun showDogsSomeLove(doggo: Model.Dog): Model.Dog {
         //TODO needs to change the userVoteCount in a search Object
         return doggo

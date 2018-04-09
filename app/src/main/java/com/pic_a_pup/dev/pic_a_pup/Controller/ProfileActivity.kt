@@ -27,19 +27,26 @@ import kotlinx.android.synthetic.main.activity_profile.*
 class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchListener {
 
 
-    private var mockDog = Model.Dog("Spot", "Golden Retriever", "42069")
+    private var mockDog = Model.Dog("Shulmanator", "German Shepherd", "69x420x69V4p3")
     private var mockDogTwo = Model.Dog("Rex", "Golden Doodle", "Vap3N4ych")
     private val mFirebaseManager = FirebaseManager(this)
     private var mUserDb: FirebaseDatabase? = null
     private lateinit var dogListAdapter: DogRecyclerAdapter
+    private var userName: String? = null
+    private var phoneNumber:String? = null
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+        val sharedPreferences = getSharedPreferences(USER_PREF_FILE, Context.MODE_PRIVATE)
+        userName = sharedPreferences.getString(PREF_USER_NAME_KEY,"default")
+        phoneNumber = sharedPreferences.getString(PREF_USER_PHONE_KEY, "2813308004")
         val dogsTest = arrayListOf<Model.Dog>(mockDog,mockDogTwo)
 
+        doglover_name.text = userName
+        doglover_phone.text = phoneNumber
 
         dogListAdapter = DogRecyclerAdapter(this, dogsTest,this)
         dog_recycler.adapter = dogListAdapter
@@ -92,18 +99,13 @@ class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchList
     }
 
     fun postLostDog(){
-        val prefs = getSharedPreferences(USER_PREF_FILE,Context.MODE_PRIVATE)
 
-        val mUserName = prefs.getString(PREF_USER_NAME_KEY,"default_user")
-        val mUserPhoneNumber = prefs.getString(PREF_USER_PHONE_KEY,"1111111111")
-        var lostDog = Model.LostDog(mockDog.pupCode,mockDog.dogName,mUserName,mUserPhoneNumber)
+
+        val user = DogLover("FCM",null,userName, null, phoneNumber, null)
+        var lostDog = Model.LostDog(mockDog.dogName,user)
         mFirebaseManager.mLostDogDBRef.child(mockDog.pupCode).setValue(lostDog)
 
 
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
     override fun switchChanged(dog: Model.Dog) {

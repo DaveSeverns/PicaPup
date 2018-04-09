@@ -83,7 +83,7 @@ class SignUpActivity : AppCompatActivity() {
                                 currentUserDb.child("username").setValue(userName)
                                 currentUserDb.child("uid").setValue(userId)
                                 currentUserDb.child("phoneNumber").setValue(phoneNumber)
-                                val dogLover = DogLover(userId!!,userName,null,phoneNumber,null)
+                                val dogLover = DogLover(null,userId!!,userName,null,phoneNumber,null)
                                 val pref = getSharedPreferences(USER_PREF_FILE,Context.MODE_PRIVATE)
                                 val editor = pref.edit()
                                 editor.putString(PREF_USER_NAME_KEY, userName)

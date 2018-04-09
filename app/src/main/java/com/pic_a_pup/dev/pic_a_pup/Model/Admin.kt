@@ -5,7 +5,7 @@ import java.net.URL
 /**
  * Created by davidseverns on 3/14/18.
  */
-class Admin(userId: String, name: String, image: URL?, var isAdmin: Boolean): User(userId,name,image) {
+class Admin(fcm_id: String?,userId: String?, name: String?, image: URL?, var isAdmin: Boolean): User(fcm_id,userId,name,image) {
     fun deletePost(): Boolean{
         return false
     }

@@ -19,9 +19,13 @@ import android.content.pm.PackageManager
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.telephony.SmsManager
+import android.widget.TextView
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.pic_a_pup.dev.pic_a_pup.Model.DogLover
 import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
 
 
@@ -31,6 +35,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private val camId = android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK
     private val REQUEST_CAMERA = 1
     private val mFirebaseManager = FirebaseManager(this)
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,56 +122,67 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
 
     override fun handleResult(result: Result?) {
+        var dogName: String? = null
+        var dogLoverName: String? = null
+        var dogLoverNumber: String? = null
         val myResult = result?.getText();
         Log.d("QRCodeScanner", result?.getText());
         Log.d("QRCodeScanner", result?.getBarcodeFormat().toString());
+        mFirebaseManager.mLostDogDBRef.child(myResult).addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot?) {
+                Log.e("Pup", snapshot.toString())
+                if(snapshot != null){
+                    dogName = snapshot.child("dogName").value as String
+                    dogLoverName = snapshot.child("dogLover").child("name").value as String
+                    dogLoverNumber = snapshot.child("dogLover").child("phoneNumber").value as String
 
-        var builder = AlertDialog.Builder(this);
-        builder.setTitle("Scan Result");
+                    Log.e("Dog Lover ", "$dogLoverName and phone number $dogLoverNumber")
+                    Log.e("Dog Name ", dogName)
+                    lostDogDialog(dogName,dogLoverName,dogLoverNumber,myResult)
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError?) {
+            }
+
+        })
+
+
+
+
+    }
+
+    fun lostDogDialog(dogNameD:String?,ownerNameD:String?, phoneNumberOfOwner:String?, code:String?){
+        var textView = TextView(this)
+        val formatedString = "You Found $dogNameD!"
+        textView.text = """$ownerNameD's dog,
+        |you can reach them at:
+        |$phoneNumberOfOwner""".trimMargin()
+        textView.textSize = 16f
+
+
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle(formatedString).setView(textView)
         builder.setPositiveButton("OK", DialogInterface.OnClickListener({ dialogInterface: DialogInterface, i: Int ->
 
+            try{
+                Log.e("Text finna be sent"," fam")
+                SmsManager.getDefault().sendTextMessage(phoneNumberOfOwner,null,
+                        "Found your dog bitch",
+                        null,
+                        null)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
             scannerView.resumeCameraPreview(this)
-            getListOfLostDogs()
-
-        }))
-        builder.setNeutralButton("Visit", DialogInterface.OnClickListener( { dialogInterface: DialogInterface, i: Int ->
-
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(myResult))
-            startActivity(browserIntent);
 
         }))
 
-        builder.setMessage(result?.getText())
+        builder.setMessage(code)
         var alert1 = builder.create();
         alert1.show();
 
     }
 
-   fun getListOfLostDogs(): ArrayList<Any>{
-       var anyList = ArrayList<Any>()
-       mFirebaseManager.mLostDogDBRef.orderByChild("phoneNumber").addChildEventListener(object :ChildEventListener{
-           override fun onChildRemoved(p0: DataSnapshot?) {
 
-           }
-
-           override fun onChildMoved(p0: DataSnapshot?, p1: String?) {
-
-           }
-
-           override fun onChildAdded(dataSnapshot: DataSnapshot?, prevChildKey: String?) {
-               anyList.add(dataSnapshot.toString())
-               Log.e("Data from fb", dataSnapshot.toString())
-               println(anyList.toString())
-           }
-
-           override fun onCancelled(p0: DatabaseError?) {
-
-           }
-
-           override fun onChildChanged(p0: DataSnapshot?, p1: String?) {
-
-           }
-       })
-       return anyList
-   }
 }
