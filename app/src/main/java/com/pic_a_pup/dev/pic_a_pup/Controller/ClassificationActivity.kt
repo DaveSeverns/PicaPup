@@ -192,7 +192,7 @@ class ClassificationActivity : AppCompatActivity() {
                             }else{
                                 when (response.code()){
                                     500 -> {mFirebaseManager.showToast("Server Error")}
-                                    502 -> {mFirebaseManager.showToast("Bad Gateway")
+                                    502 -> {//mFirebaseManager.showToast("Bad Gateway")
                                     Log.e("Error Bod",response.body().toString())}
                                     else -> {mFirebaseManager.showToast("Unknown Error")}
                                 }
