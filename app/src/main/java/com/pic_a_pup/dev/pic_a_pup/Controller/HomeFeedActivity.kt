@@ -46,7 +46,7 @@ class HomeFeedActivity : AppCompatActivity() {
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
     val dogsSearched = arrayListOf<Model.DogSearchResult>()
-    //private lateinit var adapter: FirebaseRecyclerAdapter<Model.DogSearchResult,ResultViewHolder>
+    //private lateinit var adapter: FirebaseRecyclerAdapter<Model.thDogSearchResult,ResultViewHolder>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
