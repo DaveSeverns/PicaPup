@@ -87,6 +87,8 @@ class HomeFeedActivity : AppCompatActivity() {
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.navigation_map -> {
+                        val intentMap = MapsActivity.newIntent(this)
+                        startActivity(intentMap)
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.navigation_camera -> {
@@ -153,7 +155,6 @@ class HomeFeedActivity : AppCompatActivity() {
 
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == REQUEST_IMG_CAPTURE && resultCode == Activity.RESULT_OK){
             val mImageFile= File(mImagePath!!)
@@ -199,12 +200,8 @@ class HomeFeedActivity : AppCompatActivity() {
 
     }
 
-    fun collarActivityStart(){
-        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
-        startActivity(collarStartIntent)
-    }
-
-
-
-
+//    fun collarActivityStart(){
+//        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
+//        startActivity(collarStartIntent)
+//    }
 }
