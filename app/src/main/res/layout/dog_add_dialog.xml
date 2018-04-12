@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/add_dog_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorAccent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/add_dog_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="40dp"
+            android:fontFamily="@font/pacifico"
+            android:text="@string/tell_us_about_your_friend"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/add_dog_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+
+            android:backgroundTint="@android:color/white"
+            android:ems="10"
+            android:hint="@string/they_go_by"
+            android:inputType="textPersonName"
+            android:textColor="@color/cardview_light_background"
+
+            android:textColorHint="@android:color/white" />
+
+        <EditText
+            android:id="@+id/add_dog_breed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+
+            android:backgroundTint="@android:color/white"
+            android:ems="10"
+            android:hint="@string/breed"
+            android:inputType="textPersonName"
+            android:textColor="@color/cardview_light_background"
+            android:textColorHint="@android:color/white" />
+    </LinearLayout>
+
+</FrameLayout>

@@ -13,8 +13,9 @@ object Model {
                           var address: String)
 
     data class Dog(var dogName: String,
-                   var dogBreed: String,
-                   var pupCode: String)
+                   var dogBreed: String?,
+                   var pupCode: String,
+                   var isLost: Boolean = false)
 
     data class DogPark(var parkName: String,
                        var parkLocation: Location,

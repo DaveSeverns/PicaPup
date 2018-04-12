@@ -47,7 +47,8 @@
         </activity>
         <activity android:name=".Controller.SignUpActivity" />
         <activity android:name=".Controller.ClassificationActivity" android:theme="@style/noSlideAnimationTheme" />
-        <activity android:name=".Controller.ProfileActivity" android:theme="@style/noSlideAnimationTheme"/>
+        <activity android:name=".Controller.ProfileActivity" android:theme="@style/noSlideAnimationTheme"
+            android:launchMode="singleTask"/>
         <activity android:name=".Controller.CollarActivity" android:theme="@style/noSlideAnimationTheme"/>
         <activity android:name=".Controller.QRCollarActivity" android:theme="@style/noSlideAnimationTheme"/>
         <provider
