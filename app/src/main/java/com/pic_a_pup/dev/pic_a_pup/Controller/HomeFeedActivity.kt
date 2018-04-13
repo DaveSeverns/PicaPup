@@ -66,13 +66,13 @@ class HomeFeedActivity : AppCompatActivity() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         //Feed of recent dog searches by other users pulled from FB
-        viewManager = LinearLayoutManager(this)
-        viewAdapter = HomeFeedAdapter(this, dogsSearched)
-        recyclerView = findViewById<RecyclerView>(R.id.recyclerview_homefeed).apply {
-            setHasFixedSize(true)
-            layoutManager = viewManager
-            adapter = viewAdapter
-        }
+//        viewManager = LinearLayoutManager(this)
+//        viewAdapter = HomeFeedAdapter(this, dogsSearched)
+//        recyclerView = findViewById<RecyclerView>(R.id.recyclerview_homefeed).apply {
+//            setHasFixedSize(true)
+//            layoutManager = viewManager
+//            adapter = viewAdapter
+//        }
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_home_page)
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
