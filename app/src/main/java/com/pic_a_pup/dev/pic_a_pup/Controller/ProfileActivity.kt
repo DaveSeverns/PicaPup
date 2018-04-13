@@ -144,7 +144,7 @@ class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchList
 
                     val dogToAdd = Model.Dog(dogName,dogBreed,pupCode)
                     mDbManager.addDogToDb(dogToAdd)
-
+                    // dog is added to db so persists but this add it in RT
                     dogsList.add(dogToAdd)
                     dogListAdapter.notifyDataSetChanged()
 
