@@ -59,8 +59,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
-//        val fab = findViewById<FloatingActionButton>(R.id.fab)
-//        fab.setOnClickListener { loadPlacePicker() }
         val fabMain = findViewById<FloatingActionButton>(R.id.fab_main)
         val fabPark = findViewById<FloatingActionButton>(R.id.fab_park)
         val fabStore = findViewById<FloatingActionButton>(R.id.fab_store)
@@ -68,11 +66,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         fabOpen = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open)
         fabClose = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close)
-
-//        fabMain.setOnClickListener(this)
-//        fabPark.setOnClickListener(this)
-//        fabStore.setOnClickListener(this)
-//        fabVet.setOnClickListener(this)
 
         fabMain.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
@@ -137,50 +130,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         createLocationRequest()
     }
-
-//    override fun onClick(v: View?) {
-//        var id = v?.id
-//        when(id) {
-//            R.id.fab_main -> {
-//                animateFAB()
-//            }
-//            R.id.fab_park -> {
-//                Log.e("FABPARK", "Park search")
-////                searchParks()
-//            }
-//            R.id.fab_store -> {
-//                Log.e("FABSTORE", "Store search")
-////                searchStores()
-//            }
-//            R.id.fab_vet -> {
-//                Log.e("FABVET", "Vet search")
-////                searchVets()
-//            }
-//        }
-//
-//    }
-
-//    private fun animateFAB() {
-//        if (isFabOpen) {
-//            fabPark.startAnimation(fabClose)
-//            fabStore.startAnimation(fabClose)
-//            fabVet.startAnimation(fabClose)
-//
-//            fabPark.visibility = View.GONE
-//            fabStore.visibility = View.GONE
-//            fabVet.visibility = View.GONE
-//
-//            isFabOpen = false
-//        } else {
-//            fabPark.startAnimation(fabOpen)
-//            fabStore.startAnimation(fabOpen)
-//            fabVet.startAnimation(fabOpen)
-//
-//            fabPark.isClickable = true
-//            fabStore.isClickable = true
-//            fabVet.isClickable = true
-//        }
-//    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
