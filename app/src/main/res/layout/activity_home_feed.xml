@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context="com.pic_a_pup.dev.pic_a_pup.Controller.HomeFeedActivity">
 
+    <!--<android.support.v7.widget.widget.RecyclerView-->
+        <!--android:id="@+id/recyclerview_homefeed"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:scrollbars="vertical" />-->
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation_home_page"
         android:layout_width="0dp"

@@ -71,6 +71,8 @@ class ClassificationActivity : AppCompatActivity() {
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.navigation_map -> {
+                        val intentMap = MapsActivity.newIntent(this)
+                        startActivity(intentMap)
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.navigation_camera -> {

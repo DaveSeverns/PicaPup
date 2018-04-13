@@ -1,4 +1,4 @@
-package com.pic_a_pup.dev.pic_a_pup
+package com.pic_a_pup.dev.pic_a_pup.Adapters
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -8,12 +8,11 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.Switch
 import android.widget.TextView
-import com.pic_a_pup.dev.pic_a_pup.Model.DogLover
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
-
+import com.pic_a_pup.dev.pic_a_pup.R
 
 class DogRecyclerAdapter(val context: Context, val dogs: ArrayList<Model.Dog>,private val lostDogSwitchListener: LostDogSwitchListener): RecyclerView.Adapter<DogRecyclerAdapter.DogViewHolder>(){
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): DogViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DogViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.dog_list_item,parent, false)
         return DogViewHolder(view)
     }
@@ -22,8 +21,8 @@ class DogRecyclerAdapter(val context: Context, val dogs: ArrayList<Model.Dog>,pr
         return dogs.count()
     }
 
-    override fun onBindViewHolder(holder: DogViewHolder?, position: Int) {
-        holder?.bindDog(dogs[position],lostDogSwitchListener = lostDogSwitchListener)
+    override fun onBindViewHolder(holder: DogViewHolder, position: Int) {
+        holder.bindDog(dogs[position],lostDogSwitchListener = lostDogSwitchListener)
     }
 
 

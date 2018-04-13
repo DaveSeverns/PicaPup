@@ -3,4 +3,5 @@
     <color name="colorPrimary">#551053</color>
     <color name="colorPrimaryDark">#1E8196</color>
     <color name="colorAccent">#55577a</color>
+    <color name="popUpFabColor">#551053</color>
 </resources>
