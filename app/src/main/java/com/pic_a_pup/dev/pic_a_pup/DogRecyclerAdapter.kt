@@ -24,6 +24,18 @@ class DogRecyclerAdapter(val context: Context, val dogs: ArrayList<Model.Dog>,pr
 
     override fun onBindViewHolder(holder: DogViewHolder?, position: Int) {
         holder?.bindDog(dogs[position],lostDogSwitchListener = lostDogSwitchListener)
+        holder?.itemView?.setOnLongClickListener(object : View.OnLongClickListener{
+            override fun onLongClick(v: View?): Boolean {
+                try {
+                    lostDogSwitchListener.longClicked(dogs[position])
+                    return true
+                }catch (e: Exception){
+                    e.printStackTrace()
+                    return false
+                }
+            }
+        })
+
     }
 
 
@@ -42,5 +54,6 @@ class DogRecyclerAdapter(val context: Context, val dogs: ArrayList<Model.Dog>,pr
 
     interface LostDogSwitchListener: CompoundButton.OnCheckedChangeListener{
         fun switchChanged(dog: Model.Dog)
+        fun longClicked(dog: Model.Dog)
     }
 }

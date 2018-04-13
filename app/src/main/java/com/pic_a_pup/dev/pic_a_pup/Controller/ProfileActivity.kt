@@ -151,5 +151,9 @@ class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchList
                 })).show()
     }
 
-
+    override fun longClicked(dog: Model.Dog) {
+        Toast.makeText(this,"Long Clicked", Toast.LENGTH_LONG).show()
+        dogsList.remove(dog)
+        dogListAdapter.notifyDataSetChanged()
+    }
 }
