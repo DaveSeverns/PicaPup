@@ -177,15 +177,20 @@ class ClassificationActivity : AppCompatActivity() {
 
                         override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
                             if(response!!.isSuccessful){
-                                var breedString = response.body()?.breed
-                                if(breedString != null){
-                                    val breedInfoString = response.body()!!.breed_info
-                                    updateUiOnResponse(breedString,breedInfoString)
-                                    Log.e("Response",breedString )
+                                if(response.body()?.model_error != null){
+                                    updateUiOnResponse("Breed Not Found, Try again", null)
                                 }else{
-                                    Log.e("Connection: ", "made but not getting DSR")
-                                    breedString = "no data from server"
+                                    var breedString = response.body()?.breed
+                                    if(breedString != null){
+                                        val breedInfoString = response.body()!!.breed_info
+                                        updateUiOnResponse(breedString,breedInfoString)
+                                        Log.e("Response",breedString )
+                                    }else{
+                                        Log.e("Connection: ", "made but not getting DSR")
+                                        breedString = "no data from server"
+                                    }
                                 }
+
                             }else{
                                 when (response.code()){
                                     500 -> {mFirebaseManager.showToast("Server Error")}
@@ -211,6 +216,8 @@ class ClassificationActivity : AppCompatActivity() {
         breed_text.text = breed
         if (breedInfo != null){
             breed_info_text.text = breedInfo
+        }else{
+            breed_info_label.visibility = View.INVISIBLE
         }
         pre_response_frame.visibility = View.INVISIBLE
         post_response_frame.visibility = View.VISIBLE

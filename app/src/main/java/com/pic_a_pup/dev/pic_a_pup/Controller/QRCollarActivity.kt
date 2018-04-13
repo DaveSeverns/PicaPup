@@ -25,6 +25,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.pic_a_pup.dev.pic_a_pup.Manifest
 import com.pic_a_pup.dev.pic_a_pup.Model.DogLover
 import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
 
@@ -143,6 +144,8 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
             }
 
             override fun onCancelled(p0: DatabaseError?) {
+                Log.e("Error: ", "DatabaseError Dog not found")
+                noDogFoundDialog(myResult)
             }
 
         })
@@ -167,8 +170,9 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
             try{
                 Log.e("Text finna be sent"," fam")
+                sendSMS(phoneNumberOfOwner,"Dog Found")
                 SmsManager.getDefault().sendTextMessage(phoneNumberOfOwner,null,
-                        "Found your dog bitch",
+                        "Found your dog, $dogNameD!",
                         null,
                         null)
             }catch (e: Exception){
@@ -182,6 +186,28 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         var alert1 = builder.create();
         alert1.show();
 
+    }
+
+
+    fun noDogFoundDialog(codeFound: String?){
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle("No Dog reported Lost")
+        builder.setPositiveButton("OK", DialogInterface.OnClickListener({dialog: DialogInterface?, which: Int ->
+            scannerView.resumeCameraPreview(this)
+        }))
+        builder.setMessage("With Pup Code: $codeFound")
+        builder.show()
+    }
+
+    fun sendSMS(number: String?, message: String?){
+        if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            android.Manifest.permission.SEND_SMS)){
+
+            }else{
+                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.SEND_SMS),10)
+            }
+        }
     }
 
 
