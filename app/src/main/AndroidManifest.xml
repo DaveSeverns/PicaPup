@@ -40,7 +40,7 @@
             android:theme="@style/noSlideAnimationTheme"/>
         <activity android:name=".Controller.LoginActivity"
             android:theme="@style/noSlideAnimationTheme" >
-            android:label="@string/app_name">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
