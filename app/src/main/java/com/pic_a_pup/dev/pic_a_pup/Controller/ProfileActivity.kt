@@ -142,10 +142,10 @@ class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchList
                     var dogBreed = dogBreedText.text.toString()
                     var pupCode = generatePupCode(userName!!)
 
-                    mDbManager.addDogToDb(Model.Dog(dogName,dogBreed,pupCode))
+                    val dogToAdd = Model.Dog(dogName,dogBreed,pupCode)
+                    mDbManager.addDogToDb(dogToAdd)
 
-
-                    dogsList = mDbManager.getDoggosFromDb()
+                    dogsList.add(dogToAdd)
                     dogListAdapter.notifyDataSetChanged()
 
                 })).show()
