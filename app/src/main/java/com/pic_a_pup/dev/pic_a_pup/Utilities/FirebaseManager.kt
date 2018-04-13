@@ -24,7 +24,7 @@ import java.net.URL
  * Created by davidseverns on 3/16/18.
  */
 class FirebaseManager(var mContext: Context) : Utility(mContext) {
-    private var mAuth: FirebaseAuth
+    var mAuth: FirebaseAuth
     private var mDB: FirebaseDatabase
     var mUserDBRef: DatabaseReference
     var mStorageReference: StorageReference
@@ -38,7 +38,7 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
         mUserDBRef = FirebaseDatabase.getInstance().reference.child(USER_TABLE)
         mStorageReference = FirebaseStorage.getInstance().reference
         //TODO This is holding a reference to the test table
-        mLostDogDBRef = FirebaseDatabase.getInstance().reference.child(LOST_DOG_TEST_TABLE)
+        mLostDogDBRef = FirebaseDatabase.getInstance().reference.child(LOST_DOG_TABLE)
     }
 
     fun getFeedList(dataSnapshot: DataSnapshot): ArrayList<Model.DogSearchResult> {

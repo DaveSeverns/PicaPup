@@ -7,7 +7,7 @@ package com.pic_a_pup.dev.pic_a_pup.Utilities
 /**Table Names**/
 const val USER_TABLE = "users"
 const val RESULTS_TABLE = "DogSearchResult"
-const val LOST_DOG_TABLE = ""
+const val LOST_DOG_TABLE = "LostPups"
 const val LOST_DOG_TEST_TABLE = "LostDogTest"
 
 /**************/
@@ -41,12 +41,18 @@ const val IMAGE_STORAGE = "PupImages"
 const val CLASSIFICATION_RESULT = 420
 
 
-
+/**Network Routes**/
 const val TEST_URL = "http://httpbin.org/"
 const val TEST_ENDPOINT = "post"
 
 const val AWS_IP = "http://18.188.145.20"
 const val EMPTY_ROUTE = "./"
+/**********************************/
+
+const val PREF_USER_NAME_KEY = "user"
+const val PREF_USER_PHONE_KEY = "phone"
+const val PREF_DOG_KEY = "dogs"
+const val USER_PREF_FILE = "com.pic_a_pup.dev.pic_a_pup.USER"
 
 
 

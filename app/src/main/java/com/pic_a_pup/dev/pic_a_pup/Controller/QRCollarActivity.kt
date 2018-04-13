@@ -1,6 +1,7 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
 import android.Manifest.permission.CAMERA
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Camera
@@ -15,8 +16,17 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView
 import android.os.Build
 import android.widget.Toast
 import android.content.pm.PackageManager
+import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.telephony.SmsManager
+import android.widget.TextView
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.pic_a_pup.dev.pic_a_pup.Manifest
+import com.pic_a_pup.dev.pic_a_pup.Model.DogLover
 import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
 
 
@@ -26,6 +36,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private val camId = android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK
     private val REQUEST_CAMERA = 1
     private val mFirebaseManager = FirebaseManager(this)
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,31 +123,92 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
 
     override fun handleResult(result: Result?) {
+        var dogName: String? = null
+        var dogLoverName: String? = null
+        var dogLoverNumber: String? = null
         val myResult = result?.getText();
         Log.d("QRCodeScanner", result?.getText());
         Log.d("QRCodeScanner", result?.getBarcodeFormat().toString());
+        mFirebaseManager.mLostDogDBRef.child(myResult).addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot?) {
+                Log.e("Pup", snapshot.toString())
+                if(snapshot != null){
+                    dogName = snapshot.child("dogName").value as String
+                    dogLoverName = snapshot.child("dogLover").child("name").value as String
+                    dogLoverNumber = snapshot.child("dogLover").child("phoneNumber").value as String
 
-        var builder = AlertDialog.Builder(this);
-        builder.setTitle("Scan Result");
+                    Log.e("Dog Lover ", "$dogLoverName and phone number $dogLoverNumber")
+                    Log.e("Dog Name ", dogName)
+                    lostDogDialog(dogName,dogLoverName,dogLoverNumber,myResult)
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError?) {
+                Log.e("Error: ", "DatabaseError Dog not found")
+                noDogFoundDialog(myResult)
+            }
+
+        })
+
+
+
+
+    }
+
+    fun lostDogDialog(dogNameD:String?,ownerNameD:String?, phoneNumberOfOwner:String?, code:String?){
+        var textView = TextView(this)
+        val formatedString = "You Found $dogNameD!"
+        textView.text = """$ownerNameD's dog,
+        |you can reach them at:
+        |$phoneNumberOfOwner""".trimMargin()
+        textView.textSize = 16f
+
+
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle(formatedString).setView(textView)
         builder.setPositiveButton("OK", DialogInterface.OnClickListener({ dialogInterface: DialogInterface, i: Int ->
 
+            try{
+                Log.e("Text finna be sent"," fam")
+                sendSMS(phoneNumberOfOwner,"Dog Found")
+                SmsManager.getDefault().sendTextMessage(phoneNumberOfOwner,null,
+                        "Found your dog, $dogNameD!",
+                        null,
+                        null)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
             scannerView.resumeCameraPreview(this)
 
         }))
-        builder.setNeutralButton("Visit", DialogInterface.OnClickListener( { dialogInterface: DialogInterface, i: Int ->
 
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(myResult))
-            startActivity(browserIntent);
-
-        }))
-
-        builder.setMessage(result?.getText())
+        builder.setMessage(code)
         var alert1 = builder.create();
         alert1.show();
 
     }
 
-   //fun getListOfLostDogs(): ArrayList<Any>{
-   //    val dogs = mFirebaseManager.mLostDogDBRef
-   //}
+
+    fun noDogFoundDialog(codeFound: String?){
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle("No Dog reported Lost")
+        builder.setPositiveButton("OK", DialogInterface.OnClickListener({dialog: DialogInterface?, which: Int ->
+            scannerView.resumeCameraPreview(this)
+        }))
+        builder.setMessage("With Pup Code: $codeFound")
+        builder.show()
+    }
+
+    fun sendSMS(number: String?, message: String?){
+        if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            android.Manifest.permission.SEND_SMS)){
+
+            }else{
+                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.SEND_SMS),10)
+            }
+        }
+    }
+
+
 }
