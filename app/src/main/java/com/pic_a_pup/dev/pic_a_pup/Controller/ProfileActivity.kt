@@ -143,13 +143,13 @@ class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchList
                     var pupCode = generatePupCode(userName!!)
 
                     mDbManager.addDogToDb(Model.Dog(dogName,dogBreed,pupCode))
-                    if(dogsList.isNotEmpty()){
-                        dogsList.clear()
-                    }
+
 
                     dogsList = mDbManager.getDoggosFromDb()
                     dogListAdapter.notifyDataSetChanged()
 
                 })).show()
     }
+
+
 }
