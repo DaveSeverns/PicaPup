@@ -56,36 +56,3 @@
         android:src="@drawable/ic_ambulance" />
 
 </android.support.design.widget.CoordinatorLayout>
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-    <!--android:id="@+id/fab_park"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom|end"-->
-    <!--android:layout_margin="@dimen/fab_margin"-->
-    <!--android:src="@android:drawable/ic_menu_compass"-->
-    <!--android:visibility="invisible"-->
-    <!--app:backgroundTint="@color/popUpFabColor"-->
-    <!--app:fabSize="mini" />-->
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-    <!--android:id="@+id/fab_store"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom|end"-->
-    <!--android:layout_margin="@dimen/fab_margin"-->
-    <!--android:src="@android:drawable/ic_menu_compass"-->
-    <!--android:visibility="invisible"-->
-    <!--app:backgroundTint="@color/popUpFabColor"-->
-    <!--app:fabSize="mini" />-->
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-    <!--android:id="@+id/fab_vet"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom|end"-->
-    <!--android:layout_margin="@dimen/fab_margin"-->
-    <!--android:src="@android:drawable/ic_menu_compass"-->
-    <!--android:visibility="invisible"-->
-    <!--app:backgroundTint="@color/popUpFabColor"-->
-    <!--app:fabSize="mini" />-->
