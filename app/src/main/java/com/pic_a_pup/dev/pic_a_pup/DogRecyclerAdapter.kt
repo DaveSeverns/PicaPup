@@ -36,6 +36,7 @@ class DogRecyclerAdapter(val context: Context, val dogs: ArrayList<Model.Dog>,pr
             }
         })
 
+
     }
 
 
@@ -48,11 +49,13 @@ class DogRecyclerAdapter(val context: Context, val dogs: ArrayList<Model.Dog>,pr
         fun bindDog(dog: Model.Dog, lostDogSwitchListener: LostDogSwitchListener){
             dogNameText?.text = dog.dogName
             pupCodeText?.text = dog.pupCode
-            lostSwitch?.setOnCheckedChangeListener(lostDogSwitchListener)
+            lostSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
+                lostDogSwitchListener.switchChanged(dog)
+            }
         }
     }
 
-    interface LostDogSwitchListener: CompoundButton.OnCheckedChangeListener{
+    interface LostDogSwitchListener{
         fun switchChanged(dog: Model.Dog)
         fun longClicked(dog: Model.Dog)
     }

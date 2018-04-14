@@ -24,6 +24,9 @@ class DbManager(private val ctx: Context){
         }
     }
 
+
+
+
     fun getDoggosFromDb(): ArrayList<Model.Dog>{
         val rowParser = classParser<Model.Dog>()
         //needs to explicitly be List so the rowParser return is correct

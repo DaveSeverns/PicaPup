@@ -104,26 +104,22 @@ class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchList
         }
     }
 
-    fun postLostDog(){
-
-
+    fun postLostDog(dog: Model.Dog){
         val user = DogLover("FCM",null,userName, null, phoneNumber, null)
-        var lostDog = Model.LostDog(mockDog.dogName,user)
-        mFirebaseManager.mLostDogDBRef.child(mockDog.pupCode).setValue(lostDog)
-
-
+        val lostDog = Model.LostDog(dog.dogName,user)
+        mFirebaseManager.mLostDogDBRef.child(dog.pupCode).setValue(lostDog)
     }
 
     override fun switchChanged(dog: Model.Dog) {
+        postLostDog(dog)
+        mFirebaseManager.showToast("Switch Changed")
+
     }
 
-    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        mFirebaseManager.showToast("Switch Changed")
-        postLostDog()
-    }
+
 
     fun generatePupCode(userName: String): String{
-        var uuidString = UUID.randomUUID().toString().removeRange(16,31)
+        var uuidString = UUID.randomUUID().toString().removeRange(4,31)
         var pupCode = "$uuidString-$userName"
         return pupCode
     }
@@ -152,6 +148,8 @@ class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchList
     }
 
     override fun longClicked(dog: Model.Dog) {
+
+
         Toast.makeText(this,"Long Clicked", Toast.LENGTH_LONG).show()
         dogsList.remove(dog)
         dogListAdapter.notifyDataSetChanged()
