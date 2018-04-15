@@ -17,6 +17,8 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.android.extension.responseJson
+import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.result.Result
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -51,9 +53,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var isFabOpen: Boolean = false
     private var placesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
     private var DogParks = ArrayList<Model.DogPark>()
-    private val queryPlaceKeyword = "dog"
-    private val queryPlaceType = "park"
-    private val radius = 16000
+    private var queryPlaceKeyword: String? = null
+    private val queryPlaceType: String? = null
+    private val radius: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,9 +126,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun googlePlacesQuery() {
+        val queryPlaceKeyword = "dog"
+        val queryPlaceType = "park"
+        val radius = 16000
         var query = "&location=${lastLocation.latitude},${lastLocation.longitude}" +
             "+&radius=$radius&type=$queryPlaceType&keyword=$queryPlaceKeyword"
         query = "$placesUrl$query&key=$GOOGLE_PLACES_KEY"
+
+//        placesUrl.httpGet().responseObject(Model.DogPark.Deserializer()){_, _, result ->
+//            when(result) {
+//                is Result.Success -> {
+//                    val(parks, err) = result
+//                    parks?.forEach { park ->
+//                        println("*********PARK******** ${park.parkName}")
+//                        Log.e("PARK", result.get().contentToString())
+//                    }
+//                }
+//                is Result.Failure -> {val ex = result.getException()}
+//            }
+//
+//        }
 
         Fuel.get(query)
             .responseJson { request, response, result ->

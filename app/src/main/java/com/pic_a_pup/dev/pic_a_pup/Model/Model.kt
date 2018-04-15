@@ -41,9 +41,7 @@ object Model {
                        var parkAddress: String){
         class Deserializer: ResponseDeserializable<Array<DogPark>> {
             override fun deserialize(content: String): Array<DogPark>? = Gson()
-                .fromJson(content, Array<DogPark>::class.java)
+                .fromJson(content, Array<Model.DogPark>::class.java)
         }
     }
-
-
 }
