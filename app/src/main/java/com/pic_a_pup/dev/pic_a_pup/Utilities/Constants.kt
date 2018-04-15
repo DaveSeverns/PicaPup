@@ -55,6 +55,11 @@ const val PREF_DOG_KEY = "dogs"
 const val USER_PREF_FILE = "com.pic_a_pup.dev.pic_a_pup.USER"
 
 
+const val FIREBASE_LEGACY_SERVER_KEY = "AIzaSyASCL5waPAIEjwcC0Njpyxby8QMML0yq0E"
+const val FIREBASE_CONTENT_TYPE = "application/json"
+const val FIREBASE_BASE_URL = "https://fcm.googleapis.com/"
+const val FCM_ENDPOINT = "fcm/send"
+
 
 
 

@@ -8,9 +8,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -34,5 +32,21 @@ class NetworkManager {
         }
     }
 
+    interface FirebaseFCMNotificationClient{
 
+        @POST(FCM_ENDPOINT)
+        @Headers("Content-Type: $FIREBASE_CONTENT_TYPE",
+            "Authorization: key=$FIREBASE_LEGACY_SERVER_KEY")
+        fun postMessageToFCM(@Body body:Model.FcmNotificationModel) : Call<Void>
+
+        companion object Factory{
+            fun create(): FirebaseFCMNotificationClient{
+                val retrofit = Retrofit.Builder().baseUrl(FIREBASE_BASE_URL)
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+                return retrofit.create(FirebaseFCMNotificationClient::class.java)
+            }
+        }
+    }
 }

@@ -41,7 +41,10 @@ object Model {
     data class LostDog(var dogName: String?,
                        var dogLover: DogLover?)
 
-
+    data class FcmNotificationModel(var to:String?,
+                                    var priority:String = "normal",
+                                    var notification: HashMap<String,String>?,
+                                    var data: HashMap<String,String>)
 
 
 }

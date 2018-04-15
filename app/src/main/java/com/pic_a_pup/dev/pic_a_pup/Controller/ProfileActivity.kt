@@ -30,8 +30,7 @@ import kotlin.collections.ArrayList
 class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchListener {
 
 
-    private var mockDog = Model.Dog("Shulmanator", "German Shepherd", "69x420x69V4p3")
-    private var mockDogTwo = Model.Dog("Rex", "Golden Doodle", "Vap3N4ych")
+    
     private val mFirebaseManager = FirebaseManager(this)
     private var mUserDb: FirebaseDatabase? = null
     private lateinit var dogListAdapter: DogRecyclerAdapter
@@ -148,6 +147,7 @@ class ProfileActivity : AppCompatActivity(),DogRecyclerAdapter.LostDogSwitchList
     }
 
     override fun longClicked(dog: Model.Dog) {
+
 
 
         Toast.makeText(this,"Long Clicked", Toast.LENGTH_LONG).show()
