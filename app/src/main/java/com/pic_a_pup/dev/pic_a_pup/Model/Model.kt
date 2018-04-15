@@ -1,6 +1,8 @@
 package com.pic_a_pup.dev.pic_a_pup.Model
 
 import android.location.Location
+import com.github.kittinunf.fuel.core.ResponseDeserializable
+import com.google.gson.Gson
 import org.json.JSONObject
 import java.net.URL
 
@@ -16,10 +18,6 @@ object Model {
                    var dogBreed: String,
                    var pupCode: String)
 
-    data class DogPark(var parkName: String,
-                       var parkLocation: Location,
-                       var parkAddress: String)
-
     data class DogSearchResult(var breed: String,
                                var breed_info: String,
                                var dog : Model.Dog?,
@@ -28,9 +26,7 @@ object Model {
                                var model_error: String?,
                                var wikipedia_error: String?,
                                var petfinder_error: String?,
-                               var shelterList: List<DogShelter>?): JSONObject(){
-
-    }
+                               var shelterList: List<DogShelter>?): JSONObject(){}
 
     data class ModelSearchRequest(var imgUrl: String,
                                   var usePetfinder : Boolean,
@@ -40,7 +36,14 @@ object Model {
     data class LostDog(var dogName: String?,
                        var dogLover: DogLover?)
 
-
+    data class DogPark(var parkName: String,
+                       var parkLocation: Location,
+                       var parkAddress: String){
+        class Deserializer: ResponseDeserializable<Array<DogPark>> {
+            override fun deserialize(content: String): Array<DogPark>? = Gson()
+                .fromJson(content, Array<DogPark>::class.java)
+        }
+    }
 
 
 }

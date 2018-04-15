@@ -11,14 +11,12 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.ActivityCompat
-import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.util.Log
-import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException
-import com.google.android.gms.common.GooglePlayServicesRepairableException
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.android.extension.responseJson
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -26,7 +24,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.location.places.ui.PlacePicker
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -35,10 +32,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
-import com.pic_a_pup.dev.pic_a_pup.R.anim.fab_close
-import com.pic_a_pup.dev.pic_a_pup.R.anim.fab_open
-import com.pic_a_pup.dev.pic_a_pup.R.id.map
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private lateinit var map: GoogleMap
@@ -47,13 +42,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
     private var locationUpdateState = false
-    lateinit var fabMain: FloatingActionButton
-    lateinit var fabPark: FloatingActionButton
-    lateinit var fabStore: FloatingActionButton
-    lateinit var fabVet: FloatingActionButton
-    lateinit var fabOpen: Animation
-    lateinit var fabClose: Animation
-    var isFabOpen: Boolean = false
+    private lateinit var fabMain: FloatingActionButton
+    private lateinit var fabPark: FloatingActionButton
+    private lateinit var fabStore: FloatingActionButton
+    private lateinit var fabVet: FloatingActionButton
+    private lateinit var fabOpen: Animation
+    private lateinit var fabClose: Animation
+    private var isFabOpen: Boolean = false
+    private var placesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+    private var DogParks = ArrayList<Model.DogPark>()
+    private val queryPlaceKeyword = "dog"
+    private val queryPlaceType = "park"
+    private val radius = 16000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,49 +67,41 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         fabOpen = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_open)
         fabClose = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close)
 
-        fabMain.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                if (isFabOpen) {
-                    fabPark.startAnimation(fabClose)
-                    fabStore.startAnimation(fabClose)
-                    fabVet.startAnimation(fabClose)
+        fabMain.setOnClickListener {
+            if (isFabOpen) {
+                fabPark.startAnimation(fabClose)
+                fabStore.startAnimation(fabClose)
+                fabVet.startAnimation(fabClose)
 
-                    fabPark.isClickable = false
-                    fabStore.isClickable = false
-                    fabVet.isClickable = false
+                fabPark.isClickable = false
+                fabStore.isClickable = false
+                fabVet.isClickable = false
 
-                    isFabOpen = false
-                } else {
-                    fabPark.startAnimation(fabOpen)
-                    fabStore.startAnimation(fabOpen)
-                    fabVet.startAnimation(fabOpen)
+                isFabOpen = false
+            } else {
+                fabPark.startAnimation(fabOpen)
+                fabStore.startAnimation(fabOpen)
+                fabVet.startAnimation(fabOpen)
 
-                    fabPark.isClickable = true
-                    fabStore.isClickable = true
-                    fabVet.isClickable = true
+                fabPark.isClickable = true
+                fabStore.isClickable = true
+                fabVet.isClickable = true
 
-                    isFabOpen = true
-                }
+                isFabOpen = true
             }
-        })
+        }
 
-        fabPark.setOnClickListener(object: View.OnClickListener {
-            override fun onClick(v: View?) {
-                Toast.makeText(applicationContext, "Searching for parks", Toast.LENGTH_LONG).show()
-            }
-        })
+        fabPark.setOnClickListener {
+            googlePlacesQuery()
+        }
 
-        fabStore.setOnClickListener(object: View.OnClickListener {
-            override fun onClick(v: View?) {
-                Toast.makeText(applicationContext, "Searching for pet stores", Toast.LENGTH_LONG).show()
-            }
-        })
+        fabStore.setOnClickListener {
+            Toast.makeText(applicationContext, "Searching for pet stores", Toast.LENGTH_LONG).show()
+        }
 
-        fabVet.setOnClickListener(object: View.OnClickListener {
-            override fun onClick(v: View?) {
-                Toast.makeText(applicationContext, "Searching for Vets", Toast.LENGTH_LONG).show()
-            }
-        })
+        fabVet.setOnClickListener {
+            Toast.makeText(applicationContext, "Searching for Vets", Toast.LENGTH_LONG).show()
+        }
 
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -129,6 +121,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         createLocationRequest()
+    }
+
+    private fun googlePlacesQuery() {
+        var query = "&location=${lastLocation.latitude},${lastLocation.longitude}" +
+            "+&radius=$radius&type=$queryPlaceType&keyword=$queryPlaceKeyword"
+        query = "$placesUrl$query&key=$GOOGLE_PLACES_KEY"
+
+        Fuel.get(query)
+            .responseJson { request, response, result ->
+                Log.e("Result", result.get().content)
+            }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -157,6 +160,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         map.isMyLocationEnabled = true
+
         fusedLocationProviderClient.lastLocation.addOnSuccessListener(this) { location ->
             if (location != null) {
                 lastLocation = location
@@ -212,17 +216,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-    private fun loadPlacePicker() {
-        val builder = PlacePicker.IntentBuilder()
-
-        try {
-            startActivityForResult(builder.build(this@MapsActivity), PLACES_PICKER_REQUEST)
-        } catch (e: GooglePlayServicesNotAvailableException) {
-            e.printStackTrace()
-        } catch (e: GooglePlayServicesRepairableException) {
-            e.printStackTrace()
-        }
-    }
+//    private fun loadPlacePicker() {
+//        val builder = PlacePicker.IntentBuilder()
+//
+//        try {
+//            startActivityForResult(builder.build(this@MapsActivity), PLACES_PICKER_REQUEST)
+//        } catch (e: GooglePlayServicesNotAvailableException) {
+//            e.printStackTrace()
+//        } catch (e: GooglePlayServicesRepairableException) {
+//            e.printStackTrace()
+//        }
+//    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -232,13 +236,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 locationUpdates()
             }
         }
-        if(requestCode == PLACES_PICKER_REQUEST) {
-            val place = PlacePicker.getPlace(this, data)
-            var addressText = place.name.toString()
-            addressText += "\n" + place.address.toString()
-
-            placeMarkerOnMap(place.latLng)
-        }
+//        if(requestCode == PLACES_PICKER_REQUEST) {
+//            val place = PlacePicker.getPlace(this, data)
+//            var addressText = place.name.toString()
+//            addressText += "\n" + place.address.toString()
+//
+//            placeMarkerOnMap(place.latLng)
+//        }
     }
 
     override fun onPause() {
@@ -259,6 +263,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val REQUEST_CHECK_SETTINGS = 2
-        private const val PLACES_PICKER_REQUEST = 3
+//        private const val PLACES_PICKER_REQUEST = 3
+        private const val GOOGLE_PLACES_KEY = "AIzaSyAxtwhf8egj3eThPnZHIr8HwWcqbd80FuQ"
     }
 }
