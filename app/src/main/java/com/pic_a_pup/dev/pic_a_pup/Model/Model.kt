@@ -13,8 +13,9 @@ object Model {
                           var address: String)
 
     data class Dog(var dogName: String,
-                   var dogBreed: String,
-                   var pupCode: String)
+                   var dogBreed: String?,
+                   var pupCode: String,
+                   var isLost: Boolean = false)
 
     data class DogPark(var parkName: String,
                        var parkLocation: Location,
@@ -40,7 +41,10 @@ object Model {
     data class LostDog(var dogName: String?,
                        var dogLover: DogLover?)
 
-
+    data class FcmNotificationModel(var to:String?,
+                                    var priority:String = "normal",
+                                    var notification: HashMap<String,String>?,
+                                    var data: HashMap<String,String>)
 
 
 }

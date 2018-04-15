@@ -36,13 +36,12 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".Controller.HomeFeedActivity"
-            android:theme="@style/noSlideAnimationTheme"/>
-        <activity android:name=".Controller.LoginActivity"
-            android:theme="@style/noSlideAnimationTheme" >
-
+        <activity android:name=".Controller.HomeFeedActivity" />
+        <activity android:name=".Controller.LoginActivity">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -63,6 +62,7 @@
             android:name=".Controller.MapsActivity"
             android:label="@string/title_activity_maps"
             android:theme="@style/noSlideAnimationTheme" />
+
 
         <provider
             android:name="android.support.v4.content.FileProvider"

@@ -27,6 +27,7 @@
             android:backgroundTint="@android:color/white"
             android:ems="10"
             android:fontFamily="serif"
+            android:textColorHint="@android:color/white"
 
             android:hint="@string/email"
             android:inputType="textEmailAddress"
@@ -36,6 +37,7 @@
             android:id="@+id/user_name_signup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColorHint="@android:color/white"
 
             android:backgroundTint="@android:color/white"
             android:ems="10"
@@ -51,6 +53,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/white"
             android:ems="10"
+            android:textColorHint="@android:color/white"
 
             android:fontFamily="serif"
             android:hint="@string/password"
@@ -64,6 +67,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/white"
             android:ems="10"
+            android:textColorHint="@android:color/white"
 
             android:fontFamily="serif"
             android:hint="@string/password"
@@ -74,6 +78,8 @@
         <EditText
             android:id="@+id/phone_number_signup"
             android:backgroundTint="@android:color/white"
+            android:textColorHint="@android:color/white"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
