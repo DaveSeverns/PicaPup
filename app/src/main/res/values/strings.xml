@@ -27,5 +27,6 @@
     <string name="map">Map</string>
     <string name="they_go_by">They go by...</string>
     <string name="tell_us_about_your_friend">Tell us about your friend</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

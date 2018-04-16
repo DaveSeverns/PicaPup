@@ -31,6 +31,7 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
     var mResultDBRef: DatabaseReference
     var mLostDogDBRef: DatabaseReference
 
+
     init {
         mResultDBRef = FirebaseDatabase.getInstance().reference.child(RESULTS_TABLE)
         mAuth = FirebaseAuth.getInstance()
@@ -82,6 +83,8 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
         while(imgUrl == null){}
         return imgUrl.toString()
     }
+
+
 }
 
 

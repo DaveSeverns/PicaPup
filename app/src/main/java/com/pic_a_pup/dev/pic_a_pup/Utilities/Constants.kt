@@ -52,6 +52,7 @@ const val EMPTY_ROUTE = "./"
 const val PREF_USER_NAME_KEY = "user"
 const val PREF_USER_PHONE_KEY = "phone"
 const val PREF_DOG_KEY = "dogs"
+const val FCM_TOKEN_PREF_KEY = "fcm"
 const val USER_PREF_FILE = "com.pic_a_pup.dev.pic_a_pup.USER"
 
 
