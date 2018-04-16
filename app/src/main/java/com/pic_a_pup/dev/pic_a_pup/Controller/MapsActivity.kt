@@ -15,9 +15,6 @@ import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.android.extension.responseJson
-import com.github.kittinunf.fuel.httpGet
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -35,7 +32,6 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
 import okhttp3.Call
 import okhttp3.Callback
@@ -59,10 +55,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private lateinit var fabClose: Animation
     private var isFabOpen: Boolean = false
     private var placesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
-    private var DogParks = ArrayList<Model.DogPark>()
-    private var queryPlaceKeyword: String? = null
-    private val queryPlaceType: String? = null
-    private val radius: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,7 +126,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun googlePlacesQuery() {
-        var DogParks = ArrayList<Model.DogPark>()
         val queryPlaceKeyword = "dog"
         val queryPlaceType = "park"
         val radius = 16000
@@ -151,34 +142,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 val gson = GsonBuilder().create()
                 val data = gson.fromJson(body, Data::class.java)
+
             }
             override fun onFailure(call: Call?, e: IOException?) {
                 println("Failed")
             }
         })
-
-
-//        query.httpGet().responseObject(Model.DogPark.Deserializer()) {request, response, result ->
-//            val(contents, err) = result
-//            Log.e("responseLog", response.toString())
-//            Log.e("requestLog", request.toString())
-//
-//            contents?.forEach { content ->
-//                Log.e("RESULT", "${content.vicinity} - ${}")
-//            }
-//
-//        }
-
-//        query.httpGet().responseJson {_, response, result ->
-//            if (response.responseMessage == "OK" && response.statusCode == 200) {
-//                Log.e("Result", result.get().content)
-//                val name = result
-//            }
-//        }
-//
-//        Fuel.get(query).responseJson { _, _, result ->
-//            Log.e("Result", result.get().content)
-//        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -186,11 +155,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         map.uiSettings.isZoomControlsEnabled = false
         map.setOnMarkerClickListener(this)
-
-        //Call placeMarkerOnMap and include a loop to add available tutor pins to the map
-//        val placeHolder = LatLng(39.980944, -75.157837)
-//        map.addMarker(MarkerOptions().position(placeHolder).title("Tutor Shulmoney"))
-//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(placeHolder, 12.0f))
 
         setupMap()
     }
@@ -298,12 +262,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val REQUEST_CHECK_SETTINGS = 2
-//        private const val PLACES_PICKER_REQUEST = 3
         private const val GOOGLE_PLACES_KEY = "AIzaSyAxtwhf8egj3eThPnZHIr8HwWcqbd80FuQ"
     }
 }
 
 class Data(val results: List<Result>)
 class Result(val name: String, val vicinity: String, val geometry: Geometry)
-class Geometry(val locale: String, location: Locations)
+class Geometry(var location: Locations)
 class Locations(val lat: Double, val lng: Double)

@@ -36,12 +36,4 @@ object Model {
     data class LostDog(var dogName: String?,
                        var dogLover: DogLover?)
 
-    data class DogPark(var name: String,
-                       var location: Location,
-                       var vicinity: String) {
-        class Deserializer: ResponseDeserializable<Array<DogPark>> {
-            override fun deserialize(content: String): Array<DogPark>? = Gson()
-                .fromJson(content, Array<Model.DogPark>::class.java)
-        }
-    }
 }
