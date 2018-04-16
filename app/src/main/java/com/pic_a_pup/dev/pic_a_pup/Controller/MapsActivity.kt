@@ -18,7 +18,6 @@ import android.widget.Toast
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.android.extension.responseJson
 import com.github.kittinunf.fuel.httpGet
-import com.github.kittinunf.result.Result
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -34,8 +33,16 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private lateinit var map: GoogleMap
@@ -94,6 +101,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         fabPark.setOnClickListener {
+            Toast.makeText(applicationContext, "Searching for parks", Toast.LENGTH_LONG).show()
             googlePlacesQuery()
         }
 
@@ -126,6 +134,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun googlePlacesQuery() {
+        var DogParks = ArrayList<Model.DogPark>()
         val queryPlaceKeyword = "dog"
         val queryPlaceType = "park"
         val radius = 16000
@@ -133,24 +142,43 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             "+&radius=$radius&type=$queryPlaceType&keyword=$queryPlaceKeyword"
         query = "$placesUrl$query&key=$GOOGLE_PLACES_KEY"
 
-//        placesUrl.httpGet().responseObject(Model.DogPark.Deserializer()){_, _, result ->
-//            when(result) {
-//                is Result.Success -> {
-//                    val(parks, err) = result
-//                    parks?.forEach { park ->
-//                        println("*********PARK******** ${park.parkName}")
-//                        Log.e("PARK", result.get().contentToString())
-//                    }
-//                }
-//                is Result.Failure -> {val ex = result.getException()}
+        val request = Request.Builder().url(query).build()
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object: Callback{
+            override fun onResponse(call: Call?, response: Response?) {
+                val body = response?.body()?.string()
+                println(body)
+
+                val gson = GsonBuilder().create()
+                val data = gson.fromJson(body, Data::class.java)
+            }
+            override fun onFailure(call: Call?, e: IOException?) {
+                println("Failed")
+            }
+        })
+
+
+//        query.httpGet().responseObject(Model.DogPark.Deserializer()) {request, response, result ->
+//            val(contents, err) = result
+//            Log.e("responseLog", response.toString())
+//            Log.e("requestLog", request.toString())
+//
+//            contents?.forEach { content ->
+//                Log.e("RESULT", "${content.vicinity} - ${}")
 //            }
 //
 //        }
 
-        Fuel.get(query)
-            .responseJson { request, response, result ->
-                Log.e("Result", result.get().content)
-            }
+//        query.httpGet().responseJson {_, response, result ->
+//            if (response.responseMessage == "OK" && response.statusCode == 200) {
+//                Log.e("Result", result.get().content)
+//                val name = result
+//            }
+//        }
+//
+//        Fuel.get(query).responseJson { _, _, result ->
+//            Log.e("Result", result.get().content)
+//        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -235,18 +263,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-//    private fun loadPlacePicker() {
-//        val builder = PlacePicker.IntentBuilder()
-//
-//        try {
-//            startActivityForResult(builder.build(this@MapsActivity), PLACES_PICKER_REQUEST)
-//        } catch (e: GooglePlayServicesNotAvailableException) {
-//            e.printStackTrace()
-//        } catch (e: GooglePlayServicesRepairableException) {
-//            e.printStackTrace()
-//        }
-//    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == REQUEST_CHECK_SETTINGS) {
@@ -286,3 +302,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         private const val GOOGLE_PLACES_KEY = "AIzaSyAxtwhf8egj3eThPnZHIr8HwWcqbd80FuQ"
     }
 }
+
+class Data(val results: List<Result>)
+class Result(val name: String, val vicinity: String, val geometry: Geometry)
+class Geometry(val locale: String, location: Locations)
+class Locations(val lat: Double, val lng: Double)
