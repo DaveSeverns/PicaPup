@@ -16,17 +16,21 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView
 import android.os.Build
 import android.widget.Toast
 import android.content.pm.PackageManager
+import android.location.Location
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.telephony.SmsManager
 import android.widget.TextView
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.pic_a_pup.dev.pic_a_pup.Manifest
 import com.pic_a_pup.dev.pic_a_pup.Model.DogLover
+import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
 
 
@@ -36,12 +40,14 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private val camId = android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK
     private val REQUEST_CAMERA = 1
     private val mFirebaseManager = FirebaseManager(this)
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private var mLocation: Location? = null
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         scannerView = ZXingScannerView(this)
         setContentView(scannerView)
         val currentApiVersion = Build.VERSION.SDK_INT
@@ -162,7 +168,18 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         |you can reach them at:
         |$phoneNumberOfOwner""".trimMargin()
         textView.textSize = 16f
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), 10)
+                return
+            }
 
+        mFusedLocationClient!!.lastLocation.addOnSuccessListener(this) { location ->
+            if (location != null) {
+                mLocation = location
+            }
+        }
+        val fcmNotificationModel = Model.FcmNotificationModel.createFCMNotification("","","",mLocation!!)
 
         var builder = AlertDialog.Builder(this)
         builder.setTitle(formatedString).setView(textView)

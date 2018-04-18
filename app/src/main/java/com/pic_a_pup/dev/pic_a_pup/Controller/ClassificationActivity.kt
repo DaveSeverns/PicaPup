@@ -185,6 +185,7 @@ class ClassificationActivity : AppCompatActivity() {
                                         val breedInfoString = response.body()!!.breed_info
                                         updateUiOnResponse(breedString,breedInfoString)
                                         Log.e("Response",breedString )
+                                        addSearchToTable(breedString,breedInfoString,imgUrl!!)
                                     }else{
                                         Log.e("Connection: ", "made but not getting DSR")
                                         breedString = "no data from server"
@@ -221,6 +222,21 @@ class ClassificationActivity : AppCompatActivity() {
         }
         pre_response_frame.visibility = View.INVISIBLE
         post_response_frame.visibility = View.VISIBLE
+    }
+
+    fun addSearchToTable(breed:String,breedInfo: String?, imageUrl: String){
+        var dogSearch: Model.DogSearchResult
+        if (breedInfo != null){
+            dogSearch = Model.DogSearchResult(breed,breedInfo,imageUrl,
+                    null, null,null,null)
+        }else{
+            dogSearch = Model.DogSearchResult (breed,null,imageUrl,
+                    null, null,null,null)
+        }
+
+
+        val keyString = mFirebaseManager.mResultDBRef.push().key
+        mFirebaseManager.mResultDBRef.child(keyString).setValue(dogSearch)
     }
 }
 

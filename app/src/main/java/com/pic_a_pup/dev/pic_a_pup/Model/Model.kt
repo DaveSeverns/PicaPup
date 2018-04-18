@@ -1,6 +1,7 @@
 package com.pic_a_pup.dev.pic_a_pup.Model
 
 import android.location.Location
+import android.os.IBinder
 import org.json.JSONObject
 import java.net.URL
 
@@ -21,11 +22,9 @@ object Model {
                        var parkLocation: Location,
                        var parkAddress: String)
 
-    data class DogSearchResult(var breed: String,
-                               var breed_info: String,
-                               var dog : Model.Dog?,
-                               var dogImageSent: URL?,
-                               var userVoteCount: Int?,
+    data class DogSearchResult(var breed: String?,
+                               var breed_info: String?,
+                               var dogImageSent: String?,
                                var model_error: String?,
                                var wikipedia_error: String?,
                                var petfinder_error: String?,
@@ -44,7 +43,24 @@ object Model {
     data class FcmNotificationModel(var to:String?,
                                     var priority:String = "normal",
                                     var notification: HashMap<String,String>?,
-                                    var data: HashMap<String,String>)
+                                    var data: HashMap<String,String>?){
+
+        companion object FCMNotificationFactory {
+            fun createFCMNotification(fcmTokenRecipient: String,
+                                      finderName:String, finderPhone:String,
+                                      finderLocation:Location): FcmNotificationModel{
+                var notficationMap = HashMap<String,String>()
+                notficationMap.put("body","$finderName found you dog!")
+                notficationMap.put("title","Pic-a-Pup")
+                notficationMap.put("icon","new")
+                var dataMap = HashMap<String,String>()
+                dataMap.put("lat", finderLocation.latitude.toString())
+                dataMap.put("lon",finderLocation.longitude.toString())
+                var fcmNotificationModel = FcmNotificationModel(fcmTokenRecipient,"normal",notficationMap,dataMap)
+                return fcmNotificationModel
+            }
+        }
+    }
 
 
 }
