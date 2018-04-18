@@ -8,7 +8,9 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.*
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.POST
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -24,9 +26,9 @@ class NetworkManager {
         companion object Factory{
             fun create(): PaPRestClient{
                 val retrofit = Retrofit.Builder().baseUrl(AWS_IP)
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
                 return retrofit.create(PaPRestClient::class.java)
             }
         }
@@ -42,9 +44,9 @@ class NetworkManager {
         companion object Factory{
             fun create(): FirebaseFCMNotificationClient{
                 val retrofit = Retrofit.Builder().baseUrl(FIREBASE_BASE_URL)
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
                 return retrofit.create(FirebaseFCMNotificationClient::class.java)
             }
         }

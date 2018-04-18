@@ -24,8 +24,8 @@
     <string name="doggos">Doggos:</string>
     <string name="dog_lover">Dog Lover:</string>
     <string name="lost">Lost</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="title_map">Map</string>
+    <string name="map">Map</string>
+    <string name="they_go_by">They go by...</string>
+    <string name="tell_us_about_your_friend">Tell us about your friend</string>
+
 </resources>

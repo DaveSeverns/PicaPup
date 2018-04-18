@@ -132,20 +132,20 @@ class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchLis
         val dogBreedText = dialogView.findViewById<EditText>(R.id.add_dog_breed)
 
         AlertDialog.Builder(this)
-            .setTitle("Add New Dog")
-            .setView(dialogView)
-            .setPositiveButton("Add",DialogInterface.OnClickListener({dialog: DialogInterface?, which: Int ->
-                var dogName = dogNameText.text.toString()
-                var dogBreed = dogBreedText.text.toString()
-                var pupCode = generatePupCode(userName!!)
+                .setTitle("Add New Dog")
+                .setView(dialogView)
+                .setPositiveButton("Add",DialogInterface.OnClickListener({dialog: DialogInterface?, which: Int ->
+                    var dogName = dogNameText.text.toString()
+                    var dogBreed = dogBreedText.text.toString()
+                    var pupCode = generatePupCode(userName!!)
 
-                val dogToAdd = Model.Dog(dogName,dogBreed,pupCode)
-                mDbManager.addDogToDb(dogToAdd)
-                // dog is added to db so persists but this add it in RT
-                dogsList.add(dogToAdd)
-                dogListAdapter.notifyDataSetChanged()
+                    val dogToAdd = Model.Dog(dogName,dogBreed,pupCode)
+                    mDbManager.addDogToDb(dogToAdd)
+                    // dog is added to db so persists but this add it in RT
+                    dogsList.add(dogToAdd)
+                    dogListAdapter.notifyDataSetChanged()
 
-            })).show()
+                })).show()
     }
 
     override fun longClicked(dog: Model.Dog) {
