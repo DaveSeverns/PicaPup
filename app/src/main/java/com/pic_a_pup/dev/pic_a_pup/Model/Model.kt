@@ -1,8 +1,6 @@
 package com.pic_a_pup.dev.pic_a_pup.Model
 
 import android.location.Location
-import com.github.kittinunf.fuel.core.ResponseDeserializable
-import com.google.gson.Gson
 import org.json.JSONObject
 import java.net.URL
 
@@ -15,8 +13,13 @@ object Model {
                           var address: String)
 
     data class Dog(var dogName: String,
-                   var dogBreed: String,
-                   var pupCode: String)
+                   var dogBreed: String?,
+                   var pupCode: String,
+                   var isLost: Boolean = false)
+
+    data class DogPark(var parkName: String,
+                       var parkLocation: Location,
+                       var parkAddress: String)
 
     data class DogSearchResult(var breed: String,
                                var breed_info: String,
@@ -26,7 +29,9 @@ object Model {
                                var model_error: String?,
                                var wikipedia_error: String?,
                                var petfinder_error: String?,
-                               var shelterList: List<DogShelter>?): JSONObject(){}
+                               var shelterList: List<DogShelter>?): JSONObject(){
+
+    }
 
     data class ModelSearchRequest(var imgUrl: String,
                                   var usePetfinder : Boolean,
@@ -35,5 +40,11 @@ object Model {
 
     data class LostDog(var dogName: String?,
                        var dogLover: DogLover?)
+
+    data class FcmNotificationModel(var to:String?,
+                                    var priority:String = "normal",
+                                    var notification: HashMap<String,String>?,
+                                    var data: HashMap<String,String>)
+
 
 }

@@ -21,8 +21,21 @@ class DogRecyclerAdapter(val context: Context, val dogs: ArrayList<Model.Dog>,pr
         return dogs.count()
     }
 
-    override fun onBindViewHolder(holder: DogViewHolder, position: Int) {
-        holder.bindDog(dogs[position],lostDogSwitchListener = lostDogSwitchListener)
+    override fun onBindViewHolder(holder: DogViewHolder?, position: Int) {
+        holder?.bindDog(dogs[position],lostDogSwitchListener = lostDogSwitchListener)
+        holder?.itemView?.setOnLongClickListener(object : View.OnLongClickListener{
+            override fun onLongClick(v: View?): Boolean {
+                try {
+                    lostDogSwitchListener.longClicked(dogs[position])
+                    return true
+                }catch (e: Exception){
+                    e.printStackTrace()
+                    return false
+                }
+            }
+        })
+
+
     }
 
 
@@ -35,11 +48,14 @@ class DogRecyclerAdapter(val context: Context, val dogs: ArrayList<Model.Dog>,pr
         fun bindDog(dog: Model.Dog, lostDogSwitchListener: LostDogSwitchListener){
             dogNameText?.text = dog.dogName
             pupCodeText?.text = dog.pupCode
-            lostSwitch?.setOnCheckedChangeListener(lostDogSwitchListener)
+            lostSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
+                lostDogSwitchListener.switchChanged(dog)
+            }
         }
     }
 
-    interface LostDogSwitchListener: CompoundButton.OnCheckedChangeListener{
+    interface LostDogSwitchListener{
         fun switchChanged(dog: Model.Dog)
+        fun longClicked(dog: Model.Dog)
     }
 }
