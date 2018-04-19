@@ -6,7 +6,7 @@ package com.pic_a_pup.dev.pic_a_pup.Utilities
 
 /**Table Names**/
 const val USER_TABLE = "users"
-const val RESULTS_TABLE = "DogSearchResult"
+const val RESULTS_TABLE = "FeedDogSearchResult"
 const val LOST_DOG_TABLE = "LostPups"
 const val LOST_DOG_TEST_TABLE = "LostDogTest"
 

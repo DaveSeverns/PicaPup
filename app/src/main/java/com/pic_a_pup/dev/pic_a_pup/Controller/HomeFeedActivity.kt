@@ -33,6 +33,8 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.Query
 import com.pic_a_pup.dev.pic_a_pup.Model.FeedDogSearchResult
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
@@ -50,7 +52,7 @@ class HomeFeedActivity : AppCompatActivity() {
     private lateinit var mFirebaseManager: FirebaseManager
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: FirebaseRecyclerAdapter<FeedDogSearchResult,ResultViewHolder>
-    private lateinit var mResDBRef: DatabaseReference
+    private lateinit var mResDBRefQuery: Query
     private lateinit var viewManager: RecyclerView.LayoutManager
     val dogsSearched = arrayListOf<Model.DogSearchResult>()
     //private lateinit var adapter: FirebaseRecyclerAdapter<Model.thDogSearchResult,ResultViewHolder>
@@ -60,7 +62,7 @@ class HomeFeedActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home_feed)
         recyclerView = findViewById<RecyclerView>(R.id.search_feed_recycler)
         mFirebaseManager = FirebaseManager(this)
-        mResDBRef = mFirebaseManager.mResultDBRef
+        mResDBRefQuery = FirebaseDatabase.getInstance().reference.child(RESULTS_TABLE).limitToLast(10)
         recyclerView.layoutManager = LinearLayoutManager(this)
         //request the necessary permissions
         ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION,
@@ -134,7 +136,7 @@ class HomeFeedActivity : AppCompatActivity() {
         Log.e("CURRENT_USER",currentUser.toString())
 
         val options: FirebaseRecyclerOptions<FeedDogSearchResult> = FirebaseRecyclerOptions.Builder<FeedDogSearchResult>()
-                .setQuery(mResDBRef, FeedDogSearchResult::class.java).build()
+                .setQuery(mResDBRefQuery, FeedDogSearchResult::class.java).build()
 
         viewAdapter = object :FirebaseRecyclerAdapter<FeedDogSearchResult,ResultViewHolder>(options){
             override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ResultViewHolder {
