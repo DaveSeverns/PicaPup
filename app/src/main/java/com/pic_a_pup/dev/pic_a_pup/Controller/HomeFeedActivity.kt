@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.LayoutInflater
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
@@ -27,9 +28,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.FirebaseOptions
 import com.google.firebase.database.DatabaseReference
-import com.pic_a_pup.dev.pic_a_pup.Adapters.HomeFeedAdapter
+import com.pic_a_pup.dev.pic_a_pup.Model.FeedDogSearchResult
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 
@@ -45,7 +49,7 @@ class HomeFeedActivity : AppCompatActivity() {
     private lateinit var mUtility: Utility
     private lateinit var mFirebaseManager: FirebaseManager
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: FirebaseRecyclerAdapter<Model.FeedDogSearchResult,ResultViewHolder>
+    private lateinit var viewAdapter: FirebaseRecyclerAdapter<FeedDogSearchResult,ResultViewHolder>
     private lateinit var mResDBRef: DatabaseReference
     private lateinit var viewManager: RecyclerView.LayoutManager
     val dogsSearched = arrayListOf<Model.DogSearchResult>()
@@ -129,19 +133,28 @@ class HomeFeedActivity : AppCompatActivity() {
         var currentUser = mAuth.currentUser
         Log.e("CURRENT_USER",currentUser.toString())
 
-        viewAdapter = object :FirebaseRecyclerAdapter<Model.FeedDogSearchResult,ResultViewHolder>(Model.FeedDogSearchResult::class.java,
-                R.layout.homefeed_dog_item,ResultViewHolder::class.java, mResDBRef){
-            override fun populateViewHolder(viewHolder: ResultViewHolder?, model: Model.FeedDogSearchResult?, position: Int) {
-                if(viewHolder != null){
-                    if(model?.dogImageSent!=null){
-                        viewHolder.onBindView(this@HomeFeedActivity,model.dogImageSent!!)
-                    }
-                }
+        val options: FirebaseRecyclerOptions<FeedDogSearchResult> = FirebaseRecyclerOptions.Builder<FeedDogSearchResult>()
+                .setQuery(mResDBRef, FeedDogSearchResult::class.java).build()
+
+        viewAdapter = object :FirebaseRecyclerAdapter<FeedDogSearchResult,ResultViewHolder>(options){
+            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ResultViewHolder {
+                val view = LayoutInflater.from(parent!!.context).inflate(R.layout.homefeed_dog_item,parent,false)
+                return ResultViewHolder(view)
             }
 
+            override fun onBindViewHolder(holder: ResultViewHolder, position: Int, model: FeedDogSearchResult) {
+                holder.onBindView(this@HomeFeedActivity,model.dogImageSent!!)
+            }
+
+
+
         }
+        viewAdapter.startListening()
         recyclerView.adapter = viewAdapter
+
     }
+
+
 
     override fun onResume() {
         super.onResume()
@@ -223,6 +236,10 @@ class HomeFeedActivity : AppCompatActivity() {
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        viewAdapter.stopListening()
+    }
 //    fun collarActivityStart(){
 //        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
 //        startActivity(collarStartIntent)

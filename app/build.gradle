@@ -76,7 +76,7 @@ dependencies {
     implementation 'com.github.kittinunf.fuel:fuel-gson:1.10.0'
     implementation 'com.github.kittinunf.fuel:fuel-android:1.10.0'
     implementation 'com.beust:klaxon:0.30'
-    compile 'com.squareup.okhttp3:okhttp:3.9.1'
+    compile 'com.squareup.okhttp3:okhttp:3.10.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

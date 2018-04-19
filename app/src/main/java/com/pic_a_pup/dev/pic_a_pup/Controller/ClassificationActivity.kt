@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import com.pic_a_pup.dev.pic_a_pup.Model.FeedDogSearchResult
 import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
@@ -225,7 +226,7 @@ class ClassificationActivity : AppCompatActivity() {
     }
 
     fun addSearchToTable(breed:String, imageUrl: String){
-        var dogSearch: Model.FeedDogSearchResult = Model.FeedDogSearchResult(breed,imageUrl)
+        var dogSearch: FeedDogSearchResult = FeedDogSearchResult(breed,imageUrl)
         val keyString = mFirebaseManager.mResultDBRef.push().key
         mFirebaseManager.mResultDBRef.child(keyString).setValue(dogSearch)
     }
