@@ -31,8 +31,6 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.google.firebase.FirebaseOptions
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Query
 import com.pic_a_pup.dev.pic_a_pup.Model.FeedDogSearchResult
@@ -74,6 +72,21 @@ class HomeFeedActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
         mUtility = Utility(this)
+
+        val options: FirebaseRecyclerOptions<FeedDogSearchResult> = FirebaseRecyclerOptions.Builder<FeedDogSearchResult>()
+                .setQuery(mResDBRefQuery, FeedDogSearchResult::class.java).build()
+
+        viewAdapter = object :FirebaseRecyclerAdapter<FeedDogSearchResult,ResultViewHolder>(options){
+            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ResultViewHolder {
+                val view = LayoutInflater.from(parent!!.context).inflate(R.layout.homefeed_dog_item,parent,false)
+                return ResultViewHolder(view)
+            }
+
+            override fun onBindViewHolder(holder: ResultViewHolder, position: Int, model: FeedDogSearchResult) {
+                holder.onBindView(this@HomeFeedActivity,model.dogImageSent!!)
+            }
+        }
+        recyclerView.adapter = viewAdapter
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -135,24 +148,8 @@ class HomeFeedActivity : AppCompatActivity() {
         var currentUser = mAuth.currentUser
         Log.e("CURRENT_USER",currentUser.toString())
 
-        val options: FirebaseRecyclerOptions<FeedDogSearchResult> = FirebaseRecyclerOptions.Builder<FeedDogSearchResult>()
-                .setQuery(mResDBRefQuery, FeedDogSearchResult::class.java).build()
 
-        viewAdapter = object :FirebaseRecyclerAdapter<FeedDogSearchResult,ResultViewHolder>(options){
-            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ResultViewHolder {
-                val view = LayoutInflater.from(parent!!.context).inflate(R.layout.homefeed_dog_item,parent,false)
-                return ResultViewHolder(view)
-            }
-
-            override fun onBindViewHolder(holder: ResultViewHolder, position: Int, model: FeedDogSearchResult) {
-                holder.onBindView(this@HomeFeedActivity,model.dogImageSent!!)
-            }
-
-
-
-        }
         viewAdapter.startListening()
-        recyclerView.adapter = viewAdapter
 
     }
 
