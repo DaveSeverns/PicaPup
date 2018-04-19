@@ -27,9 +27,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.view.Menu
 import android.view.MenuItem
+import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.google.firebase.database.DatabaseReference
 import com.pic_a_pup.dev.pic_a_pup.Adapters.HomeFeedAdapter
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
-import com.pic_a_pup.dev.pic_a_pup.Model.Model.DogSearchResult
 import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 
 //import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -42,8 +43,10 @@ class HomeFeedActivity : AppCompatActivity() {
     private var mLocation: Location? = null
     private var mImagePath: String? = null
     private lateinit var mUtility: Utility
+    private lateinit var mFirebaseManager: FirebaseManager
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewAdapter: FirebaseRecyclerAdapter<Model.FeedDogSearchResult,ResultViewHolder>
+    private lateinit var mResDBRef: DatabaseReference
     private lateinit var viewManager: RecyclerView.LayoutManager
     val dogsSearched = arrayListOf<Model.DogSearchResult>()
     //private lateinit var adapter: FirebaseRecyclerAdapter<Model.thDogSearchResult,ResultViewHolder>
@@ -51,7 +54,10 @@ class HomeFeedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_feed)
-
+        recyclerView = findViewById<RecyclerView>(R.id.search_feed_recycler)
+        mFirebaseManager = FirebaseManager(this)
+        mResDBRef = mFirebaseManager.mResultDBRef
+        recyclerView.layoutManager = LinearLayoutManager(this)
         //request the necessary permissions
         ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -122,7 +128,24 @@ class HomeFeedActivity : AppCompatActivity() {
         super.onStart()
         var currentUser = mAuth.currentUser
         Log.e("CURRENT_USER",currentUser.toString())
-        //adapter =
+
+        viewAdapter = object :FirebaseRecyclerAdapter<Model.FeedDogSearchResult,ResultViewHolder>(Model.FeedDogSearchResult::class.java,
+                R.layout.homefeed_dog_item,ResultViewHolder::class.java, mResDBRef){
+            override fun populateViewHolder(viewHolder: ResultViewHolder?, model: Model.FeedDogSearchResult?, position: Int) {
+                if(viewHolder != null){
+                    if(model?.dogImageSent!=null){
+                        viewHolder.onBindView(this@HomeFeedActivity,model.dogImageSent!!)
+                    }
+                }
+            }
+
+        }
+        recyclerView.adapter = viewAdapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewAdapter.notifyDataSetChanged()
     }
 
 

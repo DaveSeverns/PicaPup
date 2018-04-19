@@ -28,9 +28,8 @@ object Model {
                                var model_error: String?,
                                var wikipedia_error: String?,
                                var petfinder_error: String?,
-                               var shelterList: List<DogShelter>?): JSONObject(){
-
-    }
+                               var shelterList: List<DogShelter>?)
+    data class FeedDogSearchResult(var breed: String?,var dogImageSent: String?)
 
     data class ModelSearchRequest(var imgUrl: String,
                                   var usePetfinder : Boolean,
