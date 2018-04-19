@@ -37,7 +37,9 @@ object Model {
                                   var location: String)
 
     data class LostDog(var dogName: String?,
-                       var dogLover: DogLover?)
+                       var dogLover: DogLover?,
+                       var fcm_id:String?,
+                       var found: Boolean = false)
 
     data class FcmNotificationModel(var to:String?,
                                     var priority:String = "normal",

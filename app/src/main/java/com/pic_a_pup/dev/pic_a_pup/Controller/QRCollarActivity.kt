@@ -132,6 +132,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         var dogName: String? = null
         var dogLoverName: String? = null
         var dogLoverNumber: String? = null
+        var dogLoverFCM: String? = null
         val myResult = result?.getText();
         Log.d("QRCodeScanner", result?.getText());
         Log.d("QRCodeScanner", result?.getBarcodeFormat().toString());
@@ -142,6 +143,10 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                     dogName = snapshot.child("dogName").value as String
                     dogLoverName = snapshot.child("dogLover").child("name").value as String
                     dogLoverNumber = snapshot.child("dogLover").child("phoneNumber").value as String
+                    dogLoverFCM = snapshot.child("fcm_id").value as String
+                    var map = HashMap<String,Any>()
+                    map.put("found",true)
+                    mFirebaseManager.mLostDogDBRef.child(myResult).updateChildren(map)
 
                     Log.e("Dog Lover ", "$dogLoverName and phone number $dogLoverNumber")
                     Log.e("Dog Name ", dogName)

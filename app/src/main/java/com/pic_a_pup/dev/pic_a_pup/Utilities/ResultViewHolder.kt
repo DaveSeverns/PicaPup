@@ -14,9 +14,10 @@ import kotlinx.android.synthetic.main.search_result_card.view.*
  */
 class ResultViewHolder(itemView: View?): RecyclerView.ViewHolder(itemView) {
     val cardView = itemView!!.findViewById<CardView>(R.id.homefeed_cardview)
-    val resultImgView = itemView!!.findViewById<ImageView>(R.id.dog_img)
 
     fun onBindView(mContext: Context, resultImg: String){
-        Picasso.with(mContext).load(resultImg).into(resultImgView)
+        val resultImgView = itemView!!.findViewById<ImageView>(R.id.homefeed_dog_image)
+
+        Picasso.with(mContext.applicationContext).load(resultImg).into(resultImgView)
     }
 }

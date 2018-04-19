@@ -109,7 +109,7 @@ class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchLis
 
     fun postLostDog(dog: Model.Dog){
         val user = DogLover(fcmToken,null,userName, null, phoneNumber, null)
-        val lostDog = Model.LostDog(dog.dogName,user)
+        val lostDog = Model.LostDog(dog.dogName,user,"fcm")
         mFirebaseManager.mLostDogDBRef.child(dog.pupCode).setValue(lostDog)
     }
 
