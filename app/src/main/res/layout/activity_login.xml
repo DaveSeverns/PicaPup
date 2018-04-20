@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_pap"
     tools:context="com.pic_a_pup.dev.pic_a_pup.Controller.LoginActivity">
 
     <ImageView
@@ -23,18 +22,14 @@
 
     <EditText
         android:id="@+id/email_edit_text"
-        android:layout_width="wrap_content"
+        android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:backgroundTint="@android:color/white"
         android:ems="10"
         android:fontFamily="serif"
         android:hint="@string/email"
         android:inputType="textPersonName"
         android:singleLine="false"
-        android:textColorHint="@android:color/white"
-
-        android:textColor="@android:color/white"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
@@ -44,18 +39,14 @@
 
     <EditText
         android:id="@+id/pass_edit_text"
-        android:layout_width="wrap_content"
+        android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:textColorHint="@android:color/white"
-
-        android:backgroundTint="@android:color/white"
         android:ems="10"
         android:fontFamily="serif"
         android:hint="@string/password"
         android:inputType="textPassword"
         android:singleLine="true"
-        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,8 +74,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/rounded_corner_btn"
-            android:backgroundTint="@color/colorAccent"
-            android:paddingRight="4dp"
             android:text="@string/sign_up" />
 
         <Button
@@ -94,8 +83,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/rounded_corner_btn"
-            android:backgroundTint="@color/colorAccent"
-            android:paddingLeft="4dp"
             android:text="@string/log_in" />
     </LinearLayout>
 

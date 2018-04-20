@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
@@ -22,6 +23,9 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.GsonBuilder
 import com.pic_a_pup.dev.pic_a_pup.R
+import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
+import kotlinx.android.synthetic.main.activity_classification.*
+import kotlinx.android.synthetic.main.activity_maps.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
@@ -59,6 +63,42 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         fabClose = AnimationUtils.loadAnimation(applicationContext, R.anim.fab_close)
 
         fabAnimationSetup()
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_map_page)
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
+        val menu = bottomNavigationView.menu
+        val menuItem = menu.getItem(1)
+        menuItem.isChecked = true
+
+        val mOnNavigationItemSelectedListener =
+                BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                    when (item.itemId) {
+                        R.id.navigation_home -> {
+                            val intentHome = HomeFeedActivity.newIntent(this)
+                            startActivity(intentHome)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_map -> {
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_camera -> {
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_collar ->{
+                            val collarStartIntent = Intent(this, QRCollarActivity::class.java)
+                            startActivity(collarStartIntent)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_profile -> {
+                            val intentProfile = ProfileActivity.newIntent(this)
+                            startActivity(intentProfile)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                    }
+                    false
+                }
+
+        navigation_map_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         fabPark.setOnClickListener {
             searchId = 1

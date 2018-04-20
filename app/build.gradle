@@ -72,6 +72,7 @@ dependencies {
     implementation 'org.jetbrains.anko:anko-sqlite:0.10.4'
     compile 'org.jetbrains.anko:anko-support-v4:0.10.4'
     compile 'org.jetbrains.anko:anko-sqlite:0.10.4'
+
     implementation 'com.android.volley:volley:1.1.0'
     implementation 'com.github.kittinunf.fuel:fuel-gson:1.10.0'
     implementation 'com.github.kittinunf.fuel:fuel-android:1.10.0'
