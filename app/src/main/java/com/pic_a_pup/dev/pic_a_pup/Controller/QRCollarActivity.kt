@@ -24,9 +24,6 @@ import com.google.zxing.Result
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import com.pic_a_pup.dev.pic_a_pup.Manifest
 import com.pic_a_pup.dev.pic_a_pup.Model.DogLover
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
