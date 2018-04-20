@@ -62,7 +62,7 @@ class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchLis
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_profile_page)
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
         val menu = bottomNavigationView.menu
-        val menuItem = menu.getItem(0)
+        val menuItem = menu.getItem(4)
         menuItem.isChecked = true
 
         val mOnNavigationItemSelectedListener =

@@ -1,33 +1,24 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
 import android.Manifest.permission.CAMERA
-import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
-import android.graphics.Camera
-import android.net.Uri
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.util.Log
-import com.google.zxing.Result
-import com.pic_a_pup.dev.pic_a_pup.R
-import me.dm7.barcodescanner.zxing.ZXingScannerView
-import android.os.Build
-import android.widget.Toast
 import android.content.pm.PackageManager
-import android.support.design.widget.BottomNavigationView
+import android.os.Build
+import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.telephony.SmsManager
+import android.util.Log
 import android.widget.TextView
-import com.google.firebase.database.ChildEventListener
+import android.widget.Toast
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.pic_a_pup.dev.pic_a_pup.Manifest
-import com.pic_a_pup.dev.pic_a_pup.Model.DogLover
+import com.google.zxing.Result
 import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
+import me.dm7.barcodescanner.zxing.ZXingScannerView
 
 
 class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
@@ -36,8 +27,6 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private val camId = android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK
     private val REQUEST_CAMERA = 1
     private val mFirebaseManager = FirebaseManager(this)
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,7 +110,6 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                 .show()
     }
 
-
     override fun handleResult(result: Result?) {
         var dogName: String? = null
         var dogLoverName: String? = null
@@ -147,12 +135,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                 Log.e("Error: ", "DatabaseError Dog not found")
                 noDogFoundDialog(myResult)
             }
-
         })
-
-
-
-
     }
 
     fun lostDogDialog(dogNameD:String?,ownerNameD:String?, phoneNumberOfOwner:String?, code:String?){
@@ -163,10 +146,10 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         |$phoneNumberOfOwner""".trimMargin()
         textView.textSize = 16f
 
-
         var builder = AlertDialog.Builder(this)
         builder.setTitle(formatedString).setView(textView)
-        builder.setPositiveButton("OK", DialogInterface.OnClickListener({ dialogInterface: DialogInterface, i: Int ->
+        builder.setPositiveButton("OK", DialogInterface
+                .OnClickListener({ dialogInterface: DialogInterface, i: Int ->
 
             try{
                 Log.e("Text finna be sent"," fam")
@@ -188,7 +171,6 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     }
 
-
     fun noDogFoundDialog(codeFound: String?){
         var builder = AlertDialog.Builder(this)
         builder.setTitle("No Dog reported Lost")
@@ -203,12 +185,9 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(this,
                             android.Manifest.permission.SEND_SMS)){
-
             }else{
                 ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.SEND_SMS),10)
             }
         }
     }
-
-
 }

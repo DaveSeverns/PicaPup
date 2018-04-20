@@ -59,7 +59,7 @@ class ClassificationActivity : AppCompatActivity() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_classification_page)
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
         val menu = bottomNavigationView.menu
-        val menuItem = menu.getItem(1)
+        val menuItem = menu.getItem(2)
         menuItem.isChecked = true
 
         val mOnNavigationItemSelectedListener =
@@ -114,12 +114,6 @@ class ClassificationActivity : AppCompatActivity() {
         submit_btn.setOnClickListener(this::onSubmit)
     }
 
-    companion object {
-        fun newIntent(context: Context): Intent {
-            return Intent(context, ClassificationActivity::class.java)
-        }
-    }
-
     fun onSubmit(view: View) {
         postImageToFirebase()
     }
@@ -128,7 +122,7 @@ class ClassificationActivity : AppCompatActivity() {
         if(requestCode == CLASSIFICATION_RESULT && resultCode == Activity.RESULT_OK){
             val stringBreedInfo = intent.getStringExtra("breed_info")
             mFirebaseManager.showToast(stringBreedInfo)
-            wiki_check_box.text = stringBreedInfo
+            breed_info_text.text = stringBreedInfo
 
         }
     }
@@ -167,7 +161,7 @@ class ClassificationActivity : AppCompatActivity() {
 
 
         }).addOnCompleteListener{ task ->
-            Toast.makeText(this,"Upload complete, breed info incoming...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"Finding breed...", Toast.LENGTH_SHORT).show()
             restClient.postSearchRequestToServer(postalCode,imgUrl.toString()).
                     enqueue(object: retrofit2.Callback<Model.DogSearchResult> {
                         override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
@@ -178,7 +172,7 @@ class ClassificationActivity : AppCompatActivity() {
                         override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
                             if(response!!.isSuccessful){
                                 if(response.body()?.model_error != null){
-                                    updateUiOnResponse("Breed Not Found, Try again", null)
+                                    updateUiOnResponse("Not Found", null)
                                 }else{
                                     var breedString = response.body()?.breed
                                     if(breedString != null){
@@ -217,7 +211,7 @@ class ClassificationActivity : AppCompatActivity() {
         if (breedInfo != null){
             breed_info_text.text = breedInfo
         }else{
-            breed_info_label.visibility = View.INVISIBLE
+            breed_info_text.text = getString(R.string.cant_identify_breed_message)
         }
         pre_response_frame.visibility = View.INVISIBLE
         post_response_frame.visibility = View.VISIBLE
