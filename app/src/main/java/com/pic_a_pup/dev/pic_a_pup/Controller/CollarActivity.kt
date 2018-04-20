@@ -20,7 +20,7 @@ class CollarActivity : AppCompatActivity() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_collar_page)
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
         val menu = bottomNavigationView.menu
-        val menuItem = menu.getItem(2)
+        val menuItem = menu.getItem(3)
         menuItem.isChecked = true
 
         val mOnNavigationItemSelectedListener =
