@@ -1,10 +1,14 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
 import android.Manifest.permission.CAMERA
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.location.Location
+import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -17,6 +21,15 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.zxing.Result
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.pic_a_pup.dev.pic_a_pup.Manifest
+import com.pic_a_pup.dev.pic_a_pup.Model.DogLover
+import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
@@ -27,10 +40,12 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private val camId = android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK
     private val REQUEST_CAMERA = 1
     private val mFirebaseManager = FirebaseManager(this)
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private var mLocation: Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         scannerView = ZXingScannerView(this)
         setContentView(scannerView)
         val currentApiVersion = Build.VERSION.SDK_INT
@@ -114,6 +129,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         var dogName: String? = null
         var dogLoverName: String? = null
         var dogLoverNumber: String? = null
+        var dogLoverFCM: String? = null
         val myResult = result?.getText();
         Log.d("QRCodeScanner", result?.getText());
         Log.d("QRCodeScanner", result?.getBarcodeFormat().toString());
@@ -124,6 +140,10 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                     dogName = snapshot.child("dogName").value as String
                     dogLoverName = snapshot.child("dogLover").child("name").value as String
                     dogLoverNumber = snapshot.child("dogLover").child("phoneNumber").value as String
+                    dogLoverFCM = snapshot.child("fcm_id").value as String
+                    var map = HashMap<String,Any>()
+                    map.put("found",true)
+                    mFirebaseManager.mLostDogDBRef.child(myResult).updateChildren(map)
 
                     Log.e("Dog Lover ", "$dogLoverName and phone number $dogLoverNumber")
                     Log.e("Dog Name ", dogName)
@@ -138,7 +158,8 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         })
     }
 
-    fun lostDogDialog(dogNameD:String?,ownerNameD:String?, phoneNumberOfOwner:String?, code:String?){
+    @SuppressLint("SetTextI18n")
+    fun lostDogDialog(dogNameD:String?, ownerNameD:String?, phoneNumberOfOwner:String?, pupCode: String?){
         var textView = TextView(this)
         val formatedString = "You Found $dogNameD!"
         textView.text = """$ownerNameD's dog,
@@ -165,7 +186,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
         }))
 
-        builder.setMessage(code)
+        builder.setMessage(pupCode)
         var alert1 = builder.create();
         alert1.show();
 

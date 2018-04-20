@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.LayoutInflater
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
@@ -27,9 +28,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.view.Menu
 import android.view.MenuItem
-import com.pic_a_pup.dev.pic_a_pup.Adapters.HomeFeedAdapter
+import android.view.ViewGroup
+import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.Query
+import com.pic_a_pup.dev.pic_a_pup.Model.FeedDogSearchResult
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
-import com.pic_a_pup.dev.pic_a_pup.Model.Model.DogSearchResult
 import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 
 //import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -42,8 +47,10 @@ class HomeFeedActivity : AppCompatActivity() {
     private var mLocation: Location? = null
     private var mImagePath: String? = null
     private lateinit var mUtility: Utility
+    private lateinit var mFirebaseManager: FirebaseManager
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewAdapter: FirebaseRecyclerAdapter<FeedDogSearchResult,ResultViewHolder>
+    private lateinit var mResDBRefQuery: Query
     private lateinit var viewManager: RecyclerView.LayoutManager
     val dogsSearched = arrayListOf<Model.DogSearchResult>()
     //private lateinit var adapter: FirebaseRecyclerAdapter<Model.thDogSearchResult,ResultViewHolder>
@@ -51,7 +58,10 @@ class HomeFeedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_feed)
-
+        recyclerView = findViewById<RecyclerView>(R.id.search_feed_recycler)
+        mFirebaseManager = FirebaseManager(this)
+        mResDBRefQuery = FirebaseDatabase.getInstance().reference.child(RESULTS_TABLE).limitToLast(10)
+        recyclerView.layoutManager = LinearLayoutManager(this)
         //request the necessary permissions
         ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -62,6 +72,21 @@ class HomeFeedActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
         mUtility = Utility(this)
+
+        val options: FirebaseRecyclerOptions<FeedDogSearchResult> = FirebaseRecyclerOptions.Builder<FeedDogSearchResult>()
+                .setQuery(mResDBRefQuery, FeedDogSearchResult::class.java).build()
+
+        viewAdapter = object :FirebaseRecyclerAdapter<FeedDogSearchResult,ResultViewHolder>(options){
+            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ResultViewHolder {
+                val view = LayoutInflater.from(parent!!.context).inflate(R.layout.search_result_card,parent,false)
+                return ResultViewHolder(view)
+            }
+
+            override fun onBindViewHolder(holder: ResultViewHolder, position: Int, model: FeedDogSearchResult) {
+                holder.onBindView(this@HomeFeedActivity,model.dogImageSent!!)
+            }
+        }
+        recyclerView.adapter = viewAdapter
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -122,7 +147,17 @@ class HomeFeedActivity : AppCompatActivity() {
         super.onStart()
         var currentUser = mAuth.currentUser
         Log.e("CURRENT_USER",currentUser.toString())
-        //adapter =
+
+
+        viewAdapter.startListening()
+
+    }
+
+
+
+    override fun onResume() {
+        super.onResume()
+        viewAdapter.notifyDataSetChanged()
     }
 
 
@@ -200,6 +235,10 @@ class HomeFeedActivity : AppCompatActivity() {
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        viewAdapter.stopListening()
+    }
 //    fun collarActivityStart(){
 //        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
 //        startActivity(collarStartIntent)

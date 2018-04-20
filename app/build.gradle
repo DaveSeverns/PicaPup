@@ -55,22 +55,29 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.7.3'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.7.3'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.7.3'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.7.3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
 
-    compile "com.squareup.retrofit2:retrofit:2.3.0"
-    compile "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
-    compile "com.squareup.retrofit2:converter-gson:2.3.0"
-    compile "com.squareup.retrofit2:converter-moshi:2.0.0"
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    implementation "com.squareup.retrofit2:retrofit:2.3.0"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.3.0"
+    implementation "com.squareup.retrofit2:converter-moshi:2.0.0"
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
     implementation "io.reactivex.rxjava2:rxandroid:2.0.1"
 
     implementation 'me.dm7.barcodescanner:zxing:1.9'
+    implementation 'org.jetbrains.anko:anko-support-v4:0.10.4'
+    implementation 'org.jetbrains.anko:anko-sqlite:0.10.4'
     compile 'org.jetbrains.anko:anko-support-v4:0.10.4'
     compile 'org.jetbrains.anko:anko-sqlite:0.10.4'
-    compile 'com.squareup.okhttp3:okhttp:3.9.1'
+
+    implementation 'com.android.volley:volley:1.1.0'
+    implementation 'com.github.kittinunf.fuel:fuel-gson:1.10.0'
+    implementation 'com.github.kittinunf.fuel:fuel-android:1.10.0'
+    implementation 'com.beust:klaxon:0.30'
+    compile 'com.squareup.okhttp3:okhttp:3.10.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

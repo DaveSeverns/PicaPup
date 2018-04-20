@@ -6,8 +6,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ExifInterface
-import android.net.Uri
-import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -16,6 +14,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import com.pic_a_pup.dev.pic_a_pup.Model.FeedDogSearchResult
 import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
@@ -27,7 +26,6 @@ import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
-import java.io.Serializable
 
 class ClassificationActivity : AppCompatActivity() {
 
@@ -179,6 +177,7 @@ class ClassificationActivity : AppCompatActivity() {
                                         val breedInfoString = response.body()!!.breed_info
                                         updateUiOnResponse(breedString,breedInfoString)
                                         Log.e("Response",breedString )
+                                        addSearchToTable(breedString,imgUrl!!)
                                     }else{
                                         Log.e("Connection: ", "made but not getting DSR")
                                         breedString = "no data from server"
@@ -215,6 +214,12 @@ class ClassificationActivity : AppCompatActivity() {
         }
         pre_response_frame.visibility = View.INVISIBLE
         post_response_frame.visibility = View.VISIBLE
+    }
+
+    fun addSearchToTable(breed:String, imageUrl: String){
+        var dogSearch: FeedDogSearchResult = FeedDogSearchResult(breed,imageUrl)
+        val keyString = mFirebaseManager.mResultDBRef.push().key
+        mFirebaseManager.mResultDBRef.child(keyString).setValue(dogSearch)
     }
 }
 

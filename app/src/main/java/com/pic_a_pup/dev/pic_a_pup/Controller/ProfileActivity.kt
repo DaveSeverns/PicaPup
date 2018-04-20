@@ -36,6 +36,7 @@ class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchLis
     private lateinit var dogListAdapter: DogRecyclerAdapter
     private var userName: String? = null
     private var phoneNumber:String? = null
+    private var fcmToken:String? = null
     private lateinit var mDbManager: DbManager
     private lateinit var dogsList: ArrayList<Model.Dog>
 
@@ -47,6 +48,7 @@ class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchLis
         val sharedPreferences = getSharedPreferences(USER_PREF_FILE, Context.MODE_PRIVATE)
         userName = sharedPreferences.getString(PREF_USER_NAME_KEY,"default")
         phoneNumber = sharedPreferences.getString(PREF_USER_PHONE_KEY, "2813308004")
+        fcmToken = sharedPreferences.getString(FCM_TOKEN_PREF_KEY,"fcm_token_here")
         mDbManager = DbManager(applicationContext)
         dogsList = mDbManager.getDoggosFromDb()
 
@@ -106,8 +108,8 @@ class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchLis
     }
 
     fun postLostDog(dog: Model.Dog){
-        val user = DogLover("FCM",null,userName, null, phoneNumber, null)
-        val lostDog = Model.LostDog(dog.dogName,user)
+        val user = DogLover(fcmToken,null,userName, null, phoneNumber, null)
+        val lostDog = Model.LostDog(dog.dogName,user,"fcm")
         mFirebaseManager.mLostDogDBRef.child(dog.pupCode).setValue(lostDog)
     }
 

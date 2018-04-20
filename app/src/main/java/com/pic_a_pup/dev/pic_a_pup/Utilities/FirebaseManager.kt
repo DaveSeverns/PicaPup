@@ -24,22 +24,15 @@ import java.net.URL
  * Created by davidseverns on 3/16/18.
  */
 class FirebaseManager(var mContext: Context) : Utility(mContext) {
-    var mAuth: FirebaseAuth
-    private var mDB: FirebaseDatabase
-    var mUserDBRef: DatabaseReference
-    var mStorageReference: StorageReference
-    var mResultDBRef: DatabaseReference
-    var mLostDogDBRef: DatabaseReference
+    var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    private var mDB: FirebaseDatabase = FirebaseDatabase.getInstance()
+    var mUserDBRef: DatabaseReference = FirebaseDatabase.getInstance().reference.child(USER_TABLE)
+    var mStorageReference: StorageReference = FirebaseStorage.getInstance().reference
+    var mResultDBRef: DatabaseReference = FirebaseDatabase.getInstance().reference.child(RESULTS_TABLE)
+    var mLostDogDBRef: DatabaseReference = FirebaseDatabase.getInstance().reference.child(LOST_DOG_TABLE)
 
-    init {
-        mResultDBRef = FirebaseDatabase.getInstance().reference.child(RESULTS_TABLE)
-        mAuth = FirebaseAuth.getInstance()
-        mDB = FirebaseDatabase.getInstance()
-        mUserDBRef = FirebaseDatabase.getInstance().reference.child(USER_TABLE)
-        mStorageReference = FirebaseStorage.getInstance().reference
-        //TODO This is holding a reference to the test table
-        mLostDogDBRef = FirebaseDatabase.getInstance().reference.child(LOST_DOG_TABLE)
-    }
+
+
 
     fun getFeedList(dataSnapshot: DataSnapshot): ArrayList<Model.DogSearchResult> {
         var dogSearches = ArrayList<Model.DogSearchResult>()
@@ -82,6 +75,8 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
         while(imgUrl == null){}
         return imgUrl.toString()
     }
+
+
 }
 
 
