@@ -78,7 +78,7 @@ class HomeFeedActivity : AppCompatActivity() {
 
         viewAdapter = object :FirebaseRecyclerAdapter<FeedDogSearchResult,ResultViewHolder>(options){
             override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ResultViewHolder {
-                val view = LayoutInflater.from(parent!!.context).inflate(R.layout.homefeed_dog_item,parent,false)
+                val view = LayoutInflater.from(parent!!.context).inflate(R.layout.search_result_card,parent,false)
                 return ResultViewHolder(view)
             }
 

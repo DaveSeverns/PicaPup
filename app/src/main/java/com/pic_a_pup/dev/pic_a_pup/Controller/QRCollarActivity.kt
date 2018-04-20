@@ -1,6 +1,7 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
 import android.Manifest.permission.CAMERA
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -166,25 +167,16 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     }
 
-    fun lostDogDialog(dogNameD:String?,ownerNameD:String?, phoneNumberOfOwner:String?, code:String?){
+    @SuppressLint("SetTextI18n")
+    fun lostDogDialog(dogNameD:String?, ownerNameD:String?, phoneNumberOfOwner:String?, pupCode: String?){
         var textView = TextView(this)
         val formatedString = "You Found $dogNameD!"
         textView.text = """$ownerNameD's dog,
         |you can reach them at:
         |$phoneNumberOfOwner""".trimMargin()
         textView.textSize = 16f
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), 10)
-                return
-            }
 
-        mFusedLocationClient!!.lastLocation.addOnSuccessListener(this) { location ->
-            if (location != null) {
-                mLocation = location
-            }
-        }
-        val fcmNotificationModel = Model.FcmNotificationModel.createFCMNotification("","","",mLocation!!)
+
 
         var builder = AlertDialog.Builder(this)
         builder.setTitle(formatedString).setView(textView)
@@ -204,7 +196,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
         }))
 
-        builder.setMessage(code)
+        builder.setMessage(pupCode)
         var alert1 = builder.create();
         alert1.show();
 
