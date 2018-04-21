@@ -33,6 +33,7 @@ const val REQUEST_IMG_CAPTURE = 369 as Int
 const val IMAGE_INTENT_TAG = "image"
 const val LAT_INTENT_TAG = "lat"
 const val LON_INTENT_TAG = "lon"
+const val GALLERY_INTENT_TAG = "gallery"
 /**********/
 
 

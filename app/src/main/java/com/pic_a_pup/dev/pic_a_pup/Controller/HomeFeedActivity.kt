@@ -234,10 +234,10 @@ class HomeFeedActivity : AppCompatActivity() {
             }
         }else if(requestCode == 42069 && resultCode == Activity.RESULT_OK){
             val targetUri = data!!.data
-            val galleryImageFile = File(targetUri.toString())
+            //val galleryImageFile = File(targetUri.toString())
 
             val classificationIntent = Intent(this, ClassificationActivity::class.java)
-            classificationIntent.putExtra(IMAGE_INTENT_TAG, galleryImageFile.absolutePath)
+            classificationIntent.putExtra(GALLERY_INTENT_TAG, targetUri)
             classificationIntent.putExtra(LAT_INTENT_TAG, mLocation!!.latitude)
             classificationIntent.putExtra(LON_INTENT_TAG, mLocation!!.longitude)
 

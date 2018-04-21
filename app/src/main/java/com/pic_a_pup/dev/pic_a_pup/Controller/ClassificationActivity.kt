@@ -6,8 +6,11 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ExifInterface
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
+import android.provider.MediaStore.Images.Media.getBitmap
 import android.support.design.widget.BottomNavigationView
 import android.util.Log
 import android.view.View
@@ -15,6 +18,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import com.github.anastr.speedviewlib.ProgressiveGauge
+import com.github.anastr.speedviewlib.SpeedView
 import com.pic_a_pup.dev.pic_a_pup.Model.FeedDogSearchResult
 import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
@@ -26,11 +31,14 @@ import retrofit2.Call
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
+import kotlin.math.roundToInt
 
 class ClassificationActivity : AppCompatActivity() {
 
     private var imageFileName: String? = null
+    private var galleryUri: Uri? = null
     private var imageFile: File? = null
     private var imageBitmap: Bitmap? = null
     private var latitude: Double? = null
@@ -49,7 +57,12 @@ class ClassificationActivity : AppCompatActivity() {
         val searchImg = findViewById<ImageView>(R.id.searchImage)
         val locationEditText = findViewById<EditText>(R.id.postalCode_edittext)
 
-        imageFileName = intent.getStringExtra(IMAGE_INTENT_TAG)
+        if (intent.getParcelableExtra<Uri>(GALLERY_INTENT_TAG) != null){
+            galleryUri = intent.getParcelableExtra(GALLERY_INTENT_TAG)
+        }else{
+            imageFileName = intent.getStringExtra(IMAGE_INTENT_TAG)
+            imageFile = File(imageFileName)
+        }
         latitude = intent.getDoubleExtra(LAT_INTENT_TAG, LAT_DEFAULT)
         longtiude = intent.getDoubleExtra(LON_INTENT_TAG, LON_DEFAULT)
 
@@ -95,9 +108,15 @@ class ClassificationActivity : AppCompatActivity() {
 
         locationEditText.setText(postalCode)
 
-        imageFile = File(imageFileName)
 
-        if (imageFile!!.exists()) {
+
+        if(galleryUri != null){
+            try{
+                imageBitmap = getBitmap(contentResolver,galleryUri)
+            }catch (e: FileNotFoundException){
+                e.printStackTrace()
+            }
+        }else{
             imageBitmap = BitmapFactory.decodeFile(imageFile!!.absolutePath)
             var exif: ExifInterface? = null
             try {
@@ -105,10 +124,10 @@ class ClassificationActivity : AppCompatActivity() {
             } catch (e:IOException) {
                 e.printStackTrace()
             }
-
-
-            searchImg.setImageBitmap(imageBitmap)
         }
+        searchImg.setImageBitmap(imageBitmap)
+
+
 
         submit_btn.setOnClickListener(this::onSubmit)
     }
@@ -170,7 +189,7 @@ class ClassificationActivity : AppCompatActivity() {
 
                         override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
                             if(response!!.isSuccessful){
-                                val probability = response.body()!!.prob.toString()
+                                val probability = response.body()!!.prob!!.toFloat()
                                 if(response.body()?.model_error != null){
                                     updateUiOnResponse("Not Found", null,probability)
                                 }else{
@@ -184,7 +203,7 @@ class ClassificationActivity : AppCompatActivity() {
                                     }else{
                                         Toast.makeText(this@ClassificationActivity, "Please Retry...",Toast.LENGTH_SHORT).show()
                                         Log.e("Connection: ", "made but not getting DSR")
-                                        Log.e("Probability $breedString ", probability )
+                                        Log.e("Probability $breedString ", probability.toString() )
 
                                     }
                                 }
@@ -210,11 +229,13 @@ class ClassificationActivity : AppCompatActivity() {
     }
 
 
-    fun updateUiOnResponse(breed: String?, breedInfo: String?, probability: String?){
+    fun updateUiOnResponse(breed: String?, breedInfo: String?, probability: Float?){
         breed_text.text = breed
-        if(probability!=null){
-            dog_prob_bar.progress = probability!!.toInt()
-
+        if(probability !=null){
+            var dogProbBar = findViewById<ProgressiveGauge>(R.id.dog_prob_gauge_classification)
+            dogProbBar.speedometerColor = getColor(R.color.colorPrimary)
+            dogProbBar.isWithTremble = false
+            dogProbBar.setSpeedAt(probability.times(100))
         }
         if (breedInfo != null){
             breed_info_text.text = breedInfo
@@ -225,7 +246,7 @@ class ClassificationActivity : AppCompatActivity() {
         post_response_frame.visibility = View.VISIBLE
     }
 
-    fun addSearchToTable(breed:String, imageUrl: String, probability: String?){
+    fun addSearchToTable(breed:String, imageUrl: String, probability: Float){
         var dogSearch = FeedDogSearchResult(breed,imageUrl,probability)
         val keyString = mFirebaseManager.mResultDBRef.push().key
         mFirebaseManager.mResultDBRef.child(keyString).setValue(dogSearch)
