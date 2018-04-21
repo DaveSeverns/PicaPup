@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="300dp">
+    android:layout_height="400dp">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -18,20 +19,68 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.087">
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/card_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
 
-            <ImageView
-                android:id="@+id/dog_img"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/pap_gradient_text" />
+            <RelativeLayout
+                android:id="@+id/relative_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:background="@android:color/background_light"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/card_breed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="11dp"
+                    android:allowUndo="true"
+                    android:fontFamily="@font/pacifico"
+                    android:singleLine="false"
+                    android:textAlignment="viewStart"
+                    android:textColor="@android:color/black"
+                    android:textSize="22sp"
+                    tools:text="Breed Here" />
+
+                <com.github.anastr.speedviewlib.ProgressiveGauge
+                    android:id="@+id/dog_prob_gauge_card"
+                    android:layout_width="120dp"
+                    android:layout_height="80dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    app:sv_orientation="HORIZONTAL"
+                    app:sv_speedTextColor="@color/colorPrimaryDark"
+                    app:sv_speedTextSize="18sp"
+                    app:sv_unit="% Match"
+                    app:sv_unitTextColor="@color/colorPrimaryDark"
+                    app:sv_unitTextSize="14sp"
+                    app:sv_unitUnderSpeedText="false" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relative_image"
+                android:layout_width="match_parent"
+                android:layout_height="300dp">
+
+                <ImageView
+                    android:id="@+id/dog_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/pap_gradient_text" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
 
 
     </android.support.v7.widget.CardView>

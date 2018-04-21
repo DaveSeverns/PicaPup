@@ -85,21 +85,14 @@ class HomeFeedActivity : AppCompatActivity() {
             }
 
             override fun onBindViewHolder(holder: ResultViewHolder, position: Int, model: FeedDogSearchResult) {
-                holder.onBindView(this@HomeFeedActivity,model.dogImageSent!!)
+                holder.onBindView(this@HomeFeedActivity,model.dogImageSent!!,model.probability,model.breed)
             }
         }
         recyclerView.adapter = viewAdapter
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        //Feed of recent dog searches by other users pulled from FB
-//        viewManager = LinearLayoutManager(this)
-//        viewAdapter = HomeFeedAdapter(this, dogsSearched)
-//        recyclerView = findViewById<RecyclerView>(R.id.recyclerview_homefeed).apply {
-//            setHasFixedSize(true)
-//            layoutManager = viewManager
-//            adapter = viewAdapter
-//        }
+
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_home_page)
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
