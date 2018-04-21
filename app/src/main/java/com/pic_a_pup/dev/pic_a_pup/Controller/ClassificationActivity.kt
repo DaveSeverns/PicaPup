@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.Toast
 import com.pic_a_pup.dev.pic_a_pup.Model.FeedDogSearchResult
 import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
@@ -164,23 +165,27 @@ class ClassificationActivity : AppCompatActivity() {
                     enqueue(object: retrofit2.Callback<Model.DogSearchResult> {
                         override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
                             Log.e("Network Call", "Failure ${t.toString()}")
-                            updateUiOnResponse("Error","Server Not Responding")
+                            updateUiOnResponse("Error","Server Not Responding",null)
                         }
 
                         override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
                             if(response!!.isSuccessful){
+                                val probability = response.body()!!.prob.toString()
                                 if(response.body()?.model_error != null){
-                                    updateUiOnResponse("Not Found", null)
+                                    updateUiOnResponse("Not Found", null,probability)
                                 }else{
                                     var breedString = response.body()?.breed
                                     if(breedString != null){
                                         val breedInfoString = response.body()!!.breed_info
-                                        updateUiOnResponse(breedString,breedInfoString)
+                                        Log.e("Probability $breedString ", probability.toString() )
+                                        updateUiOnResponse(breedString,breedInfoString,probability)
                                         Log.e("Response",breedString )
-                                        addSearchToTable(breedString,imgUrl!!)
+                                        addSearchToTable(breedString,imgUrl!!,probability)
                                     }else{
+                                        Toast.makeText(this@ClassificationActivity, "Please Retry...",Toast.LENGTH_SHORT).show()
                                         Log.e("Connection: ", "made but not getting DSR")
-                                        breedString = "no data from server"
+                                        Log.e("Probability $breedString ", probability )
+
                                     }
                                 }
 
@@ -205,8 +210,12 @@ class ClassificationActivity : AppCompatActivity() {
     }
 
 
-    fun updateUiOnResponse(breed: String?, breedInfo: String?){
+    fun updateUiOnResponse(breed: String?, breedInfo: String?, probability: String?){
         breed_text.text = breed
+        if(probability!=null){
+            dog_prob_bar.progress = probability!!.toInt()
+
+        }
         if (breedInfo != null){
             breed_info_text.text = breedInfo
         }else{
@@ -216,8 +225,8 @@ class ClassificationActivity : AppCompatActivity() {
         post_response_frame.visibility = View.VISIBLE
     }
 
-    fun addSearchToTable(breed:String, imageUrl: String){
-        var dogSearch: FeedDogSearchResult = FeedDogSearchResult(breed,imageUrl)
+    fun addSearchToTable(breed:String, imageUrl: String, probability: String?){
+        var dogSearch = FeedDogSearchResult(breed,imageUrl,probability)
         val keyString = mFirebaseManager.mResultDBRef.push().key
         mFirebaseManager.mResultDBRef.child(keyString).setValue(dogSearch)
     }

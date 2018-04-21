@@ -2,6 +2,7 @@ package com.pic_a_pup.dev.pic_a_pup.Utilities
 
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import io.reactivex.Observable
+import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Call
@@ -15,6 +16,7 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.*
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 /**
@@ -28,7 +30,14 @@ class NetworkManager {
                                       @Field("url") postalLocation: String?): Call<Model.DogSearchResult>
         companion object Factory{
             fun create(): PaPRestClient{
-                val retrofit = Retrofit.Builder().baseUrl(AWS_IP)
+                val okHttpClient = OkHttpClient.Builder()
+                        .readTimeout(120, TimeUnit.SECONDS)
+                        .writeTimeout(120, TimeUnit.SECONDS)
+                        .connectTimeout(120, TimeUnit.SECONDS)
+
+                        //.addNetworkInterceptor(networkInterceptor)
+                        .build()
+                val retrofit = Retrofit.Builder().baseUrl(AWS_IP).client(okHttpClient)
                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()

@@ -34,5 +34,8 @@
     <string name="title_activity_maps">Pic-a-Park</string>
     <string name="title_map">Map</string>
     <string name="dog">Dog</string>
+    <string name="use_the_camera">Use the Camera</string>
+    <string name="how_would_you_like_to_upload_your_picture">How would you like to upload your picture?</string>
+    <string name="use_gallery">Use Gallery</string>
 
 </resources>

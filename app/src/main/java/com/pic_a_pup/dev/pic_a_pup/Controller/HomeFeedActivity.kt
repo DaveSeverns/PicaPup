@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.FileProvider
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -29,6 +30,7 @@ import java.util.*
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.Button
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.FirebaseDatabase
@@ -117,7 +119,7 @@ class HomeFeedActivity : AppCompatActivity() {
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.navigation_camera -> {
-                        onLaunchCamera()
+                        getImageAlertDialog()
                         return@OnNavigationItemSelectedListener true
                     }
                     R.id.navigation_collar -> {
@@ -190,6 +192,23 @@ class HomeFeedActivity : AppCompatActivity() {
 
     }
 
+    fun onOpenGallery(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this@HomeFeedActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
+                return
+            }
+
+        mFusedLocationClient!!.lastLocation.addOnSuccessListener(this) { location ->
+            if (location != null) {
+                mLocation = location
+            }
+        }
+        val galleryIntent = Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(galleryIntent,42069)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == REQUEST_IMG_CAPTURE && resultCode == Activity.RESULT_OK){
             val mImageFile= File(mImagePath!!)
@@ -213,6 +232,16 @@ class HomeFeedActivity : AppCompatActivity() {
                     startActivity(classificationIntent)
                 }
             }
+        }else if(requestCode == 42069 && resultCode == Activity.RESULT_OK){
+            val targetUri = data!!.data
+            val galleryImageFile = File(targetUri.toString())
+
+            val classificationIntent = Intent(this, ClassificationActivity::class.java)
+            classificationIntent.putExtra(IMAGE_INTENT_TAG, galleryImageFile.absolutePath)
+            classificationIntent.putExtra(LAT_INTENT_TAG, mLocation!!.latitude)
+            classificationIntent.putExtra(LON_INTENT_TAG, mLocation!!.longitude)
+
+            startActivity(classificationIntent)
         }
     }
 
@@ -243,4 +272,24 @@ class HomeFeedActivity : AppCompatActivity() {
 //        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
 //        startActivity(collarStartIntent)
 //    }
+
+    private fun getImageAlertDialog() {
+        val dialogBuilder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.image_select_dialog, null)
+        dialogBuilder.setView(dialogView)
+
+        val uploadBtn = dialogView.findViewById(R.id.button_dialog_upload) as Button
+        val camBtn = dialogView.findViewById(R.id.button_dialog_camera) as Button
+
+        uploadBtn.setOnClickListener {
+            onOpenGallery()
+        }
+
+        camBtn.setOnClickListener {
+            onLaunchCamera()
+        }
+
+        dialogBuilder.create().show()
+    }
 }

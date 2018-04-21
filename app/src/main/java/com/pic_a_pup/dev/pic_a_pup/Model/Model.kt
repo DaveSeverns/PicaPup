@@ -28,7 +28,8 @@ object Model {
                                var model_error: String?,
                                var wikipedia_error: String?,
                                var petfinder_error: String?,
-                               var shelterList: List<DogShelter>?)
+                               var shelterList: List<DogShelter>?,
+                               var prob: Double?)
 
 
     data class ModelSearchRequest(var imgUrl: String,
