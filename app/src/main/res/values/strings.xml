@@ -4,14 +4,13 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_classification">Pic-a-Breed</string>
-    <string name="title_activity_maps">Pic-a-Park</string>
     <string name="user_name">User Name</string>
     <string name="password">Password</string>
     <string name="sign_up">Sign-Up</string>
     <string name="log_in">Log In</string>
     <string name="email">Email</string>
     <string name="submit">Submit</string>
-    <string name="camera">Camera</string>
+    <string name="camera">Pic-a-Breed</string>
     <string name="file_provider_authority" translatable="false">com.pic_a_pup.dev.fileprovider</string>
     <string name="log_out">Log Out</string>
     <string name="petfinder_cb_label">I want to know where I can adopt this doggo!</string>
@@ -20,7 +19,7 @@
     <string name="info">Info:</string>
     <string name="breed">Breed:</string>
     <string name="placeholder">PlaceHolder</string>
-    <string name="collar">Collar</string>
+    <string name="collar">Pic-a-Collar</string>
     <string name="profile">Profile</string>
     <string name="phone_number">Phone Number (5551234567)</string>
     <string name="doggos">Doggos:</string>
@@ -33,6 +32,11 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="create_account">Create Account</string>
     <string name="cant_identify_breed_message">Sorry, we were unable to identify the breed. Please make sure the image is clear and focused on the dog\'s face.</string>
+    <string name="title_activity_maps">Pic-a-Park</string>
     <string name="title_map">Map</string>
     <string name="dog">Dog</string>
+    <string name="use_the_camera">Use the Camera</string>
+    <string name="how_would_you_like_to_upload_your_picture">How would you like to upload your picture?</string>
+    <string name="use_gallery">Use Gallery</string>
+
 </resources>

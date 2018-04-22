@@ -97,14 +97,27 @@
 
                 <TextView
                     android:id="@+id/breed_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight=".7"
                     android:layout_marginStart="12dp"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/pacifico"
                     android:textColor="#551053"
-                    android:text="dog breed" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <com.github.anastr.speedviewlib.ProgressiveGauge
+                    android:id="@+id/dog_prob_gauge_classification"
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_weight=".3"
+                    app:sv_speedTextSize="22sp"
+                    app:sv_unitTextSize="18sp"
+                    app:sv_speedTextColor="@color/colorPrimaryDark"
+                    app:sv_unitTextColor="@color/colorPrimaryDark"
+                    app:sv_orientation="HORIZONTAL"
+                    app:sv_unit="%"
+                    app:sv_unitUnderSpeedText="false" />
 
             </LinearLayout>
 
@@ -113,8 +126,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                android:textSize="40sp"
-                android:text="Please try again." />
+                android:textSize="18sp"
+                android:text="Please try again."/>
 
             <Button
                 android:id="@+id/button_find_shelters"

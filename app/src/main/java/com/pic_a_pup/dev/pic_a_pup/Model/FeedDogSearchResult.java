@@ -3,14 +3,17 @@ package com.pic_a_pup.dev.pic_a_pup.Model;
 public class FeedDogSearchResult {
     String breed;
     String dogImageSent;
+    float probability;
     public FeedDogSearchResult(){
         this.breed="default_breed";
         this.dogImageSent = "default_image";
+        this.probability = 42;
     }
 
-    public FeedDogSearchResult(String breed, String dogImageSent) {
+    public FeedDogSearchResult(String breed, String dogImageSent, float probability) {
         this.breed = breed;
         this.dogImageSent = dogImageSent;
+        this.probability = probability;
     }
 
     public String getBreed() {
@@ -27,5 +30,13 @@ public class FeedDogSearchResult {
 
     public void setDogImageSent(String dogImageSent) {
         this.dogImageSent = dogImageSent;
+    }
+
+    public float getProbability() {
+        return probability;
+    }
+
+    public void setProbability(float probability) {
+        this.probability = probability;
     }
 }

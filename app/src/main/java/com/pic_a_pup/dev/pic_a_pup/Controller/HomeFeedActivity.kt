@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.FileProvider
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -29,6 +30,7 @@ import java.util.*
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.Button
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.FirebaseDatabase
@@ -78,28 +80,20 @@ class HomeFeedActivity : AppCompatActivity() {
         val options: FirebaseRecyclerOptions<FeedDogSearchResult> = FirebaseRecyclerOptions.Builder<FeedDogSearchResult>()
                 .setQuery(mResDBRefQuery, FeedDogSearchResult::class.java).build()
 
-        viewAdapter = object :FirebaseRecyclerAdapter<FeedDogSearchResult,ResultViewHolder>(options){
+        viewAdapter = object : FirebaseRecyclerAdapter<FeedDogSearchResult, ResultViewHolder>(options) {
             override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ResultViewHolder {
-                val view = LayoutInflater.from(parent!!.context).inflate(R.layout.search_result_card,parent,false)
+                val view = LayoutInflater.from(parent!!.context).inflate(R.layout.search_result_card, parent, false)
                 return ResultViewHolder(view)
             }
 
             override fun onBindViewHolder(holder: ResultViewHolder, position: Int, model: FeedDogSearchResult) {
-                holder.onBindView(this@HomeFeedActivity,model.dogImageSent!!)
+                holder.onBindView(this@HomeFeedActivity, model.dogImageSent!!, model.probability, model.breed)
             }
         }
         recyclerView.adapter = viewAdapter
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        //Feed of recent dog searches by other users pulled from FB
-//        viewManager = LinearLayoutManager(this)
-//        viewAdapter = HomeFeedAdapter(this, dogsSearched)
-//        recyclerView = findViewById<RecyclerView>(R.id.recyclerview_homefeed).apply {
-//            setHasFixedSize(true)
-//            layoutManager = viewManager
-//            adapter = viewAdapter
-//        }
     }
 
     private fun setUpNavBar() {
@@ -110,33 +104,33 @@ class HomeFeedActivity : AppCompatActivity() {
         menuItem.isChecked = true
 
         val mOnNavigationItemSelectedListener =
-                BottomNavigationView.OnNavigationItemSelectedListener { item ->
-                    when (item.itemId) {
-                        R.id.navigation_home -> {
-                            return@OnNavigationItemSelectedListener true
-                        }
-                        R.id.navigation_map -> {
-                            val intentMap = MapsActivity.newIntent(this)
-                            startActivity(intentMap)
-                            return@OnNavigationItemSelectedListener true
-                        }
-                        R.id.navigation_camera -> {
-                            onLaunchCamera()
-                            return@OnNavigationItemSelectedListener true
-                        }
-                        R.id.navigation_collar -> {
-                            val collarStartIntent = Intent(this, QRCollarActivity::class.java)
-                            startActivity(collarStartIntent)
-                            return@OnNavigationItemSelectedListener true
-                        }
-                        R.id.navigation_profile -> {
-                            val intentProfile = ProfileActivity.newIntent(this)
-                            startActivity(intentProfile)
-                            return@OnNavigationItemSelectedListener true
-                        }
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.navigation_home -> {
+                        return@OnNavigationItemSelectedListener true
                     }
-                    false
+                    R.id.navigation_map -> {
+                        val intentMap = MapsActivity.newIntent(this)
+                        startActivity(intentMap)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_camera -> {
+                        getImageAlertDialog()
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_collar -> {
+                        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
+                        startActivity(collarStartIntent)
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_profile -> {
+                        val intentProfile = ProfileActivity.newIntent(this)
+                        startActivity(intentProfile)
+                        return@OnNavigationItemSelectedListener true
+                    }
                 }
+                false
+            }
 
         navigation_home_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
@@ -194,6 +188,23 @@ class HomeFeedActivity : AppCompatActivity() {
 
     }
 
+    fun onOpenGallery(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this@HomeFeedActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
+                return
+            }
+
+        mFusedLocationClient!!.lastLocation.addOnSuccessListener(this) { location ->
+            if (location != null) {
+                mLocation = location
+            }
+        }
+        val galleryIntent = Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(galleryIntent,42069)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == REQUEST_IMG_CAPTURE && resultCode == Activity.RESULT_OK){
             val mImageFile= File(mImagePath!!)
@@ -217,6 +228,16 @@ class HomeFeedActivity : AppCompatActivity() {
                     startActivity(classificationIntent)
                 }
             }
+        }else if(requestCode == 42069 && resultCode == Activity.RESULT_OK){
+            val targetUri = data!!.data
+            //val galleryImageFile = File(targetUri.toString())
+
+            val classificationIntent = Intent(this, ClassificationActivity::class.java)
+            classificationIntent.putExtra(GALLERY_INTENT_TAG, targetUri)
+            classificationIntent.putExtra(LAT_INTENT_TAG, mLocation!!.latitude)
+            classificationIntent.putExtra(LON_INTENT_TAG, mLocation!!.longitude)
+
+            startActivity(classificationIntent)
         }
     }
 
@@ -247,4 +268,24 @@ class HomeFeedActivity : AppCompatActivity() {
 //        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
 //        startActivity(collarStartIntent)
 //    }
+
+    private fun getImageAlertDialog() {
+        val dialogBuilder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.image_select_dialog, null)
+        dialogBuilder.setView(dialogView)
+
+        val uploadBtn = dialogView.findViewById(R.id.button_dialog_upload) as Button
+        val camBtn = dialogView.findViewById(R.id.button_dialog_camera) as Button
+
+        uploadBtn.setOnClickListener {
+            onOpenGallery()
+        }
+
+        camBtn.setOnClickListener {
+            onLaunchCamera()
+        }
+
+        dialogBuilder.create().show()
+    }
 }

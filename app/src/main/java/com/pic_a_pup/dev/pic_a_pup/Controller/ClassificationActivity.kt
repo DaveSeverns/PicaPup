@@ -1,19 +1,25 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ExifInterface
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
+import android.provider.MediaStore.Images.Media.getBitmap
 import android.support.design.widget.BottomNavigationView
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
+import android.widget.ProgressBar
 import android.widget.Toast
+import com.github.anastr.speedviewlib.ProgressiveGauge
+import com.github.anastr.speedviewlib.SpeedView
 import com.pic_a_pup.dev.pic_a_pup.Model.FeedDogSearchResult
 import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
@@ -25,11 +31,14 @@ import retrofit2.Call
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
+import kotlin.math.roundToInt
 
 class ClassificationActivity : AppCompatActivity() {
 
     private var imageFileName: String? = null
+    private var galleryUri: Uri? = null
     private var imageFile: File? = null
     private var imageBitmap: Bitmap? = null
     private var latitude: Double? = null
@@ -48,7 +57,12 @@ class ClassificationActivity : AppCompatActivity() {
         val searchImg = findViewById<ImageView>(R.id.searchImage)
         val locationEditText = findViewById<EditText>(R.id.postalCode_edittext)
 
-        imageFileName = intent.getStringExtra(IMAGE_INTENT_TAG)
+        if (intent.getParcelableExtra<Uri>(GALLERY_INTENT_TAG) != null){
+            galleryUri = intent.getParcelableExtra(GALLERY_INTENT_TAG)
+        }else{
+            imageFileName = intent.getStringExtra(IMAGE_INTENT_TAG)
+            imageFile = File(imageFileName)
+        }
         latitude = intent.getDoubleExtra(LAT_INTENT_TAG, LAT_DEFAULT)
         longtiude = intent.getDoubleExtra(LON_INTENT_TAG, LON_DEFAULT)
 
@@ -115,6 +129,30 @@ class ClassificationActivity : AppCompatActivity() {
 
         navigation_classification_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
+        locationEditText.setText(postalCode)
+
+
+
+        if(galleryUri != null){
+            try{
+                imageBitmap = getBitmap(contentResolver,galleryUri)
+            }catch (e: FileNotFoundException){
+                e.printStackTrace()
+            }
+        }else{
+            imageBitmap = BitmapFactory.decodeFile(imageFile!!.absolutePath)
+            var exif: ExifInterface? = null
+            try {
+                exif = ExifInterface(imageFile!!.absolutePath)
+            } catch (e:IOException) {
+                e.printStackTrace()
+            }
+        }
+        searchImg.setImageBitmap(imageBitmap)
+
+
+
+        submit_btn.setOnClickListener(this::onSubmit)
     }
 
     fun onSubmit(view: View) {
@@ -143,9 +181,25 @@ class ClassificationActivity : AppCompatActivity() {
         imageBitmap!!.compress((Bitmap.CompressFormat.JPEG),50,byteArrayOutputStream)
         val data = byteArrayOutputStream.toByteArray()
         Log.e("I actually run", "postImageToFb")
+        //mFirebaseManager.showToast("You hit me!!!!!!!!")
 
         fbFile.putBytes(data).addOnSuccessListener(this, { taskSnapshot ->
                 imgUrl = taskSnapshot.downloadUrl.toString()
+                //mFirebaseManager.showToast(imgUrl.toString())
+                Log.e("Fb Mngr", "Success")
+                //searchRequest = Model.ModelSearchRequest(imgUrl.toString(),petfinder_checkbox.isChecked, wiki_check_box.isChecked,postalCode!!)
+                //Log.e("Search Request", searchRequest.toString())
+                Log.e("Url", imgUrl.toString())
+
+
+                //Observable.just("").subscribeOn(Schedulers.io()).flatMap { restClient.postSearchRequestToServer(postalCode, imgUrl) }
+                //        .map { dsr ->
+                //            Model.DogSearchResult(dsr.breed, dsr.breed_info,null, null, null, null) }
+                //        .observeOn(AndroidSchedulers.mainThread()).subscribe{res -> print(res.toString())}
+                //mFirebaseManager.showToast("Submission Sent")
+
+
+
 
         }).addOnCompleteListener{ task ->
             Toast.makeText(this,"Recognizing breed...", Toast.LENGTH_LONG).show()
@@ -158,20 +212,25 @@ class ClassificationActivity : AppCompatActivity() {
 
                         override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
                             if(response!!.isSuccessful){
+                                var probability:Float? = null
+                                if(response.body()!!.prob != null){
+                                    probability = response.body()!!.prob!!.toFloat()
+                                }
                                 if(response.body()?.model_error != null){
-                                    updateUiOnResponse("Breed Not Found", null)
-                                } else {
+                                    updateUiOnResponse("Not Found", null,probability)
+                                }else{
                                     var breedString = response.body()?.breed
-                                    println("*******RESPONSE " + response.body())
                                     if(breedString != null){
                                         val breedInfoString = response.body()!!.breed_info
-
-                                        updateUiOnResponse(breedString,breedInfoString)
+                                        Log.e("Probability $breedString ", probability.toString() )
+                                        updateUiOnResponse(breedString,breedInfoString,probability)
                                         Log.e("Response",breedString )
-                                        addSearchToTable(breedString,imgUrl!!)
-                                    } else {
+                                        addSearchToTable(breedString,imgUrl!!,probability!!)
+                                    }else{
+                                        Toast.makeText(this@ClassificationActivity, "Please Retry...",Toast.LENGTH_SHORT).show()
                                         Log.e("Connection: ", "made but not getting DSR")
-                                        breedString = "no data from server"
+                                        Log.e("Probability $breedString ", probability.toString() )
+
                                     }
                                 }
 
@@ -183,13 +242,27 @@ class ClassificationActivity : AppCompatActivity() {
                                     else -> {mFirebaseManager.showToast("Unknown Error")}
                                 }
                             }
-                        }
+
+
+
+                              //val intent = Intent(applicationContext,ClassificationActivity:: class.java)
+                              //intent.putExtra("breed_info", breedInfoString)
+                              //startActivityForResult(intent, CLASSIFICATION_RESULT)
+                           }
+
                     })
         }
     }
 
-    fun updateUiOnResponse(breed: String?, breedInfo: String?){
+
+    fun updateUiOnResponse(breed: String?, breedInfo: String?, probability: Float?){
         breed_text.text = breed
+        if(probability !=null){
+            var dogProbBar = findViewById<ProgressiveGauge>(R.id.dog_prob_gauge_classification)
+            dogProbBar.speedometerColor = getColor(R.color.colorPrimary)
+            dogProbBar.isWithTremble = false
+            dogProbBar.setSpeedAt(probability.times(100))
+        }
         if (breedInfo != null){
             breed_info_text.text = breedInfo
         }else{
@@ -200,9 +273,14 @@ class ClassificationActivity : AppCompatActivity() {
         post_response_frame.visibility = View.VISIBLE
     }
 
-    fun addSearchToTable(breed:String, imageUrl: String){
-        var dogSearch: FeedDogSearchResult = FeedDogSearchResult(breed,imageUrl)
+    fun addSearchToTable(breed:String, imageUrl: String, probability: Float){
+        var dogSearch = FeedDogSearchResult(breed,imageUrl,probability)
         val keyString = mFirebaseManager.mResultDBRef.push().key
         mFirebaseManager.mResultDBRef.child(keyString).setValue(dogSearch)
     }
 }
+
+
+
+
+

@@ -9,10 +9,18 @@ import java.net.URL
  * Created by davidseverns on 3/14/18.
  */
 object Model {
+    data class DogShelter(var shelterName: String,
+                          var shelterLocal: Location,
+                          var address: String)
+
     data class Dog(var dogName: String,
                    var dogBreed: String?,
                    var pupCode: String,
                    var isLost: Boolean = false)
+
+    data class DogPark(var parkName: String,
+                       var parkLocation: Location,
+                       var parkAddress: String)
 
     data class DogSearchResult(var breed: String?,
                                var breed_info: String?,
@@ -23,7 +31,8 @@ object Model {
                                var model_error: String?,
                                var wikipedia_error: String?,
                                var petfinder_error: String?,
-                               var shelter_contact: String)
+                               var shelterList: List<DogShelter>?,
+                               var prob: Double?)
 
     data class ShelterContact(var city: String,
                               var zip: String,
@@ -72,4 +81,6 @@ object Model {
             }
         }
     }
+
+
 }
