@@ -189,7 +189,10 @@ class ClassificationActivity : AppCompatActivity() {
 
                         override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
                             if(response!!.isSuccessful){
-                                val probability = response.body()!!.prob!!.toFloat()
+                                var probability:Float? = null
+                                if(response.body()!!.prob != null){
+                                    probability = response.body()!!.prob!!.toFloat()
+                                }
                                 if(response.body()?.model_error != null){
                                     updateUiOnResponse("Not Found", null,probability)
                                 }else{
@@ -199,7 +202,7 @@ class ClassificationActivity : AppCompatActivity() {
                                         Log.e("Probability $breedString ", probability.toString() )
                                         updateUiOnResponse(breedString,breedInfoString,probability)
                                         Log.e("Response",breedString )
-                                        addSearchToTable(breedString,imgUrl!!,probability)
+                                        addSearchToTable(breedString,imgUrl!!,probability!!)
                                     }else{
                                         Toast.makeText(this@ClassificationActivity, "Please Retry...",Toast.LENGTH_SHORT).show()
                                         Log.e("Connection: ", "made but not getting DSR")
