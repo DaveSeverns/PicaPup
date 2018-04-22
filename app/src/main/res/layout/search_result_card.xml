@@ -61,7 +61,7 @@
                     app:sv_orientation="HORIZONTAL"
                     app:sv_speedTextColor="@color/colorPrimaryDark"
                     app:sv_speedTextSize="18sp"
-                    app:sv_unit="% Match"
+                    app:sv_unit="%"
                     app:sv_unitTextColor="@color/colorPrimaryDark"
                     app:sv_unitTextSize="14sp"
                     app:sv_unitUnderSpeedText="false" />
