@@ -9,32 +9,42 @@ import java.net.URL
  * Created by davidseverns on 3/14/18.
  */
 object Model {
-    data class DogShelter(var shelterName: String,
-                          var shelterLocal: Location,
-                          var address: String)
-
     data class Dog(var dogName: String,
                    var dogBreed: String?,
                    var pupCode: String,
                    var isLost: Boolean = false)
 
-    data class DogPark(var parkName: String,
-                       var parkLocation: Location,
-                       var parkAddress: String)
-
     data class DogSearchResult(var breed: String?,
                                var breed_info: String?,
+                               var name: String?,
+                               var sex: String,
+                               var prob: Float,
                                var dogImageSent: String?,
                                var model_error: String?,
                                var wikipedia_error: String?,
                                var petfinder_error: String?,
-                               var shelterList: List<DogShelter>?)
+                               var shelter_contact: String)
 
+    data class ShelterContact(var city: String,
+                              var zip: String,
+                              var address1: String,
+                              var state: String)
 
     data class ModelSearchRequest(var imgUrl: String,
                                   var usePetfinder : Boolean,
                                   var useWiki: Boolean,
                                   var location: String)
+
+    class Data(val results: List<Result>)
+
+    class Result(val name: String,
+                 val vicinity: String,
+                 val geometry: Geometry)
+
+    class Geometry(var location: Locations)
+
+    class Locations(val lat: Double,
+                    val lng: Double)
 
     data class LostDog(var dogName: String?,
                        var dogLover: DogLover?,
@@ -62,6 +72,4 @@ object Model {
             }
         }
     }
-
-
 }

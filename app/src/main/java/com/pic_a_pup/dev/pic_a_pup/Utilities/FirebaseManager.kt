@@ -43,7 +43,7 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
 
                 //result = Model.DogSearchResult(search.child("userWhoSearched").value.toString(), search.child("dog").value as Model.Dog,
                        // search.child("dogImageSent").value as URL, search.child("userVoteCount").value as Int,
-                        //search.child("shelterList").value as List<Model.DogShelter>)
+                        //search.child("shelterContact").value as List<Model.DogShelter>)
                // dogSearches.add(result)
 
             }

@@ -73,6 +73,8 @@ class HomeFeedActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         mUtility = Utility(this)
 
+        setUpNavBar()
+
         val options: FirebaseRecyclerOptions<FeedDogSearchResult> = FirebaseRecyclerOptions.Builder<FeedDogSearchResult>()
                 .setQuery(mResDBRefQuery, FeedDogSearchResult::class.java).build()
 
@@ -98,7 +100,9 @@ class HomeFeedActivity : AppCompatActivity() {
 //            layoutManager = viewManager
 //            adapter = viewAdapter
 //        }
+    }
 
+    private fun setUpNavBar() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_home_page)
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
         val menu = bottomNavigationView.menu
@@ -106,33 +110,33 @@ class HomeFeedActivity : AppCompatActivity() {
         menuItem.isChecked = true
 
         val mOnNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener { item ->
-                when (item.itemId) {
-                    R.id.navigation_home -> {
-                        return@OnNavigationItemSelectedListener true
+                BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                    when (item.itemId) {
+                        R.id.navigation_home -> {
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_map -> {
+                            val intentMap = MapsActivity.newIntent(this)
+                            startActivity(intentMap)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_camera -> {
+                            onLaunchCamera()
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_collar -> {
+                            val collarStartIntent = Intent(this, QRCollarActivity::class.java)
+                            startActivity(collarStartIntent)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_profile -> {
+                            val intentProfile = ProfileActivity.newIntent(this)
+                            startActivity(intentProfile)
+                            return@OnNavigationItemSelectedListener true
+                        }
                     }
-                    R.id.navigation_map -> {
-                        val intentMap = MapsActivity.newIntent(this)
-                        startActivity(intentMap)
-                        return@OnNavigationItemSelectedListener true
-                    }
-                    R.id.navigation_camera -> {
-                        onLaunchCamera()
-                        return@OnNavigationItemSelectedListener true
-                    }
-                    R.id.navigation_collar -> {
-                        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
-                        startActivity(collarStartIntent)
-                        return@OnNavigationItemSelectedListener true
-                    }
-                    R.id.navigation_profile -> {
-                        val intentProfile = ProfileActivity.newIntent(this)
-                        startActivity(intentProfile)
-                        return@OnNavigationItemSelectedListener true
-                    }
+                    false
                 }
-                false
-            }
 
         navigation_home_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }

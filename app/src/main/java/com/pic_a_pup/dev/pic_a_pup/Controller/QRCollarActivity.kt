@@ -2,13 +2,11 @@ package com.pic_a_pup.dev.pic_a_pup.Controller
 
 import android.Manifest.permission.CAMERA
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
-import android.location.Location
-import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -17,19 +15,12 @@ import android.telephony.SmsManager
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.zxing.Result
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import com.pic_a_pup.dev.pic_a_pup.Manifest
-import com.pic_a_pup.dev.pic_a_pup.Model.DogLover
-import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
