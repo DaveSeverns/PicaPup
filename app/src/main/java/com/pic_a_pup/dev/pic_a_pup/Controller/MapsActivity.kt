@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.GsonBuilder
+import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 import kotlinx.android.synthetic.main.activity_classification.*
@@ -48,11 +49,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var searchId: Int? = null
     private var queryPlaceType: String? = null
     private var queryPlaceKeyword: String? = null
-    private var queryRadius: Int? = null
+    private var queryRadius = 16000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
+        setUpNavBar()
 
         fabMain = findViewById(R.id.fab_main)
         fabPark = findViewById(R.id.fab_park)
@@ -64,67 +67,28 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         fabAnimationSetup()
 
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_map_page)
-        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
-        val menu = bottomNavigationView.menu
-        val menuItem = menu.getItem(1)
-        menuItem.isChecked = true
-
-        val mOnNavigationItemSelectedListener =
-                BottomNavigationView.OnNavigationItemSelectedListener { item ->
-                    when (item.itemId) {
-                        R.id.navigation_home -> {
-                            val intentHome = HomeFeedActivity.newIntent(this)
-                            startActivity(intentHome)
-                            return@OnNavigationItemSelectedListener true
-                        }
-                        R.id.navigation_map -> {
-                            return@OnNavigationItemSelectedListener true
-                        }
-                        R.id.navigation_camera -> {
-                            return@OnNavigationItemSelectedListener true
-                        }
-                        R.id.navigation_collar ->{
-                            val collarStartIntent = Intent(this, QRCollarActivity::class.java)
-                            startActivity(collarStartIntent)
-                            return@OnNavigationItemSelectedListener true
-                        }
-                        R.id.navigation_profile -> {
-                            val intentProfile = ProfileActivity.newIntent(this)
-                            startActivity(intentProfile)
-                            return@OnNavigationItemSelectedListener true
-                        }
-                    }
-                    false
-                }
-
-        navigation_map_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
         fabPark.setOnClickListener {
             searchId = 1
             queryPlaceType = "park"
             queryPlaceKeyword = "dog"
-            queryRadius = 16000
             Toast.makeText(applicationContext, "Searching for Dog Parks", Toast.LENGTH_LONG).show()
-            googlePlacesQuery(searchId!!, queryPlaceType!!, queryPlaceKeyword!!, queryRadius!!)
+            googlePlacesQuery(searchId!!, queryPlaceType!!, queryPlaceKeyword!!, queryRadius)
         }
 
         fabStore.setOnClickListener {
             searchId = 2
             queryPlaceType = "store"
             queryPlaceKeyword = "pet"
-            queryRadius = 16000
             Toast.makeText(applicationContext, "Searching for Pet Stores", Toast.LENGTH_LONG).show()
-            googlePlacesQuery(searchId!!, queryPlaceType!!, queryPlaceKeyword!!, queryRadius!!)
+            googlePlacesQuery(searchId!!, queryPlaceType!!, queryPlaceKeyword!!, queryRadius)
         }
 
         fabVet.setOnClickListener {
             searchId = 3
             queryPlaceType = "veterinary_care"
             queryPlaceKeyword = "dog"
-            queryRadius = 16000
             Toast.makeText(applicationContext, "Searching for Vets", Toast.LENGTH_LONG).show()
-            googlePlacesQuery(searchId!!, queryPlaceType!!, queryPlaceKeyword!!, queryRadius!!)
+            googlePlacesQuery(searchId!!, queryPlaceType!!, queryPlaceKeyword!!, queryRadius)
         }
 
         val mapFragment = supportFragmentManager
@@ -160,6 +124,44 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
+    private fun setUpNavBar() {
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_map_page)
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
+        val menu = bottomNavigationView.menu
+        val menuItem = menu.getItem(1)
+        menuItem.isChecked = true
+
+        val mOnNavigationItemSelectedListener =
+                BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                    when (item.itemId) {
+                        R.id.navigation_home -> {
+                            val intentHome = HomeFeedActivity.newIntent(this)
+                            startActivity(intentHome)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_map -> {
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_camera -> {
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_collar ->{
+                            val collarStartIntent = Intent(this, QRCollarActivity::class.java)
+                            startActivity(collarStartIntent)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_profile -> {
+                            val intentProfile = ProfileActivity.newIntent(this)
+                            startActivity(intentProfile)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                    }
+                    false
+                }
+
+        navigation_map_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    }
+
     private fun googlePlacesQuery(id: Int, type: String, keyword: String, radius: Int) {
         var query = "&location=${lastLocation.latitude},${lastLocation.longitude}" +
             "+&radius=$radius&type=$type&keyword=$keyword"
@@ -172,11 +174,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         when(id) {
             1 -> {
                 map.clear()
-                client.newCall(request).enqueue(object: Callback{
+                client.newCall(request).enqueue(object: Callback {
                     override fun onResponse(call: Call?, response: Response?) {
                         val body = response?.body()?.string()
                         val gson = GsonBuilder().create()
-                        val data = gson.fromJson(body, Data::class.java)
+                        val data = gson.fromJson(body, Model.Data::class.java)
 
                         runOnUiThread {
                             for (i in data.results.indices) {
@@ -199,11 +201,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             2 -> {
                 map.clear()
-                client.newCall(request).enqueue(object: Callback{
+                client.newCall(request).enqueue(object: Callback {
                     override fun onResponse(call: Call?, response: Response?) {
                         val body = response?.body()?.string()
                         val gson = GsonBuilder().create()
-                        val data = gson.fromJson(body, Data::class.java)
+                        val data = gson.fromJson(body, Model.Data::class.java)
 
                         runOnUiThread {
                             for (i in data.results.indices) {
@@ -227,11 +229,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             3 -> {
                 map.clear()
-                client.newCall(request).enqueue(object: Callback{
+                client.newCall(request).enqueue(object: Callback {
                     override fun onResponse(call: Call?, response: Response?) {
                         val body = response?.body()?.string()
                         val gson = GsonBuilder().create()
-                        val data = gson.fromJson(body, Data::class.java)
+                        val data = gson.fromJson(body, Model.Data::class.java)
 
                         runOnUiThread {
                             for (i in data.results.indices) {
@@ -314,9 +316,3 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         private const val GOOGLE_PLACES_KEY = "AIzaSyAxtwhf8egj3eThPnZHIr8HwWcqbd80FuQ"
     }
 }
-
-//Data classes for Google Places API search
-class Data(val results: List<Result>)
-class Result(val name: String, val vicinity: String, val geometry: Geometry)
-class Geometry(var location: Locations)
-class Locations(val lat: Double, val lng: Double)

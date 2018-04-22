@@ -50,6 +50,7 @@
         <activity android:name=".Controller.SignUpActivity" />
         <activity
             android:name=".Controller.ClassificationActivity"
+            android:label="@string/title_activity_classification"
             android:theme="@style/noSlideAnimationTheme" />
         <activity
             android:name=".Controller.ProfileActivity"

@@ -68,34 +68,34 @@ class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchLis
         menuItem.isChecked = true
 
         val mOnNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener { item ->
-                when (item.itemId) {
-                    R.id.navigation_home -> {
-                        val intentHome = HomeFeedActivity.newIntent(this)
-                        startActivity(intentHome)
-                        return@OnNavigationItemSelectedListener true
+                BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                    when (item.itemId) {
+                        R.id.navigation_home -> {
+                            val intentHome = HomeFeedActivity.newIntent(this)
+                            startActivity(intentHome)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_map -> {
+                            val intentMap = MapsActivity.newIntent(this)
+                            startActivity(intentMap)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_camera -> {
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_collar ->{
+                            val collarStartIntent = Intent(this, QRCollarActivity::class.java)
+                            startActivity(collarStartIntent)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_profile -> {
+                            val intentProfile = ProfileActivity.newIntent(this)
+                            startActivity(intentProfile)
+                            return@OnNavigationItemSelectedListener true
+                        }
                     }
-                    R.id.navigation_map -> {
-                        val intentMap = MapsActivity.newIntent(this)
-                        startActivity(intentMap)
-                        return@OnNavigationItemSelectedListener true
-                    }
-                    R.id.navigation_camera -> {
-                        return@OnNavigationItemSelectedListener true
-                    }
-                    R.id.navigation_collar ->{
-                        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
-                        startActivity(collarStartIntent)
-                        return@OnNavigationItemSelectedListener true
-                    }
-                    R.id.navigation_profile -> {
-                        val intentProfile = ProfileActivity.newIntent(this)
-                        startActivity(intentProfile)
-                        return@OnNavigationItemSelectedListener true
-                    }
+                    false
                 }
-                false
-            }
 
 
         navigation_profile_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)

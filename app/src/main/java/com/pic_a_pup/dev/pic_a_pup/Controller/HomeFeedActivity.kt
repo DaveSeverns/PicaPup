@@ -75,25 +75,28 @@ class HomeFeedActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         mUtility = Utility(this)
 
+        setUpNavBar()
+
         val options: FirebaseRecyclerOptions<FeedDogSearchResult> = FirebaseRecyclerOptions.Builder<FeedDogSearchResult>()
                 .setQuery(mResDBRefQuery, FeedDogSearchResult::class.java).build()
 
-        viewAdapter = object :FirebaseRecyclerAdapter<FeedDogSearchResult,ResultViewHolder>(options){
+        viewAdapter = object : FirebaseRecyclerAdapter<FeedDogSearchResult, ResultViewHolder>(options) {
             override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ResultViewHolder {
-                val view = LayoutInflater.from(parent!!.context).inflate(R.layout.search_result_card,parent,false)
+                val view = LayoutInflater.from(parent!!.context).inflate(R.layout.search_result_card, parent, false)
                 return ResultViewHolder(view)
             }
 
             override fun onBindViewHolder(holder: ResultViewHolder, position: Int, model: FeedDogSearchResult) {
-                holder.onBindView(this@HomeFeedActivity,model.dogImageSent!!,model.probability,model.breed)
+                holder.onBindView(this@HomeFeedActivity, model.dogImageSent!!, model.probability, model.breed)
             }
         }
         recyclerView.adapter = viewAdapter
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+    }
 
-
+    private fun setUpNavBar() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_home_page)
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
         val menu = bottomNavigationView.menu

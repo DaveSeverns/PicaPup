@@ -68,6 +68,29 @@ class ClassificationActivity : AppCompatActivity() {
 
         postalCode = mUtility.getZipFromLatLon(latitude.toString(), longtiude.toString())
 
+        setUpNavBar()
+
+        locationEditText.setText(postalCode)
+
+        imageFile = File(imageFileName)
+
+        if (imageFile!!.exists()) {
+            imageBitmap = BitmapFactory.decodeFile(imageFile!!.absolutePath)
+            var exif: ExifInterface? = null
+            try {
+                exif = ExifInterface(imageFile!!.absolutePath)
+            } catch (e:IOException) {
+                e.printStackTrace()
+            }
+
+
+            searchImg.setImageBitmap(imageBitmap)
+        }
+
+        submit_btn.setOnClickListener(this::onSubmit)
+    }
+
+    private fun setUpNavBar() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_classification_page)
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
         val menu = bottomNavigationView.menu
@@ -75,34 +98,34 @@ class ClassificationActivity : AppCompatActivity() {
         menuItem.isChecked = true
 
         val mOnNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener { item ->
-                when (item.itemId) {
-                    R.id.navigation_home -> {
-                        val intentHome = HomeFeedActivity.newIntent(this)
-                        startActivity(intentHome)
-                        return@OnNavigationItemSelectedListener true
+                BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                    when (item.itemId) {
+                        R.id.navigation_home -> {
+                            val intentHome = HomeFeedActivity.newIntent(this)
+                            startActivity(intentHome)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_map -> {
+                            val intentMap = MapsActivity.newIntent(this)
+                            startActivity(intentMap)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_camera -> {
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_collar -> {
+                            val collarStartIntent = Intent(this, QRCollarActivity::class.java)
+                            startActivity(collarStartIntent)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.navigation_profile -> {
+                            val intentProfile = ProfileActivity.newIntent(this)
+                            startActivity(intentProfile)
+                            return@OnNavigationItemSelectedListener true
+                        }
                     }
-                    R.id.navigation_map -> {
-                        val intentMap = MapsActivity.newIntent(this)
-                        startActivity(intentMap)
-                        return@OnNavigationItemSelectedListener true
-                    }
-                    R.id.navigation_camera -> {
-                        return@OnNavigationItemSelectedListener true
-                    }
-                    R.id.navigation_collar ->{
-                        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
-                        startActivity(collarStartIntent)
-                        return@OnNavigationItemSelectedListener true
-                    }
-                    R.id.navigation_profile -> {
-                        val intentProfile = ProfileActivity.newIntent(this)
-                        startActivity(intentProfile)
-                        return@OnNavigationItemSelectedListener true
-                    }
+                    false
                 }
-                false
-            }
 
         navigation_classification_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
@@ -179,12 +202,12 @@ class ClassificationActivity : AppCompatActivity() {
 
 
         }).addOnCompleteListener{ task ->
-            Toast.makeText(this,"Finding breed...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"Recognizing breed...", Toast.LENGTH_LONG).show()
             restClient.postSearchRequestToServer(postalCode,imgUrl.toString()).
                     enqueue(object: retrofit2.Callback<Model.DogSearchResult> {
                         override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
                             Log.e("Network Call", "Failure ${t.toString()}")
-                            updateUiOnResponse("Error","Server Not Responding",null)
+                            updateUiOnResponse("Error","Server Not Responding")
                         }
 
                         override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
@@ -245,6 +268,7 @@ class ClassificationActivity : AppCompatActivity() {
         }else{
             breed_info_text.text = getString(R.string.cant_identify_breed_message)
         }
+        button_find_shelters.visibility = View.INVISIBLE
         pre_response_frame.visibility = View.INVISIBLE
         post_response_frame.visibility = View.VISIBLE
     }
