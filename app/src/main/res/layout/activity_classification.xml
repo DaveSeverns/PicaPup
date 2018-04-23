@@ -77,7 +77,7 @@
     <RelativeLayout
         android:id="@+id/post_response_frame"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="50dp"
         android:visibility="invisible"
@@ -103,7 +103,7 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="17dp"
                     android:textColor="#551053"
-                    android:textSize="20sp"
+                    android:textSize="22sp"
                     android:fontFamily="@font/pacifico"
                     android:textStyle="bold"
                     android:text="Placeholder"/>
