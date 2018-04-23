@@ -15,6 +15,8 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.telephony.SmsManager
 import android.util.Log
+import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.database.DataSnapshot
@@ -26,6 +28,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.ChildEventListener
 import com.pic_a_pup.dev.pic_a_pup.Model.DogLover
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
+import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
@@ -48,7 +51,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
         if (currentApiVersion >= Build.VERSION_CODES.M) {
             if (checkPermission()) {
-                Toast.makeText(applicationContext, "Permission already granted!", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "Scan QR code on collar", Toast.LENGTH_LONG).show()
             } else {
                 requestPermission()
             }
@@ -163,28 +166,31 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         |$phoneNumberOfOwner""".trimMargin()
         textView.textSize = 16f
 
-        var builder = AlertDialog.Builder(this)
-        builder.setTitle(formatedString).setView(textView)
-        builder.setPositiveButton("OK", DialogInterface
-                .OnClickListener({ dialogInterface: DialogInterface, i: Int ->
+        val dialogBuilder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.qr_scan_dialog, null)
+        dialogBuilder.setView(dialogView)
 
-                    try{
-                        Log.e("Text finna be sent"," fam")
-                        sendSMS(phoneNumberOfOwner,"Dog Found")
-                        SmsManager.getDefault().sendTextMessage(phoneNumberOfOwner,null,
-                                "Found your dog, $dogNameD!",
-                                null,
-                                null)
-                    }catch (e: Exception){
-                        e.printStackTrace()
-                    }
-                    scannerView.resumeCameraPreview(this)
+        val okBtn = findViewById<Button>(R.id.button_ok)
+        //var builder = AlertDialog.Builder(this)
+        //builder.setTitle(formatedString).setView(textView)
+        okBtn.setOnClickListener(View.OnClickListener {
+            try{
+                Log.e("Text finna be sent"," fam")
+                sendSMS(phoneNumberOfOwner,"Dog Found")
+                SmsManager.getDefault().sendTextMessage(phoneNumberOfOwner,null,
+                        "Found your dog, $dogNameD!",
+                        null,
+                        null)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+            scannerView.resumeCameraPreview(this)
+        })
 
-                }))
 
-        builder.setMessage(pupCode)
-        var alert1 = builder.create();
-        alert1.show();
+
+        dialogBuilder.create().show()
 
     }
 
@@ -207,4 +213,6 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
             }
         }
     }
+
+
 }
