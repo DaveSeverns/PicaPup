@@ -31,6 +31,7 @@ import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
 import me.dm7.barcodescanner.zxing.ZXingScannerView
+import org.jetbrains.anko.alert
 
 
 class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
@@ -41,6 +42,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private val mFirebaseManager = FirebaseManager(this)
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private var mLocation: Location? = null
+    private lateinit var qrAlert: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,39 +131,46 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         var dogLoverName: String? = null
         var dogLoverNumber: String? = null
         var dogLoverFCM: String? = null
-        val myResult = result?.getText();
+        val myResult = result?.getText()
         Log.d("QRCodeScanner", result?.getText());
         Log.d("QRCodeScanner", result?.getBarcodeFormat().toString());
-        mFirebaseManager.mLostDogDBRef.child(myResult).addListenerForSingleValueEvent(object: ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot?) {
-                Log.e("Pup", snapshot.toString())
-                if(snapshot != null){
-                    dogName = snapshot.child("dogName").value as String
-                    dogLoverName = snapshot.child("dogLover").child("name").value as String
-                    dogLoverNumber = snapshot.child("dogLover").child("phoneNumber").value as String
-                    dogLoverFCM = snapshot.child("fcm_id").value as String
-                    var map = HashMap<String,Any>()
-                    map.put("found",true)
-                    mFirebaseManager.mLostDogDBRef.child(myResult).updateChildren(map)
+        try{
+            mFirebaseManager.mLostDogDBRef.child(myResult).addListenerForSingleValueEvent(object: ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot?) {
+                    Log.e("Pup", snapshot.toString())
+                    if(snapshot!!.value != null){
+                        dogName = snapshot.child("dogName").value as String
+                        dogLoverName = snapshot.child("dogLover").child("name").value as String
+                        dogLoverNumber = snapshot.child("dogLover").child("phoneNumber").value as String
+                        dogLoverFCM = snapshot.child("fcm_id").value as String
+                        var map = HashMap<String,Any>()
+                        map.put("found",true)
+                        mFirebaseManager.mLostDogDBRef.child(myResult).updateChildren(map)
 
-                    Log.e("Dog Lover ", "$dogLoverName and phone number $dogLoverNumber")
-                    Log.e("Dog Name ", dogName)
-                    lostDogDialog(dogName,dogLoverName,dogLoverNumber,myResult)
+                        Log.e("Dog Lover ", "$dogLoverName and phone number $dogLoverNumber")
+                        Log.e("Dog Name ", dogName)
+                        lostDogDialog(dogName,dogLoverName,dogLoverNumber,myResult)
+                    }else{
+                        noDogFoundDialog(myResult)
+                    }
                 }
-            }
 
-            override fun onCancelled(p0: DatabaseError?) {
-                Log.e("Error: ", "DatabaseError Dog not found")
-                noDogFoundDialog(myResult)
-            }
-        })
+                override fun onCancelled(p0: DatabaseError?) {
+                    Log.e("Error: ", "DatabaseError Dog not found")
+                    noDogFoundDialog(myResult)
+                }
+            })
+        }catch (e: Exception){
+            noDogFoundDialog(myResult)
+            e.printStackTrace()
+        }
+
     }
 
     @SuppressLint("SetTextI18n")
     fun lostDogDialog(dogNameD:String?, ownerNameD:String?, phoneNumberOfOwner:String?, pupCode: String?){
         var textView = TextView(this)
-        val formatedString = "You Found $dogNameD!"
-        textView.text = """$ownerNameD's dog,
+        val formatedString = """$ownerNameD's dog,
         |you can reach them at:
         |$phoneNumberOfOwner""".trimMargin()
         textView.textSize = 16f
@@ -170,10 +179,12 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         val inflater = this.layoutInflater
         val dialogView = inflater.inflate(R.layout.qr_scan_dialog, null)
         dialogBuilder.setView(dialogView)
-
-        val okBtn = findViewById<Button>(R.id.button_ok)
+        val qrTextView = dialogView.findViewById<TextView>(R.id.text_view_dialog_message_qr)
+        qrTextView.text = formatedString
+        val okBtn = dialogView.findViewById<Button>(R.id.button_ok)
         //var builder = AlertDialog.Builder(this)
         //builder.setTitle(formatedString).setView(textView)
+
         okBtn.setOnClickListener(View.OnClickListener {
             try{
                 Log.e("Text finna be sent"," fam")
@@ -186,11 +197,46 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                 e.printStackTrace()
             }
             scannerView.resumeCameraPreview(this)
+            qrAlert.dismiss()
         })
+        qrAlert = dialogBuilder.create()
+        qrAlert.show()
 
 
 
-        dialogBuilder.create().show()
+        /*@SuppressLint("SetTextI18n")
+    fun lostDogDialog(dogNameD:String?, ownerNameD:String?, phoneNumberOfOwner:String?, pupCode: String?){
+        var textView = TextView(this)
+        val formatedString = "You Found $dogNameD!"
+        textView.text = """$ownerNameD's dog,
+        |you can reach them at:
+        |$phoneNumberOfOwner""".trimMargin()
+        textView.textSize = 16f
+
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle(formatedString).setView(textView)
+        builder.setPositiveButton("OK", DialogInterface
+                .OnClickListener({ dialogInterface: DialogInterface, i: Int ->
+
+            try{
+                Log.e("Text finna be sent"," fam")
+                sendSMS(phoneNumberOfOwner,"Dog Found")
+                SmsManager.getDefault().sendTextMessage(phoneNumberOfOwner,null,
+                        "Found your dog, $dogNameD!",
+                        null,
+                        null)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+            scannerView.resumeCameraPreview(this)
+
+        }))
+
+        builder.setMessage(pupCode)
+        var alert1 = builder.create();
+        alert1.show();
+
+    }*/
 
     }
 
