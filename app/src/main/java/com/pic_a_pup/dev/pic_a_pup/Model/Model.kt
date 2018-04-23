@@ -26,13 +26,12 @@ object Model {
                                var breed_info: String?,
                                var name: String?,
                                var sex: String,
-                               var prob: Float,
+                               var prob: Float?,
                                var dogImageSent: String?,
                                var model_error: String?,
                                var wikipedia_error: String?,
                                var petfinder_error: String?,
-                               var shelterList: List<DogShelter>?,
-                               var prob: Double?)
+                               var shelterList: List<DogShelter>?)
 
     data class ShelterContact(var city: String,
                               var zip: String,

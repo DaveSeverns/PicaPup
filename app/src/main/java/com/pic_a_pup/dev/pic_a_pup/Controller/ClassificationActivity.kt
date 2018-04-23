@@ -72,9 +72,13 @@ class ClassificationActivity : AppCompatActivity() {
 
         locationEditText.setText(postalCode)
 
-        imageFile = File(imageFileName)
-
-        if (imageFile!!.exists()) {
+        if(galleryUri != null){
+            try{
+                imageBitmap = getBitmap(contentResolver,galleryUri)
+            }catch (e: FileNotFoundException){
+                e.printStackTrace()
+            }
+        }else{
             imageBitmap = BitmapFactory.decodeFile(imageFile!!.absolutePath)
             var exif: ExifInterface? = null
             try {
@@ -82,9 +86,6 @@ class ClassificationActivity : AppCompatActivity() {
             } catch (e:IOException) {
                 e.printStackTrace()
             }
-
-
-            searchImg.setImageBitmap(imageBitmap)
         }
 
         submit_btn.setOnClickListener(this::onSubmit)
@@ -129,7 +130,7 @@ class ClassificationActivity : AppCompatActivity() {
 
         navigation_classification_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
-        locationEditText.setText(postalCode)
+        postalCode_edittext.setText(postalCode)
 
 
 
@@ -148,7 +149,7 @@ class ClassificationActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
-        searchImg.setImageBitmap(imageBitmap)
+        searchImage.setImageBitmap(imageBitmap)
 
 
 
@@ -207,7 +208,7 @@ class ClassificationActivity : AppCompatActivity() {
                     enqueue(object: retrofit2.Callback<Model.DogSearchResult> {
                         override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
                             Log.e("Network Call", "Failure ${t.toString()}")
-                            updateUiOnResponse("Error","Server Not Responding")
+                            updateUiOnResponse("Error","Server Not Responding",null)
                         }
 
                         override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
