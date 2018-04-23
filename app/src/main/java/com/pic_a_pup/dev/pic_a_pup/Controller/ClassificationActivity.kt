@@ -197,8 +197,6 @@ class ClassificationActivity : AppCompatActivity() {
                                 var state: String? = null
                                 var zip: String? = null
 
-                                println("*****RESPONSE " + response.body())
-
                                 if (response.body()!!.prob != null){
                                     probability = response.body()!!.prob!!.toFloat()
                                 }
