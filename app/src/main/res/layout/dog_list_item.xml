@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    android:background="@color/colorPrimaryDark">
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:layout_marginBottom="10dp">
 
     <LinearLayout
+        android:id="@+id/wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#f2f4f4" >
 
         <LinearLayout
             android:layout_height="match_parent"
@@ -28,7 +29,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:fontFamily="@font/pacifico"
-                android:textColor="@color/cardview_light_background"
                 android:textSize="24sp"
                 tools:text="Dog Name" />
 
@@ -38,8 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:fontFamily="serif-monospace"
-                android:textColor="@color/cardview_light_background"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 tools:text="420yolo69" />
         </LinearLayout>
 
@@ -48,22 +47,19 @@
             android:layout_width="0dp"
             android:layout_height="101dp"
             android:layout_weight=".35"
-
-            android:fontFamily="@font/pacifico"
-            android:showText="true"
             android:splitTrack="false"
             android:text="@string/lost"
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat"
-            android:textColor="@android:color/background_light"
+            android:fontFamily="serif-monospace"
             android:textSize="24sp"
             android:typeface="normal"
             tools:checked="false"
             tools:text="@string/lost" />
 
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
 
+</android.support.constraint.ConstraintLayout>
 
 <!--<?xml version="1.0" encoding="utf-8"?>-->
 <!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
@@ -71,10 +67,10 @@
     <!--xmlns:tools="http://schemas.android.com/tools"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginBottom="10dp">-->
+    <!--android:layout_marginBottom="10dp"-->
+    <!--android:background="@color/colorPrimaryDark">-->
 
     <!--<LinearLayout-->
-        <!--android:id="@+id/wrapper"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"-->
         <!--android:orientation="horizontal"-->
@@ -95,6 +91,7 @@
                 <!--android:layout_height="wrap_content"-->
                 <!--android:layout_marginLeft="10dp"-->
                 <!--android:fontFamily="@font/pacifico"-->
+                <!--android:textColor="@color/cardview_light_background"-->
                 <!--android:textSize="24sp"-->
                 <!--tools:text="Dog Name" />-->
 
@@ -104,7 +101,8 @@
                 <!--android:layout_height="wrap_content"-->
                 <!--android:layout_marginLeft="10dp"-->
                 <!--android:fontFamily="serif-monospace"-->
-                <!--android:textSize="20sp"-->
+                <!--android:textColor="@color/cardview_light_background"-->
+                <!--android:textSize="24sp"-->
                 <!--tools:text="420yolo69" />-->
         <!--</LinearLayout>-->
 
@@ -113,16 +111,20 @@
             <!--android:layout_width="0dp"-->
             <!--android:layout_height="101dp"-->
             <!--android:layout_weight=".35"-->
+
+            <!--android:fontFamily="@font/pacifico"-->
+            <!--android:showText="true"-->
             <!--android:splitTrack="false"-->
             <!--android:text="@string/lost"-->
             <!--android:textAllCaps="false"-->
             <!--android:textAppearance="@style/TextAppearance.AppCompat"-->
-            <!--android:fontFamily="serif-monospace"-->
+            <!--android:textColor="@android:color/background_light"-->
             <!--android:textSize="24sp"-->
             <!--android:typeface="normal"-->
             <!--tools:checked="false"-->
             <!--tools:text="@string/lost" />-->
 
     <!--</LinearLayout>-->
-
 <!--</android.support.constraint.ConstraintLayout>-->
+
+
