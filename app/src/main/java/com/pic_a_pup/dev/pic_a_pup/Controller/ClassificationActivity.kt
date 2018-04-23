@@ -244,7 +244,6 @@ class ClassificationActivity : AppCompatActivity() {
         }
     }
 
-
     fun updateUiOnResponse(breed: String?, breedInfo: String?, probability: Float?,
                            city: String?, state: String?, zip: String?, phone: String?){
         breed_text.text = breed

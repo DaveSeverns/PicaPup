@@ -195,8 +195,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
-                android:text="In Italy, when you are walking towards the pavilion, you have the shop with the clothes on the left. OK, that building, the columns have little men, maybe monks (?) carved into them, a little over head level. I am not 100% if I am right on the EXACT location, but there is the corner column, then either the next one or the one after that (so either the second or third from the end of the corner of the World Showcase walkway and the one leading into Italy), one of the men is actually holding a bowling ball. All of the figures seem to be holding something round, but only one has a bowling ball. I had to have a CM taller than me point it out, as I was too short (I’m 5’5”) and could only feel it with my fingers. The CM told me one of the architects was a bowler and wanted to leave that in the building. "
-                android:textSize="26sp" />
+                android:textSize="20sp" />
 
         </LinearLayout>
 
