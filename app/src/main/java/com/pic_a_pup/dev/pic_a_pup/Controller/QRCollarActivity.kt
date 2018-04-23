@@ -5,9 +5,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.location.Location
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -24,7 +24,6 @@ import com.google.zxing.Result
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.ChildEventListener
-import com.pic_a_pup.dev.pic_a_pup.Manifest
 import com.pic_a_pup.dev.pic_a_pup.Model.DogLover
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.Utilities.FirebaseManager
@@ -169,19 +168,19 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         builder.setPositiveButton("OK", DialogInterface
                 .OnClickListener({ dialogInterface: DialogInterface, i: Int ->
 
-            try{
-                Log.e("Text finna be sent"," fam")
-                sendSMS(phoneNumberOfOwner,"Dog Found")
-                SmsManager.getDefault().sendTextMessage(phoneNumberOfOwner,null,
-                        "Found your dog, $dogNameD!",
-                        null,
-                        null)
-            }catch (e: Exception){
-                e.printStackTrace()
-            }
-            scannerView.resumeCameraPreview(this)
+                    try{
+                        Log.e("Text finna be sent"," fam")
+                        sendSMS(phoneNumberOfOwner,"Dog Found")
+                        SmsManager.getDefault().sendTextMessage(phoneNumberOfOwner,null,
+                                "Found your dog, $dogNameD!",
+                                null,
+                                null)
+                    }catch (e: Exception){
+                        e.printStackTrace()
+                    }
+                    scannerView.resumeCameraPreview(this)
 
-        }))
+                }))
 
         builder.setMessage(pupCode)
         var alert1 = builder.create();

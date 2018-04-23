@@ -54,6 +54,7 @@ class ClassificationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_classification)
+
         val searchImg = findViewById<ImageView>(R.id.searchImage)
         val locationEditText = findViewById<EditText>(R.id.postalCode_edittext)
 
@@ -87,6 +88,7 @@ class ClassificationActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
+        searchImg.setImageBitmap(imageBitmap)
 
         submit_btn.setOnClickListener(this::onSubmit)
     }
@@ -129,31 +131,6 @@ class ClassificationActivity : AppCompatActivity() {
                 }
 
         navigation_classification_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
-        postalCode_edittext.setText(postalCode)
-
-
-
-        if(galleryUri != null){
-            try{
-                imageBitmap = getBitmap(contentResolver,galleryUri)
-            }catch (e: FileNotFoundException){
-                e.printStackTrace()
-            }
-        }else{
-            imageBitmap = BitmapFactory.decodeFile(imageFile!!.absolutePath)
-            var exif: ExifInterface? = null
-            try {
-                exif = ExifInterface(imageFile!!.absolutePath)
-            } catch (e:IOException) {
-                e.printStackTrace()
-            }
-        }
-        searchImage.setImageBitmap(imageBitmap)
-
-
-
-        submit_btn.setOnClickListener(this::onSubmit)
     }
 
     fun onSubmit(view: View) {
@@ -208,26 +185,45 @@ class ClassificationActivity : AppCompatActivity() {
                     enqueue(object: retrofit2.Callback<Model.DogSearchResult> {
                         override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
                             Log.e("Network Call", "Failure ${t.toString()}")
-                            updateUiOnResponse("Error","Server Not Responding",null)
+                            updateUiOnResponse("Error","Server Not Responding", null, null, null, null, null)
+
                         }
 
                         override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
-                            if(response!!.isSuccessful){
+                            if (response!!.isSuccessful) {
                                 var probability:Float? = null
-                                if(response.body()!!.prob != null){
+                                var phone: String? = null
+                                var city: String? = null
+                                var state: String? = null
+                                var zip: String? = null
+
+                                println("*****RESPONSE " + response.body())
+
+                                if (response.body()!!.prob != null){
                                     probability = response.body()!!.prob!!.toFloat()
                                 }
-                                if(response.body()?.model_error != null){
-                                    updateUiOnResponse("Not Found", null,probability)
-                                }else{
+
+                                if (response.body()!!.shelter_contact != null) {
+                                    phone = response.body()!!.shelter_contact!!.phone
+                                    city = response.body()!!.shelter_contact!!.city
+                                    state = response.body()!!.shelter_contact!!.state
+                                    zip = response.body()!!.shelter_contact!!.zip
+                                }
+
+                                if (response.body()?.model_error != null){
+                                    updateUiOnResponse("Not Found", null, probability, city, state, zip, phone)
+
+                                } else {
                                     var breedString = response.body()?.breed
-                                    if(breedString != null){
+
+                                    if (breedString != null){
                                         val breedInfoString = response.body()!!.breed_info
                                         Log.e("Probability $breedString ", probability.toString() )
-                                        updateUiOnResponse(breedString,breedInfoString,probability)
+                                        updateUiOnResponse(breedString, breedInfoString, probability, city, state, zip, phone)
                                         Log.e("Response",breedString )
                                         addSearchToTable(breedString,imgUrl!!,probability!!)
-                                    }else{
+
+                                    } else {
                                         Toast.makeText(this@ClassificationActivity, "Please Retry...",Toast.LENGTH_SHORT).show()
                                         Log.e("Connection: ", "made but not getting DSR")
                                         Log.e("Probability $breedString ", probability.toString() )
@@ -235,7 +231,7 @@ class ClassificationActivity : AppCompatActivity() {
                                     }
                                 }
 
-                            }else{
+                            } else {
                                 when (response.code()){
                                     500 -> {mFirebaseManager.showToast("Server Error")}
                                     502 -> {mFirebaseManager.showToast("Bad Gateway")
@@ -243,35 +239,55 @@ class ClassificationActivity : AppCompatActivity() {
                                     else -> {mFirebaseManager.showToast("Unknown Error")}
                                 }
                             }
-
-
-
-                              //val intent = Intent(applicationContext,ClassificationActivity:: class.java)
-                              //intent.putExtra("breed_info", breedInfoString)
-                              //startActivityForResult(intent, CLASSIFICATION_RESULT)
                            }
-
                     })
         }
     }
 
-
-    fun updateUiOnResponse(breed: String?, breedInfo: String?, probability: Float?){
+    fun updateUiOnResponse(breed: String?, breedInfo: String?, probability: Float?,
+                           city: String?, state: String?, zip: String?, phone: String?){
         breed_text.text = breed
-        if(probability !=null){
+
+        if (probability !=null){
             var dogProbBar = findViewById<ProgressiveGauge>(R.id.dog_prob_gauge_classification)
             dogProbBar.speedometerColor = getColor(R.color.colorPrimary)
             dogProbBar.isWithTremble = false
             dogProbBar.setSpeedAt(probability.times(100))
         }
+
         if (breedInfo != null){
             breed_info_text.text = breedInfo
-        }else{
+        } else {
             breed_info_text.text = getString(R.string.cant_identify_breed_message)
         }
-        button_find_shelters.visibility = View.INVISIBLE
+
+        if (city != null) {
+            textview_shelter_city.text = city
+        } else {
+            textview_shelter_city.text = "City unavailable"
+        }
+
+        if (state != null) {
+            textview_shelter_state.text = state
+        } else {
+            textview_shelter_state.text = "State unavailable"
+        }
+
+        if (zip != null) {
+            textview_shelter_zip.text = zip
+        } else {
+            textview_shelter_zip.text = "Zip unavailable"
+        }
+
+        if (phone != null) {
+            textview_shelter_phone.text = phone
+        } else {
+            textview_shelter_phone.text = "Phone number unavailable"
+        }
+
         pre_response_frame.visibility = View.INVISIBLE
         post_response_frame.visibility = View.VISIBLE
+        scrollview.visibility = View.VISIBLE
     }
 
     fun addSearchToTable(breed:String, imageUrl: String, probability: Float){
