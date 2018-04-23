@@ -131,7 +131,6 @@ class ClassificationActivity : AppCompatActivity() {
                 }
 
         navigation_classification_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
     }
 
     fun onSubmit(view: View) {
@@ -187,6 +186,7 @@ class ClassificationActivity : AppCompatActivity() {
                         override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
                             Log.e("Network Call", "Failure ${t.toString()}")
                             updateUiOnResponse("Error","Server Not Responding", null, null, null, null, null)
+
                         }
 
                         override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
