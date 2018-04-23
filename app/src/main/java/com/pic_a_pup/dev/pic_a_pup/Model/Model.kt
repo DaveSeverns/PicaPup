@@ -33,6 +33,7 @@ object Model {
                                val shelter_contact: ShelterContact?,
                                var prob: Double?)
 
+
     class ShelterContact(val city: String,
                               val zip: String,
                               val phone: String,
