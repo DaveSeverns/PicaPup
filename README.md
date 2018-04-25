@@ -16,7 +16,7 @@ The application is not available on the Google Play Store so you will be require
 
 Install the apk file. After installation, locate the app labeled Pic-a-Pup in your device's application drawer and click to launch.
 
-# Links to Pic-a-Pup's Web and iOS Application Github Repositories
+# Pic-a-Pup's Web and iOS Application Github Repositories
 
 <a href="https://github.com/drwitteck/Pic-a-Pup">Pic-a-Pup Web Application</a>
 
