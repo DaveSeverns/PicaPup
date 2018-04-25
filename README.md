@@ -8,13 +8,13 @@ Pic-a-Pup will also allow users to help dog owners in their community. A QR code
 
 These features will be implemented through an Android, iOS, and web application connected to a back-end server and cloud platform that will supply the necessary data to the applications.
 
-# Running the Application
+## Running the Application
 
 The application is not available on the Google Play Store so you will be required to sideload the application to run it.  In order to sideload an application visit your device's security settings.
 
 Install the apk file. After installation, locate the app labeled Pic-a-Pup in your device's application drawer and click to launch.
 
-# Pic-a-Pup's Web and iOS Application Github Repositories
+## Pic-a-Pup's Web and iOS Application Github Repositories
 
 <a href="https://github.com/drwitteck/Pic-a-Pup">Pic-a-Pup Web Application</a>
 
