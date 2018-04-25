@@ -1,8 +1,6 @@
 # Pic-a-Pup
 
-This is the Android version of the mobile application being created for Temple University Capstone Project.
-
-Software Purpose:
+This is the Android version of the application being created for Temple University Capstone Project.
 
 Pic-a-Pup is a dog lovers dream, providing a simple and fun interface to change the way its users search, inform themselves, and begin the process of adopting that perfect forever friend. Taking a picture of a dog or uploading an image to the application will return the dog’s breed and general information about the breed. In addition, Pic-a-Pup will provide users with dog’s that match the identified breed that are available for adoption their local area.
 
