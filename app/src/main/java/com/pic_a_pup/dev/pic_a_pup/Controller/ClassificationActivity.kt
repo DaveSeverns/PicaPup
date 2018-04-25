@@ -1,25 +1,35 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.media.ExifInterface
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.provider.MediaStore.Images.Media.getBitmap
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.FileProvider
+import android.support.v7.app.AlertDialog
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
+import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.github.anastr.speedviewlib.ProgressiveGauge
 import com.github.anastr.speedviewlib.SpeedView
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.Query
 import com.pic_a_pup.dev.pic_a_pup.Model.FeedDogSearchResult
 import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
@@ -33,6 +43,8 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.roundToInt
 
 class ClassificationActivity : AppCompatActivity() {
@@ -45,15 +57,22 @@ class ClassificationActivity : AppCompatActivity() {
     private var longtiude: Double? = null
     private var mUtility = Utility(this)
     private var postalCode: String? = null
-    private var searchRequest: Model.ModelSearchRequest? = null
     private var mFirebaseManager = FirebaseManager(this)
     private var imgUrl: String? = null
-    private var mDisposable: Disposable? = null
-    private var homeFeedActivity = HomeFeedActivity()
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private var mLocation: Location? = null
+    private var mImagePath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_classification)
+
+        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE),
+                10)
 
         val searchImg = findViewById<ImageView>(R.id.searchImage)
         val locationEditText = findViewById<EditText>(R.id.postalCode_edittext)
@@ -114,6 +133,7 @@ class ClassificationActivity : AppCompatActivity() {
                             return@OnNavigationItemSelectedListener true
                         }
                         R.id.navigation_camera -> {
+                            getImageAlertDialog()
                             return@OnNavigationItemSelectedListener true
                         }
                         R.id.navigation_collar -> {
@@ -131,6 +151,8 @@ class ClassificationActivity : AppCompatActivity() {
                 }
 
         navigation_classification_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
     fun onSubmit(view: View) {
@@ -143,6 +165,40 @@ class ClassificationActivity : AppCompatActivity() {
             mFirebaseManager.showToast(stringBreedInfo)
             breed_info_text.text = stringBreedInfo
 
+        }
+
+        if(requestCode == REQUEST_IMG_CAPTURE && resultCode == Activity.RESULT_OK){
+            val mImageFile= File(mImagePath!!)
+            if(mImageFile.exists()){
+                if(mLocation != null){
+                    val classificationIntent = Intent(this, ClassificationActivity::class.java)
+                    classificationIntent.putExtra(IMAGE_INTENT_TAG, mImageFile.absolutePath)
+                    classificationIntent.putExtra(LAT_INTENT_TAG, mLocation!!.latitude)
+                    classificationIntent.putExtra(LON_INTENT_TAG, mLocation!!.longitude)
+
+                    startActivity(classificationIntent)
+                }
+                else{
+                    //if location is null set default location to TempleUni
+                    mUtility.showToast("Location needs to be on.")
+                    val classificationIntent = Intent(this, ClassificationActivity::class.java)
+                    classificationIntent.putExtra(IMAGE_INTENT_TAG, mImageFile.absolutePath)
+                    classificationIntent.putExtra(LAT_INTENT_TAG, "39.9813235")
+                    classificationIntent.putExtra(LON_INTENT_TAG, "-75.1541054")
+
+                    startActivity(classificationIntent)
+                }
+            }
+        }else if(requestCode == 42069 && resultCode == Activity.RESULT_OK){
+            val targetUri = data!!.data
+            //val galleryImageFile = File(targetUri.toString())
+
+            val classificationIntent = Intent(this, ClassificationActivity::class.java)
+            classificationIntent.putExtra(GALLERY_INTENT_TAG, targetUri)
+            classificationIntent.putExtra(LAT_INTENT_TAG, mLocation!!.latitude)
+            classificationIntent.putExtra(LON_INTENT_TAG, mLocation!!.longitude)
+
+            startActivity(classificationIntent)
         }
     }
 
@@ -163,21 +219,6 @@ class ClassificationActivity : AppCompatActivity() {
 
         fbFile.putBytes(data).addOnSuccessListener(this, { taskSnapshot ->
                 imgUrl = taskSnapshot.downloadUrl.toString()
-                //mFirebaseManager.showToast(imgUrl.toString())
-                Log.e("Fb Mngr", "Success")
-                //searchRequest = Model.ModelSearchRequest(imgUrl.toString(),petfinder_checkbox.isChecked, wiki_check_box.isChecked,postalCode!!)
-                //Log.e("Search Request", searchRequest.toString())
-                Log.e("Url", imgUrl.toString())
-
-
-                //Observable.just("").subscribeOn(Schedulers.io()).flatMap { restClient.postSearchRequestToServer(postalCode, imgUrl) }
-                //        .map { dsr ->
-                //            Model.DogSearchResult(dsr.breed, dsr.breed_info,null, null, null, null) }
-                //        .observeOn(AndroidSchedulers.mainThread()).subscribe{res -> print(res.toString())}
-                //mFirebaseManager.showToast("Submission Sent")
-
-
-
 
         }).addOnCompleteListener{ task ->
             Toast.makeText(this,"Recognizing breed...", Toast.LENGTH_LONG).show()
@@ -292,6 +333,72 @@ class ClassificationActivity : AppCompatActivity() {
         var dogSearch = FeedDogSearchResult(breed,imageUrl,probability)
         val keyString = mFirebaseManager.mResultDBRef.push().key
         mFirebaseManager.mResultDBRef.child(keyString).setValue(dogSearch)
+    }
+
+    private fun getImageAlertDialog() {
+        val dialogBuilder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.image_select_dialog, null)
+        dialogBuilder.setView(dialogView)
+
+        val uploadBtn = dialogView.findViewById(R.id.button_dialog_upload) as Button
+        val camBtn = dialogView.findViewById(R.id.button_dialog_camera) as Button
+
+        uploadBtn.setOnClickListener {
+            onOpenGallery()
+        }
+
+        camBtn.setOnClickListener {
+            onLaunchCamera()
+        }
+
+        dialogBuilder.create().show()
+    }
+
+    fun onLaunchCamera() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this@ClassificationActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
+                return
+            }
+
+        mFusedLocationClient!!.lastLocation.addOnSuccessListener(this) { location ->
+            if (location != null) {
+                mLocation = location
+            }
+        }
+
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val imageFileName = "$timeStamp.png"
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        mImagePath = "${storageDir.absolutePath}/$imageFileName"
+        //content://
+        val file = File(mImagePath!!)
+        val fileUri = FileProvider.getUriForFile(this,getString(R.string.file_provider_authority),file)
+
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
+        cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        startActivityForResult(cameraIntent, REQUEST_IMG_CAPTURE)
+
+    }
+
+    fun onOpenGallery(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this@ClassificationActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
+                return
+            }
+
+        mFusedLocationClient!!.lastLocation.addOnSuccessListener(this) { location ->
+            if (location != null) {
+                mLocation = location
+            }
+        }
+        val galleryIntent = Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(galleryIntent,42069)
     }
 }
 
