@@ -11,3 +11,15 @@ Pic-a-Pup will also allow users to help dog owners in their community. A QR/RF t
 Users of Pic-a-Pup can also use the Android, iOS, and web applications to find dog care services such as, sitting, walking, training.
 
 These features will be implemented through an Android, iOS, and web application connected to a back-end server and cloud platform that will supply the necessary data to the applications.
+
+# Running the application
+
+The application is not available on the Google Play Store so you will be required to sideload the application to run it.  In order to sideload an application visit your device's security settings.
+
+Install the apk file. After installation, locate the app labeled Pic-a-Pup in your device's application drawer and click to launch.
+
+# Links to web application and iOS application Github Repositories
+
+<a href="https://github.com/drwitteck/Pic-a-Pup">Pic-a-Pup Web Application</a>
+
+<a href="https://github.com/illphil610/Pic.a.Pup">Pic-a-Pup iOS Application</a>
