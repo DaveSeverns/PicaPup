@@ -29,6 +29,17 @@ class DBManagerUnitTest {
         var list = dbManager.getDoggosFromDb()
         Log.e("List: ", list.toString())
 
-        Assert.assertEquals("Spot",list.get(3).dogName)
+        Assert.assertEquals("Spot",list[3].dogName)
+        Assert.assertTrue(list.size >= 1)
+    }
+
+    @Test
+    fun testRemoveDogFromDb(){
+        Assert.assertTrue(true)
+    }
+
+    @Test
+    fun testUpdateDogInDB(){
+        Assert.assertTrue(true)
     }
 }
