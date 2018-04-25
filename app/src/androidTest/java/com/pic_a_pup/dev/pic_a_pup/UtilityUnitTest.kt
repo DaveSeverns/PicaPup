@@ -41,12 +41,12 @@ class UtilityUnitTest {
 
     @Test
     fun userAsJSONObject(){
-        var testUser = User("123", "Foo",null)
+        var testUser = User("123", "Foo",null,null)
 
         var testUserJson = mUtility.convertToJSON(testUser)
 
-        assertEquals("123", testUserJson.get("userId"))
-        assertEquals("Foo", testUserJson.get("name"))
+        assertEquals("123", testUserJson.get("fcm_id"))
+        assertEquals("Foo", testUserJson.get("userId"))
     }
 
     @Test
