@@ -165,7 +165,6 @@ class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchLis
 
                     val dogToAdd = Model.Dog(dogName,dogBreed,pupCode)
                     mDbManager.addDogToDb(dogToAdd)
-                    // dog is added to db so persists but this add it in RT
                     dogsList.add(dogToAdd)
                     dogListAdapter.notifyDataSetChanged()
 
@@ -212,7 +211,7 @@ class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchLis
         }
     }
 
-    fun onLaunchCamera() {
+    private fun onLaunchCamera() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this@ProfileActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
@@ -229,7 +228,7 @@ class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchLis
         val imageFileName = "$timeStamp.png"
         val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         mImagePath = "${storageDir.absolutePath}/$imageFileName"
-        //content://
+
         val file = File(mImagePath!!)
         val fileUri = FileProvider.getUriForFile(this,getString(R.string.file_provider_authority),file)
 

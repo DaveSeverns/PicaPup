@@ -2,7 +2,6 @@ package com.pic_a_pup.dev.pic_a_pup.Controller
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -10,7 +9,6 @@ import android.graphics.BitmapFactory
 import android.location.Location
 import android.media.ExifInterface
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -19,23 +17,21 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.RecyclerView
+import android.support.v7.app.AppCompatActivity
+import android.text.util.Linkify
 import android.util.Log
 import android.view.View
-import android.widget.*
-import com.firebase.ui.database.FirebaseRecyclerAdapter
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Toast
 import com.github.anastr.speedviewlib.ProgressiveGauge
-import com.github.anastr.speedviewlib.SpeedView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.Query
 import com.pic_a_pup.dev.pic_a_pup.Model.FeedDogSearchResult
-import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
 import com.pic_a_pup.dev.pic_a_pup.Utilities.*
-import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_classification.*
 import retrofit2.Call
 import retrofit2.Response
@@ -45,7 +41,6 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.roundToInt
 
 class ClassificationActivity : AppCompatActivity() {
 
@@ -83,6 +78,7 @@ class ClassificationActivity : AppCompatActivity() {
             imageFileName = intent.getStringExtra(IMAGE_INTENT_TAG)
             imageFile = File(imageFileName)
         }
+
         latitude = intent.getDoubleExtra(LAT_INTENT_TAG, LAT_DEFAULT)
         longtiude = intent.getDoubleExtra(LON_INTENT_TAG, LON_DEFAULT)
 
@@ -155,7 +151,7 @@ class ClassificationActivity : AppCompatActivity() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
-    fun onSubmit(view: View) {
+    private fun onSubmit(view: View) {
         postImageToFirebase()
     }
 
@@ -191,7 +187,6 @@ class ClassificationActivity : AppCompatActivity() {
             }
         }else if(requestCode == 42069 && resultCode == Activity.RESULT_OK){
             val targetUri = data!!.data
-            //val galleryImageFile = File(targetUri.toString())
 
             val classificationIntent = Intent(this, ClassificationActivity::class.java)
             classificationIntent.putExtra(GALLERY_INTENT_TAG, targetUri)
@@ -204,18 +199,15 @@ class ClassificationActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        Log.e("Stopped", "OnStop Ran")
     }
 
-    fun postImageToFirebase(){
+    private fun postImageToFirebase(){
         val restClient = NetworkManager.PaPRestClient.create()
         val fbFile = mFirebaseManager.mStorageReference.child(IMAGE_STORAGE).child(imageBitmap.toString())
         val byteArrayOutputStream = ByteArrayOutputStream()
 
         imageBitmap!!.compress((Bitmap.CompressFormat.JPEG),50,byteArrayOutputStream)
         val data = byteArrayOutputStream.toByteArray()
-        Log.e("I actually run", "postImageToFb")
-        //mFirebaseManager.showToast("You hit me!!!!!!!!")
 
         fbFile.putBytes(data).addOnSuccessListener(this, { taskSnapshot ->
                 imgUrl = taskSnapshot.downloadUrl.toString()
@@ -227,7 +219,6 @@ class ClassificationActivity : AppCompatActivity() {
                         override fun onFailure(call: Call<Model.DogSearchResult>?, t: Throwable?) {
                             Log.e("Network Call", "Failure ${t.toString()}")
                             updateUiOnResponse("Error","Server Not Responding", null, null, null, null, null)
-
                         }
 
                         override fun onResponse(call: Call<Model.DogSearchResult>?, response: Response<Model.DogSearchResult>?) {
@@ -257,16 +248,11 @@ class ClassificationActivity : AppCompatActivity() {
 
                                     if (breedString != null){
                                         val breedInfoString = response.body()!!.breed_info
-                                        Log.e("Probability $breedString ", probability.toString() )
                                         updateUiOnResponse(breedString, breedInfoString, probability, city, state, zip, phone)
-                                        Log.e("Response",breedString )
                                         addSearchToTable(breedString,imgUrl!!,probability!!)
 
                                     } else {
                                         Toast.makeText(this@ClassificationActivity, "Please Retry...",Toast.LENGTH_SHORT).show()
-                                        Log.e("Connection: ", "made but not getting DSR")
-                                        Log.e("Probability $breedString ", probability.toString() )
-
                                     }
                                 }
 
@@ -274,11 +260,11 @@ class ClassificationActivity : AppCompatActivity() {
                                 when (response.code()){
                                     500 -> {mFirebaseManager.showToast("Server Error")}
                                     502 -> {mFirebaseManager.showToast("Bad Gateway")
-                                    Log.e("Error Bod",response.body().toString())}
+                                    }
                                     else -> {mFirebaseManager.showToast("Unknown Error")}
                                 }
                             }
-                           }
+                        }
                     })
         }
     }
@@ -303,25 +289,26 @@ class ClassificationActivity : AppCompatActivity() {
         if (city != null) {
             textview_shelter_city.text = city
         } else {
-            textview_shelter_city.text = "City unavailable"
+            textview_shelter_city.text = getString(R.string.city_unavailable)
         }
 
         if (state != null) {
             textview_shelter_state.text = state
         } else {
-            textview_shelter_state.text = "State unavailable"
+            textview_shelter_state.text = getString(R.string.state_unavailable)
         }
 
         if (zip != null) {
             textview_shelter_zip.text = zip
         } else {
-            textview_shelter_zip.text = "Zip unavailable"
+            textview_shelter_zip.text = getString(R.string.zip_unavailable)
         }
 
         if (phone != null) {
+            textview_shelter_phone.autoLinkMask = Linkify.PHONE_NUMBERS
             textview_shelter_phone.text = phone
         } else {
-            textview_shelter_phone.text = "Phone number unavailable"
+            textview_shelter_phone.text = getString(R.string.phone_number_unavailable)
         }
 
         pre_response_frame.visibility = View.INVISIBLE
@@ -355,7 +342,7 @@ class ClassificationActivity : AppCompatActivity() {
         dialogBuilder.create().show()
     }
 
-    fun onLaunchCamera() {
+    private fun onLaunchCamera() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this@ClassificationActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
@@ -372,7 +359,7 @@ class ClassificationActivity : AppCompatActivity() {
         val imageFileName = "$timeStamp.png"
         val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         mImagePath = "${storageDir.absolutePath}/$imageFileName"
-        //content://
+
         val file = File(mImagePath!!)
         val fileUri = FileProvider.getUriForFile(this,getString(R.string.file_provider_authority),file)
 
@@ -381,10 +368,9 @@ class ClassificationActivity : AppCompatActivity() {
         cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or
                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         startActivityForResult(cameraIntent, REQUEST_IMG_CAPTURE)
-
     }
 
-    fun onOpenGallery(){
+    private fun onOpenGallery(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this@ClassificationActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
