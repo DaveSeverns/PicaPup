@@ -76,10 +76,10 @@ class HomeFeedActivity : AppCompatActivity() {
                 .setQuery(mResDBRefQuery, FeedDogSearchResult::class.java).build()
 
         viewAdapter = object : FirebaseRecyclerAdapter<FeedDogSearchResult, ResultViewHolder>(options) {
-            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ResultViewHolder {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
                 val view = LayoutInflater.from(parent!!.context).inflate(R.layout.search_result_card, parent, false)
-                return ResultViewHolder(view)
-            }
+                return ResultViewHolder(view)            }
+
 
             override fun onBindViewHolder(holder: ResultViewHolder, position: Int, model: FeedDogSearchResult) {
                 holder.onBindView(this@HomeFeedActivity, model.dogImageSent!!, model.probability, model.breed)

@@ -41,7 +41,7 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
 
     fun logUserIntoFirebase(email: String, password: String) {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { _ -> showToast("Entered!") }
-                .addOnSuccessListener { _ -> showToast("Login Successful") }
+                .addOnSuccessListener { _ -> showToast("Login Successful")}
                 .addOnFailureListener { _  -> showToast("Invalid Username or Password") }
     }
 

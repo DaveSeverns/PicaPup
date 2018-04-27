@@ -19,4 +19,3 @@ Install the apk file. After installation, locate the app labeled Pic-a-Pup in yo
 <a href="https://github.com/drwitteck/Pic-a-Pup">Pic-a-Pup Web Application</a>
 
 <a href="https://github.com/illphil610/Pic.a.Pup">Pic-a-Pup iOS Application</a>
-
