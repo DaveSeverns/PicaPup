@@ -16,31 +16,26 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.firebase.auth.FirebaseAuth
-import com.pic_a_pup.dev.pic_a_pup.R
-import com.pic_a_pup.dev.pic_a_pup.Utilities.*
-import kotlinx.android.synthetic.main.activity_home_feed.*
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.Button
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Query
 import com.pic_a_pup.dev.pic_a_pup.Model.FeedDogSearchResult
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
-import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
-
-//import com.firebase.ui.database.FirebaseRecyclerAdapter
-//import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.pic_a_pup.dev.pic_a_pup.R
+import com.pic_a_pup.dev.pic_a_pup.Utilities.*
+import kotlinx.android.synthetic.main.activity_home_feed.*
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 class HomeFeedActivity : AppCompatActivity() {
 
@@ -55,7 +50,6 @@ class HomeFeedActivity : AppCompatActivity() {
     private lateinit var mResDBRefQuery: Query
     private lateinit var viewManager: RecyclerView.LayoutManager
     val dogsSearched = arrayListOf<Model.DogSearchResult>()
-    //private lateinit var adapter: FirebaseRecyclerAdapter<Model.thDogSearchResult,ResultViewHolder>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +58,7 @@ class HomeFeedActivity : AppCompatActivity() {
         mFirebaseManager = FirebaseManager(this)
         mResDBRefQuery = FirebaseDatabase.getInstance().reference.child(RESULTS_TABLE).limitToLast(10)
         recyclerView.layoutManager = LinearLayoutManager(this)
+
         //request the necessary permissions
         ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -90,6 +85,7 @@ class HomeFeedActivity : AppCompatActivity() {
                 holder.onBindView(this@HomeFeedActivity, model.dogImageSent!!, model.probability, model.breed)
             }
         }
+
         recyclerView.adapter = viewAdapter
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -144,22 +140,16 @@ class HomeFeedActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         var currentUser = mAuth.currentUser
-        Log.e("CURRENT_USER",currentUser.toString())
-
 
         viewAdapter.startListening()
-
     }
-
-
 
     override fun onResume() {
         super.onResume()
         viewAdapter.notifyDataSetChanged()
     }
 
-
-    fun onLaunchCamera() {
+    private fun onLaunchCamera() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this@HomeFeedActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
@@ -175,8 +165,9 @@ class HomeFeedActivity : AppCompatActivity() {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val imageFileName = "$timeStamp.png"
         val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
         mImagePath = "${storageDir.absolutePath}/$imageFileName"
-        //content://
+
         val file = File(mImagePath!!)
         val fileUri = FileProvider.getUriForFile(this,getString(R.string.file_provider_authority),file)
 
@@ -188,7 +179,7 @@ class HomeFeedActivity : AppCompatActivity() {
 
     }
 
-    fun onOpenGallery(){
+    private fun onOpenGallery(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this@HomeFeedActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
@@ -230,7 +221,6 @@ class HomeFeedActivity : AppCompatActivity() {
             }
         }else if(requestCode == 42069 && resultCode == Activity.RESULT_OK){
             val targetUri = data!!.data
-            //val galleryImageFile = File(targetUri.toString())
 
             val classificationIntent = Intent(this, ClassificationActivity::class.java)
             classificationIntent.putExtra(GALLERY_INTENT_TAG, targetUri)
@@ -257,17 +247,12 @@ class HomeFeedActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-
     }
 
     override fun onStop() {
         super.onStop()
         viewAdapter.stopListening()
     }
-//    fun collarActivityStart(){
-//        val collarStartIntent = Intent(this, QRCollarActivity::class.java)
-//        startActivity(collarStartIntent)
-//    }
 
     private fun getImageAlertDialog() {
         val dialogBuilder = AlertDialog.Builder(this)

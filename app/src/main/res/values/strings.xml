@@ -31,7 +31,7 @@
     <string name="find_breed">Find Breed</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="create_account">Create Account</string>
-    <string name="cant_identify_breed_message">Sorry, we were unable to identify the breed. Please make sure the image is clear and focused on the dog\'s face.</string>
+    <string name="cant_identify_breed_message">Sorry, no information about this breed.</string>
     <string name="title_activity_maps">Pic-a-Park</string>
     <string name="title_map">Map</string>
     <string name="dog">Dog</string>
@@ -40,5 +40,14 @@
     <string name="use_gallery">Use Gallery</string>
     <string name="let_them_know">Let them Know</string>
     <string name="temp">temp</string>
+    <string name="city_unavailable">City Unavailable</string>
+    <string name="state_unavailable"> </string>
+    <string name="zip_unavailable">Zip Unavailable</string>
+    <string name="phone_number_unavailable">Phone Number Unavailable</string>
+    <string name="breed_may_be_available_at">Breed may be available at:</string>
+    <string name="philadelphia">Philadelphia</string>
+    <string name="pa">PA</string>
+    <string name="_19001">19001</string>
+    <string name="_1234567890">1234567890</string>
 
 </resources>

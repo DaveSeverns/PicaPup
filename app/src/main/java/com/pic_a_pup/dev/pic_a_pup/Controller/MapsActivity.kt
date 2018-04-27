@@ -1,16 +1,23 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.ActivityCompat
+import android.support.v4.content.FileProvider
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.Toast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -24,15 +31,13 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.GsonBuilder
 import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import com.pic_a_pup.dev.pic_a_pup.R
-import com.pic_a_pup.dev.pic_a_pup.Utilities.BottomNavigationViewHelper
-import kotlinx.android.synthetic.main.activity_classification.*
+import com.pic_a_pup.dev.pic_a_pup.Utilities.*
 import kotlinx.android.synthetic.main.activity_maps.*
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
+import okhttp3.*
+import java.io.File
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private lateinit var map: GoogleMap
@@ -51,9 +56,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var queryPlaceKeyword: String? = null
     private var queryRadius = 16000
 
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private var mLocation: Location? = null
+    private var mImagePath: String? = null
+    private lateinit var mUtility: Utility
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
+        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE),
+                10)
 
         setUpNavBar()
 
@@ -96,6 +113,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mapFragment.getMapAsync(this)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
     private fun fabAnimationSetup() {
@@ -143,6 +161,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             return@OnNavigationItemSelectedListener true
                         }
                         R.id.navigation_camera -> {
+                            getImageAlertDialog()
                             return@OnNavigationItemSelectedListener true
                         }
                         R.id.navigation_collar ->{
@@ -294,9 +313,110 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
 
-//                placeMarkerOnMap(currentLatLng)
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16.0f))
             }
+        }
+    }
+
+    private fun getImageAlertDialog() {
+        val dialogBuilder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        val dialogView = inflater.inflate(R.layout.image_select_dialog, null)
+        dialogBuilder.setView(dialogView)
+
+        val uploadBtn = dialogView.findViewById(R.id.button_dialog_upload) as Button
+        val camBtn = dialogView.findViewById(R.id.button_dialog_camera) as Button
+
+        uploadBtn.setOnClickListener {
+            onOpenGallery()
+        }
+
+        camBtn.setOnClickListener {
+            onLaunchCamera()
+        }
+
+        dialogBuilder.create().show()
+    }
+
+    private fun onLaunchCamera() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this@MapsActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
+                return
+            }
+
+        mFusedLocationClient!!.lastLocation.addOnSuccessListener(this) { location ->
+            if (location != null) {
+                mLocation = location
+            }
+        }
+
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val imageFileName = "$timeStamp.png"
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
+        mImagePath = "${storageDir.absolutePath}/$imageFileName"
+
+        val file = File(mImagePath!!)
+        val fileUri = FileProvider.getUriForFile(this,getString(R.string.file_provider_authority),file)
+
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
+        cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        startActivityForResult(cameraIntent, REQUEST_IMG_CAPTURE)
+
+    }
+
+    private fun onOpenGallery(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this@MapsActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
+                return
+            }
+
+        mFusedLocationClient!!.lastLocation.addOnSuccessListener(this) { location ->
+            if (location != null) {
+                mLocation = location
+            }
+        }
+        val galleryIntent = Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(galleryIntent,42069)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == REQUEST_IMG_CAPTURE && resultCode == Activity.RESULT_OK){
+            val mImageFile= File(mImagePath!!)
+            if(mImageFile.exists()){
+                if(mLocation != null){
+                    val classificationIntent = Intent(this, ClassificationActivity::class.java)
+                    classificationIntent.putExtra(IMAGE_INTENT_TAG, mImageFile.absolutePath)
+                    classificationIntent.putExtra(LAT_INTENT_TAG, mLocation!!.latitude)
+                    classificationIntent.putExtra(LON_INTENT_TAG, mLocation!!.longitude)
+
+                    startActivity(classificationIntent)
+                }
+                else{
+                    //if location is null set default location to TempleUni
+                    mUtility.showToast("Location needs to be on.")
+                    val classificationIntent = Intent(this, ClassificationActivity::class.java)
+                    classificationIntent.putExtra(IMAGE_INTENT_TAG, mImageFile.absolutePath)
+                    classificationIntent.putExtra(LAT_INTENT_TAG, "39.9813235")
+                    classificationIntent.putExtra(LON_INTENT_TAG, "-75.1541054")
+
+                    startActivity(classificationIntent)
+                }
+            }
+        }else if(requestCode == 42069 && resultCode == Activity.RESULT_OK){
+            val targetUri = data!!.data
+
+            val classificationIntent = Intent(this, ClassificationActivity::class.java)
+            classificationIntent.putExtra(GALLERY_INTENT_TAG, targetUri)
+            classificationIntent.putExtra(LAT_INTENT_TAG, mLocation!!.latitude)
+            classificationIntent.putExtra(LON_INTENT_TAG, mLocation!!.longitude)
+
+            startActivity(classificationIntent)
         }
     }
 
