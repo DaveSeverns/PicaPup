@@ -37,11 +37,13 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
         FirebaseApp.initializeApp(mContext)
+
         emailText = findViewById<EditText>(R.id.email_sign_up)
         userNameText = findViewById<EditText>(R.id.user_name_signup)
         pwTextOne = findViewById<EditText>(R.id.pw_one_signup)
         confirmPWText = findViewById<EditText>(R.id.pw_two_signup)
         phoneNumText = findViewById<EditText>(R.id.phone_number_signup)
+
         mUtility = Utility(mContext)
         mDatabase = FirebaseDatabase.getInstance().reference.child(USER_TABLE)
         mFirebaseAuth = FirebaseAuth.getInstance()
@@ -66,7 +68,6 @@ class SignUpActivity : AppCompatActivity() {
                 mFirebaseAuth.createUserWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener(this,
                         OnCompleteListener {
                             if(it.isSuccessful){
-                                Log.d(AUTH_TAG,"Successully added user through Firebase Authentication")
                                 val user = mFirebaseAuth.currentUser
                                 val userId = user?.uid
                                 if(user != null){
@@ -90,13 +91,12 @@ class SignUpActivity : AppCompatActivity() {
                                 editor.putString(PREF_USER_PHONE_KEY,phoneNumber)
                                 editor.apply()
 
-
                                 val authBackToLoginActivity = Intent(this,LoginActivity::class.java)
                                 authBackToLoginActivity.putExtra(EMAIL, userEmail)
                                 authBackToLoginActivity.putExtra(PASSWORD, userPassword)
                                 startActivity(authBackToLoginActivity)
 
-                            }else{
+                            } else {
                                 it.addOnFailureListener { exception ->
                                     Log.d(AUTH_TAG, "Failed to add User")
                                 }

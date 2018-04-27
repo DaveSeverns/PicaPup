@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.SEND_SMS" />
 
+
     <uses-feature
         android:name="android.hardware.camera.any"
         android:required="true" />
@@ -49,6 +50,7 @@
         <activity android:name=".Controller.SignUpActivity" />
         <activity
             android:name=".Controller.ClassificationActivity"
+            android:label="@string/title_activity_classification"
             android:theme="@style/noSlideAnimationTheme" />
         <activity
             android:name=".Controller.ProfileActivity"

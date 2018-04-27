@@ -52,8 +52,7 @@
             android:ems="10"
             android:fontFamily="serif"
             android:hint="@string/user_name"
-            android:inputType="textPersonName"
-            android:textColor="@android:color/white" />
+            android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/pw_two_signup"
@@ -94,7 +93,7 @@
                 android:id="@+id/submit_button"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:background="@drawable/rounded_corner_btn"
                 android:fontFamily="serif"

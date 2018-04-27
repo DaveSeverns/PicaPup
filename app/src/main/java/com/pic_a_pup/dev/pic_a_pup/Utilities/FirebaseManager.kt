@@ -20,9 +20,6 @@ import com.pic_a_pup.dev.pic_a_pup.Model.Model
 import java.io.File
 import java.net.URL
 
-/**
- * Created by davidseverns on 3/16/18.
- */
 class FirebaseManager(var mContext: Context) : Utility(mContext) {
     var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private var mDB: FirebaseDatabase = FirebaseDatabase.getInstance()
@@ -31,21 +28,12 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
     var mResultDBRef: DatabaseReference = FirebaseDatabase.getInstance().reference.child(RESULTS_TABLE)
     var mLostDogDBRef: DatabaseReference = FirebaseDatabase.getInstance().reference.child(LOST_DOG_TABLE)
 
-
-
-
     fun getFeedList(dataSnapshot: DataSnapshot): ArrayList<Model.DogSearchResult> {
         var dogSearches = ArrayList<Model.DogSearchResult>()
         var result: Model.DogSearchResult
 
         for (search in dataSnapshot.children) {
             if (search.exists()) {
-
-                //result = Model.DogSearchResult(search.child("userWhoSearched").value.toString(), search.child("dog").value as Model.Dog,
-                       // search.child("dogImageSent").value as URL, search.child("userVoteCount").value as Int,
-                        //search.child("shelterList").value as List<Model.DogShelter>)
-               // dogSearches.add(result)
-
             }
         }
         return dogSearches
@@ -53,7 +41,7 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
 
     fun logUserIntoFirebase(email: String, password: String) {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { _ -> showToast("Entered!") }
-                .addOnSuccessListener { _ -> showToast("Login Successful") }
+                .addOnSuccessListener { _ -> showToast("Login Successful")}
                 .addOnFailureListener { _  -> showToast("Invalid Username or Password") }
     }
 
@@ -67,7 +55,6 @@ class FirebaseManager(var mContext: Context) : Utility(mContext) {
                 override fun onSuccess(taskSnapshot: UploadTask.TaskSnapshot) {
                     imgUrl = taskSnapshot.downloadUrl
                     showToast(imgUrl.toString())
-                    Log.e("Fb Mngr", "Success")
                 }
             }
 

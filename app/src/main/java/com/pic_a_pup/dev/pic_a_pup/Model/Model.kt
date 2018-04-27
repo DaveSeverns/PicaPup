@@ -24,17 +24,36 @@ object Model {
 
     data class DogSearchResult(var breed: String?,
                                var breed_info: String?,
+                               var name: String?,
+                               var sex: String,
                                var dogImageSent: String?,
                                var model_error: String?,
                                var wikipedia_error: String?,
                                var petfinder_error: String?,
-                               var shelterList: List<DogShelter>?)
+                               val shelter_contact: ShelterContact?,
+                               var prob: Double?)
 
+
+    class ShelterContact(val city: String,
+                              val zip: String,
+                              val phone: String,
+                              val state: String)
 
     data class ModelSearchRequest(var imgUrl: String,
                                   var usePetfinder : Boolean,
                                   var useWiki: Boolean,
                                   var location: String)
+
+    class Data(val results: List<Result>)
+
+    class Result(val name: String,
+                 val vicinity: String,
+                 val geometry: Geometry)
+
+    class Geometry(var location: Locations)
+
+    class Locations(val lat: Double,
+                    val lng: Double)
 
     data class LostDog(var dogName: String?,
                        var dogLover: DogLover?,
