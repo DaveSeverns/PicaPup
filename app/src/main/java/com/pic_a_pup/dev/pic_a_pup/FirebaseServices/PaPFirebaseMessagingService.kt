@@ -22,20 +22,23 @@ class PaPFirebaseMessagingService :  FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         Log.e("MESSAGE FROM", remoteMessage!!.from)
         if((remoteMessage?.data!!.isNotEmpty()) && (remoteMessage.notification != null)){
+            var randomId = Random().nextInt(6000)
 
             val lat = remoteMessage.data.get("locationLat")
             val lon = remoteMessage.data.get("locationLon")
             val intent = Intent(applicationContext, MapsActivity::class.java)
-            intent.putExtra("lat",lat)
-            intent.putExtra("lon", lon)
-            val pendingIntent = PendingIntent.getActivity(applicationContext, 6969,intent,0)
+            intent.putExtra("lat",lat!!.toDouble())
+            intent.putExtra("lon", lon!!.toDouble())
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            val pendingIntent = PendingIntent.getActivity(applicationContext, 6969,intent,PendingIntent.FLAG_UPDATE_CURRENT)
+            val defaultUriSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             Log.e("Message Payload", remoteMessage.data.toString())
             var notification = Notification.Builder(applicationContext).setContentTitle(remoteMessage.notification!!.body)
                     .setContentText(remoteMessage.data.toString()).setSmallIcon(R.mipmap.ic_launcher_round)
-                    .setContentIntent(pendingIntent).build()
+                    .setSound(defaultUriSound).setContentIntent(pendingIntent).build()
 
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.notify(1791, notification)
+            notificationManager.notify(randomId, notification)
 
         }
 
