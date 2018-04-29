@@ -81,6 +81,13 @@ class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchLis
         dog_recycler.layoutManager = layoutManager
         add_dog_btn.setOnClickListener(this::addDogClicked)
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this@ProfileActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
+                return
+            }
+
+
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_profile_page)
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView)
         val menu = bottomNavigationView.menu
@@ -122,6 +129,11 @@ class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchLis
         navigation_profile_page.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        mFusedLocationClient!!.lastLocation.addOnSuccessListener(this) { location ->
+            if (location != null) {
+                mLocation = location
+            }
+        }
     }
 
     companion object {
@@ -131,8 +143,9 @@ class ProfileActivity : AppCompatActivity(), DogRecyclerAdapter.LostDogSwitchLis
     }
 
     fun postLostDog(dog: Model.Dog){
+
         val user = DogLover(fcmToken,null,userName, null, phoneNumber, null)
-        val lostDog = Model.LostDog(dog.dogName,user,"fcm")
+        val lostDog = Model.LostDog(dog.dogName,user,fcmToken,false,mLocation!!.latitude,mLocation!!.longitude)
         mFirebaseManager.mLostDogDBRef.child(dog.pupCode).setValue(lostDog)
     }
 

@@ -1,5 +1,6 @@
 package com.pic_a_pup.dev.pic_a_pup.Controller
 
+import android.Manifest
 import android.Manifest.permission.CAMERA
 import android.annotation.SuppressLint
 import android.content.Context
@@ -51,6 +52,19 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         setContentView(scannerView)
         val currentApiVersion = Build.VERSION.SDK_INT
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this@QRCollarActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
+                return
+            }
+
+        mFusedLocationClient!!.lastLocation.addOnSuccessListener(this) { location ->
+            if (location != null) {
+                mLocation = location
+            }
+        }
+
+        sendSMS()
         if (currentApiVersion >= Build.VERSION_CODES.M) {
             if (checkPermission()) {
                 Toast.makeText(applicationContext, "Scan QR code on collar", Toast.LENGTH_LONG).show()
@@ -145,6 +159,8 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                         dogLoverFCM = snapshot.child("fcm_id").value as String
                         var map = HashMap<String,Any>()
                         map.put("found",true)
+                        map.put("latitude", mLocation!!.latitude)
+                        map.put("longitude", mLocation!!.longitude)
                         mFirebaseManager.mLostDogDBRef.child(myResult).updateChildren(map)
 
                         Log.e("Dog Lover ", "$dogLoverName and phone number $dogLoverNumber")
@@ -188,7 +204,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         okBtn.setOnClickListener(View.OnClickListener {
             try{
                 Log.e("Text finna be sent"," fam")
-                sendSMS(phoneNumberOfOwner,"Dog Found")
+                sendSMS()
                 SmsManager.getDefault().sendTextMessage(phoneNumberOfOwner,null,
                         "Found your dog, $dogNameD!",
                         null,
@@ -250,7 +266,7 @@ class QRCollarActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         builder.show()
     }
 
-    fun sendSMS(number: String?, message: String?){
+    fun sendSMS(){
         if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(this,
                             android.Manifest.permission.SEND_SMS)){

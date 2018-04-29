@@ -55,6 +55,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var queryPlaceType: String? = null
     private var queryPlaceKeyword: String? = null
     private var queryRadius = 16000
+    private var latFromIntent: Double?=null
+    private var lonFromIntent: Double? = null
 
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private var mLocation: Location? = null
@@ -73,6 +75,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 10)
 
         setUpNavBar()
+
+        if(intent != null){
+            latFromIntent = intent!!.getDoubleExtra("lat",39.9813235)
+            lonFromIntent = intent!!.getDoubleExtra("lon",-75.1541054)
+
+
+        }
 
         fabMain = findViewById(R.id.fab_main)
         fabPark = findViewById(R.id.fab_park)
@@ -292,6 +301,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         map.uiSettings.isZoomControlsEnabled = false
         map.setOnMarkerClickListener(this)
 
+        if(latFromIntent != null && lonFromIntent !=  null){
+            val latLng = LatLng(latFromIntent!!,lonFromIntent!!)
+            placeMarkerOnMap(latLng,"Dog Found Here", "Finder Should Text You")
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20.0f))
+        }
+
         setupMap()
     }
 
@@ -427,6 +442,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     override fun onResume() {
         super.onResume()
     }
+
+
 
     companion object {
         fun newIntent(context: Context): Intent {
