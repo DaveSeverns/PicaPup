@@ -32,6 +32,8 @@ Within the application, the bottom navigation drawer will provide you with links
 
 ## Running the Web Application
 
+<a href="http://ec2-18-188-133-222.us-east-2.compute.amazonaws.com/">Pic-a-Pup Website</a>
+
 ### Build Setup
 
 ``` bash
